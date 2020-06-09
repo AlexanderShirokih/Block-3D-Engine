@@ -5,18 +5,19 @@ import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.slf4j.LoggerFactory
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
-import org.lwjgl.glfw.GLFWKeyCallback
 import org.lwjgl.glfw.GLFWVidMode
 import org.lwjgl.opengl.GL
 import org.lwjgl.system.MemoryStack.stackPush
 import org.lwjgl.system.MemoryUtil.NULL
 import ru.aleshi.block3d.core.internal.WindowConfig
 import org.lwjgl.opengl.GL11C.*
+import ru.aleshi.block3d.core.internal.GraphicsCapabilities
 
 /**
  * Entry point to start the engine. Creates GLFW window and manages it's state.
  */
 object Launcher {
+    private const val CLEAR_MASK = GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
     private val logger = LoggerFactory.getLogger(Launcher::class.java)
 
     private var windowHandle: Long = 0
@@ -32,20 +33,35 @@ object Launcher {
     }
 
     /**
-     * Initializes the game engine and GLFW window.
+     * Creates the World instance and initializes GLFW window.
      */
-    fun start(config: WindowConfig) {
-        GLFWErrorCallback.createPrint(System.err).set();
+    fun start(config: WindowConfig): World {
+        GLFWErrorCallback.createPrint(System.err).set()
         logger.info("Starting Block3D Engine")
         logger.info("LWJGL version: {}", Version.getVersion())
         logger.info("GLFW version: {}", glfwGetVersionString())
 
-        initWindow(config)
-        loop()
-        destroyWindow()
+        return initWindowAndCreateWorld(config).apply {
+            glClearColor(1f, 0f, 1f, 1f)
+
+            //Render until the user attempts to close window or escape key pressed
+            while (!glfwWindowShouldClose(windowHandle)) {
+                // Clear framebuffer
+                glClear(CLEAR_MASK)
+
+                // Update the world
+                update()
+
+                glfwSwapBuffers(windowHandle)
+                glfwPollEvents()
+            }
+
+            stop()
+            destroyWindow()
+        }
     }
 
-    private fun initWindow(config: WindowConfig) {
+    private fun initWindowAndCreateWorld(config: WindowConfig): World {
         if (!glfwInit()) {
             throw IllegalStateException("Cannot initialize GLFW window!")
         }
@@ -55,19 +71,12 @@ object Launcher {
         if (windowHandle == NULL)
             throw RuntimeException("Failed to create the GLFW window")
 
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
+        glfwDefaultWindowHints()
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE) // the window will stay hidden after creation
         glfwWindowHint(
             GLFW_RESIZABLE,
             if (config.isResizable) GLFW_TRUE else GLFW_FALSE
         ) // the window will be resizable
-
-        // Setup a key callback
-        glfwSetKeyCallback(windowHandle, object : GLFWKeyCallback() {
-            override fun invoke(window: Long, key: Int, scancode: Int, action: Int, mods: Int) {
-                if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
-                    glfwSetWindowShouldClose(window, true);
-            }
-        })
 
         stackPush().use { stack ->
             val pWidth = stack.mallocInt(1)
@@ -84,25 +93,26 @@ object Launcher {
         }
 
         glfwMakeContextCurrent(windowHandle) // Make the OpenGL context current
+
+        val caps = GL.createCapabilities()
+        val gCaps = GraphicsCapabilities(
+            openGL20 = caps.OpenGL20,
+            openGL30 = caps.OpenGL30
+        )
+        if (!caps.OpenGL20)
+            throw RuntimeException("OpenGL 2.0 at least required to run the engine")
+
+        val world = World(gCaps)
+
+        // Setup key and mouse callbacks
+        glfwSetKeyCallback(windowHandle, Keyboard)
+        glfwSetCursorPosCallback(windowHandle, Mouse)
+        glfwSetFramebufferSizeCallback(windowHandle) { _, width, height -> world.setSize(width, height) }
+
         glfwSwapInterval(1) // V-sync
         glfwShowWindow(windowHandle)
-    }
 
-    private fun loop() {
-        GL.createCapabilities()
-
-        glClearColor(1f, 0f, 1f, 1f)
-
-        //Render until the user attempts to close window or escape key pressed
-        while (!glfwWindowShouldClose(windowHandle)) {
-            // Clear framebuffer
-            glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
-
-            //TODO: Engine goes here
-
-            glfwSwapBuffers(windowHandle)
-            glfwPollEvents()
-        }
+        return world
     }
 
     private fun destroyWindow() {
