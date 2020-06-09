@@ -1,6 +1,6 @@
-package ru.aleshi.block3d.core
+package ru.aleshi.block3d
 
-import ru.aleshi.block3d.core.internal.GraphicsCapabilities
+import ru.aleshi.block3d.internal.GraphicsCapabilities
 
 /**
  * Root class for all engine hierarchy

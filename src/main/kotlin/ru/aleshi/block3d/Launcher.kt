@@ -1,4 +1,4 @@
-package ru.aleshi.block3d.core
+package ru.aleshi.block3d
 
 import org.lwjgl.Version
 import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
@@ -9,9 +9,9 @@ import org.lwjgl.glfw.GLFWVidMode
 import org.lwjgl.opengl.GL
 import org.lwjgl.system.MemoryStack.stackPush
 import org.lwjgl.system.MemoryUtil.NULL
-import ru.aleshi.block3d.core.internal.WindowConfig
+import ru.aleshi.block3d.internal.WindowConfig
 import org.lwjgl.opengl.GL11C.*
-import ru.aleshi.block3d.core.internal.GraphicsCapabilities
+import ru.aleshi.block3d.internal.GraphicsCapabilities
 
 /**
  * Entry point to start the engine. Creates GLFW window and manages it's state.
@@ -105,8 +105,14 @@ object Launcher {
         val world = World(gCaps)
 
         // Setup key and mouse callbacks
-        glfwSetKeyCallback(windowHandle, Keyboard)
-        glfwSetCursorPosCallback(windowHandle, Mouse)
+        glfwSetKeyCallback(
+            windowHandle,
+            Keyboard
+        )
+        glfwSetCursorPosCallback(
+            windowHandle,
+            Mouse
+        )
         glfwSetFramebufferSizeCallback(windowHandle) { _, width, height -> world.setSize(width, height) }
 
         glfwSwapInterval(1) // V-sync

@@ -1,4 +1,4 @@
-package ru.aleshi.block3d.core.internal
+package ru.aleshi.block3d.internal
 
 /**
  * Contains info about current graphics capabilities

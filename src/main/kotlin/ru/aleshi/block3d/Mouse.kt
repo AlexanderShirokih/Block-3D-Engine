@@ -1,4 +1,4 @@
-package ru.aleshi.block3d.core
+package ru.aleshi.block3d
 
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWCursorPosCallback
