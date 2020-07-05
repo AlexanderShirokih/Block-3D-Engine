@@ -49,8 +49,8 @@ object Launcher {
         val window = GLFWWindow().apply { create(config) }
 
         val caps = GL.createCapabilities()
-        if (!caps.OpenGL20)
-            throw RuntimeException("OpenGL 2.0 at least required to run the engine")
+        if (!caps.OpenGL30)
+            throw RuntimeException("OpenGL 3.0 at least required to run the engine")
 
         return World(window).apply { resizeScenes(config.width, config.height) }
     }
