@@ -22,27 +22,16 @@ object Launcher {
     private var windowHandle: Long = 0
 
     /**
-     * Entry point
-     */
-    @JvmStatic
-    fun main(args: Array<String>) {
-        //TODO: Parse cmd args to WindowConfig
-        // Start window with default config
-        start(WindowConfig())
-    }
-
-    /**
      * Creates the World instance and initializes GLFW window.
      */
-    fun start(config: WindowConfig): World {
+    fun start(config: WindowConfig, startingScene: Scene): World {
         GLFWErrorCallback.createPrint(System.err).set()
         logger.info("Starting Block3D Engine")
         logger.info("LWJGL version: {}", Version.getVersion())
         logger.info("GLFW version: {}", glfwGetVersionString())
 
         return initWindowAndCreateWorld(config).apply {
-            create()
-
+            create(startingScene)
             //Render until the user attempts to close window or escape key pressed
             while (!glfwWindowShouldClose(windowHandle)) {
                 // Clear framebuffer

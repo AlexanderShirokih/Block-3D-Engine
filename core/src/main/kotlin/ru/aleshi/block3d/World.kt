@@ -40,9 +40,9 @@ class World {
     /**
      * Called internally when world is created
      */
-    internal fun create() {
-        // Launch default scene
-        launchScene(currentScene)
+    internal fun create(startScene: Scene) {
+        // Launch start scene
+        launchScene(startScene)
     }
 
     /**

@@ -39,7 +39,8 @@ abstract class Scene {
      * Called when window size changed
      */
     open fun resize(width: Int, height: Int) {
-        //TODO:
+        // Update viewport data
+        glViewport(0, 0, width, height)
     }
 
     /**
