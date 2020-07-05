@@ -86,7 +86,7 @@ object Launcher {
         if (!caps.OpenGL20)
             throw RuntimeException("OpenGL 2.0 at least required to run the engine")
 
-        val world = World()
+        val world = World().apply { setSize(config.width, config.height) }
 
         // Setup key and mouse callbacks
         glfwSetKeyCallback(
