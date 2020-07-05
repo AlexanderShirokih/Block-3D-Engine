@@ -11,7 +11,6 @@ import org.lwjgl.system.MemoryStack.stackPush
 import org.lwjgl.system.MemoryUtil.NULL
 import ru.aleshi.block3d.internal.WindowConfig
 import org.lwjgl.opengl.GL11C.*
-import ru.aleshi.block3d.internal.GraphicsCapabilities
 
 /**
  * Entry point to start the engine. Creates GLFW window and manages it's state.
@@ -42,7 +41,7 @@ object Launcher {
         logger.info("GLFW version: {}", glfwGetVersionString())
 
         return initWindowAndCreateWorld(config).apply {
-            glClearColor(1f, 0f, 1f, 1f)
+            create()
 
             //Render until the user attempts to close window or escape key pressed
             while (!glfwWindowShouldClose(windowHandle)) {
@@ -95,14 +94,10 @@ object Launcher {
         glfwMakeContextCurrent(windowHandle) // Make the OpenGL context current
 
         val caps = GL.createCapabilities()
-        val gCaps = GraphicsCapabilities(
-            openGL20 = caps.OpenGL20,
-            openGL30 = caps.OpenGL30
-        )
         if (!caps.OpenGL20)
             throw RuntimeException("OpenGL 2.0 at least required to run the engine")
 
-        val world = World(gCaps)
+        val world = World()
 
         // Setup key and mouse callbacks
         glfwSetKeyCallback(

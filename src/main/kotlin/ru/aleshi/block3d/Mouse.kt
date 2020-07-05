@@ -35,30 +35,25 @@ object Mouse : GLFWCursorPosCallback() {
     var y = 0f
         private set
 
-    private var _hidden = false
-    private var _grabbed = false
-
-    var grabbed: Boolean
-        get() = _grabbed
+    var grabbed: Boolean = false
         set(value) {
-            if (value != _grabbed && currentWindowHandle != 0L) {
+            if (value != field && currentWindowHandle != 0L) {
                 if (value)
                     glfwSetInputMode(currentWindowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
                 else
                     glfwSetInputMode(currentWindowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL)
-                _grabbed = value
+                field = value
             }
         }
 
-    var hidden: Boolean
-        get() = _hidden
+    var hidden: Boolean = false
         set(value) {
-            if (value != _hidden && currentWindowHandle != 0L) {
+            if (value != field && currentWindowHandle != 0L) {
                 if (value)
                     glfwSetInputMode(currentWindowHandle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN)
                 else
                     glfwSetInputMode(currentWindowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL)
-                _hidden = value
+                field = value
             }
         }
 

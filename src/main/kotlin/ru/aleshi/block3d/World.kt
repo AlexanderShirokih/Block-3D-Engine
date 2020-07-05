@@ -1,13 +1,11 @@
 package ru.aleshi.block3d
 
-import ru.aleshi.block3d.internal.GraphicsCapabilities
+import ru.aleshi.block3d.internal.StubScene
 
 /**
  * Root class for all engine hierarchy
  */
-class World(
-    val graphicsCapabilities: GraphicsCapabilities
-) {
+class World {
     /**
      * `true` until world isn't destroyed
      */
@@ -26,6 +24,8 @@ class World(
     var height: Int = 0
         private set
 
+    private var currentScene: Scene = StubScene
+
     /**
      * Called internally when window size changed
      */
@@ -33,8 +33,16 @@ class World(
         if (width > 0 && height > 0) {
             this.width = width
             this.height = height
-            //TODO: Notify scenes
+            currentScene.resize(width, height)
         }
+    }
+
+    /**
+     * Called internally when world is created
+     */
+    fun create() {
+        // Launch default scene
+        launchScene(currentScene)
     }
 
     /**
@@ -42,14 +50,27 @@ class World(
      */
     fun update() {
         Mouse.updateDelta()
+        currentScene.update()
     }
 
     /**
      * Called internally to stop current world
      */
     fun stop() {
-        //TODO: Stop the current scene and release resources
+        currentScene.stop()
         alive = false
+    }
 
+    /**
+     * Call to set the current scene.
+     * It will destroy current scene and load new.
+     */
+    fun launchScene(scene: Scene) {
+        currentScene.stop()
+        currentScene = scene
+        currentScene.apply {
+            create()
+            resize(width, height)
+        }
     }
 }
