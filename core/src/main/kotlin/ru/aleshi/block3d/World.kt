@@ -5,23 +5,16 @@ import ru.aleshi.block3d.internal.StubScene
 /**
  * Root class for all engine hierarchy
  */
-class World {
+class World(
+    /**
+     * The window in which world will be drawn
+     */
+    val window: Window
+) {
     /**
      * `true` until world isn't destroyed
      */
     var alive: Boolean = true
-        private set
-
-    /**
-     * Current window width
-     */
-    var width: Int = 0
-        private set
-
-    /**
-     * Current window height
-     */
-    var height: Int = 0
         private set
 
     private var currentScene: Scene = StubScene
@@ -29,10 +22,10 @@ class World {
     /**
      * Called internally when window size changed
      */
-    internal fun setSize(width: Int, height: Int) {
+    internal fun resizeScenes(width: Int, height: Int) {
         if (width > 0 && height > 0) {
-            this.width = width
-            this.height = height
+            window.width = width
+            window.height = height
             currentScene.resize(width, height)
         }
     }
@@ -41,6 +34,8 @@ class World {
      * Called internally when world is created
      */
     internal fun create(startScene: Scene) {
+        window.setWindowResizeCallback(::resizeScenes)
+
         // Launch start scene
         launchScene(startScene)
     }
@@ -70,7 +65,7 @@ class World {
         currentScene = scene
         currentScene.apply {
             create()
-            resize(width, height)
+            resize(window.width, window.height)
         }
     }
 }
