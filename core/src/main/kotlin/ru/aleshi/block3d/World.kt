@@ -29,7 +29,7 @@ class World {
     /**
      * Called internally when window size changed
      */
-    fun setSize(width: Int, height: Int) {
+    internal fun setSize(width: Int, height: Int) {
         if (width > 0 && height > 0) {
             this.width = width
             this.height = height
@@ -40,7 +40,7 @@ class World {
     /**
      * Called internally when world is created
      */
-    fun create() {
+    internal fun create() {
         // Launch default scene
         launchScene(currentScene)
     }
@@ -48,7 +48,7 @@ class World {
     /**
      * Called internally on each frame to update the world state
      */
-    fun update() {
+    internal fun update() {
         Mouse.updateDelta()
         currentScene.update()
     }
@@ -56,7 +56,7 @@ class World {
     /**
      * Called internally to stop current world
      */
-    fun stop() {
+    internal fun stop() {
         currentScene.stop()
         alive = false
     }

@@ -9,18 +9,18 @@ import ru.aleshi.block3d.types.Color4f
 abstract class Scene {
 
     /**
-     * Backgroud color for the scene
+     * Background color for the scene
      */
-    var background: Color4f = Color4f.black
+    var background: Color4f = Color4f.magenta
         set(value) {
             field = value
             glClearColor(background.red, background.green, background.blue, background.alpha)
         }
 
     /**
-     * Should be called once to initialize scene
+     * Should be called once to initialize scene. Super function should be called!
      */
-    fun create() {
+    open fun create() {
         // Apply default settings
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_NORMALIZE)
@@ -38,20 +38,17 @@ abstract class Scene {
     /**
      * Called when window size changed
      */
-    fun resize(width: Int, height: Int) {
+    open fun resize(width: Int, height: Int) {
         //TODO:
     }
 
     /**
      * Called on each frame to update the scene
      */
-    fun update() {
-    }
+    open fun update() = Unit
 
     /**
      * Called when scene should be stopped
      */
-    fun stop() {
-
-    }
+    open fun stop() = Unit
 }
