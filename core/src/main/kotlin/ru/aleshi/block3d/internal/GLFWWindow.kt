@@ -5,8 +5,8 @@ import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWVidMode
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
-import ru.aleshi.block3d.Keyboard
-import ru.aleshi.block3d.Mouse
+import ru.aleshi.block3d.input.Keyboard
+import ru.aleshi.block3d.input.Mouse
 import ru.aleshi.block3d.Window
 
 /**

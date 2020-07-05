@@ -1,5 +1,6 @@
 package ru.aleshi.block3d
 
+import ru.aleshi.block3d.input.Mouse
 import ru.aleshi.block3d.internal.StubScene
 
 /**

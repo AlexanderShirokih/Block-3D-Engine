@@ -1,4 +1,4 @@
-package ru.aleshi.block3d
+package ru.aleshi.block3d.input
 
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFW.GLFW_PRESS
