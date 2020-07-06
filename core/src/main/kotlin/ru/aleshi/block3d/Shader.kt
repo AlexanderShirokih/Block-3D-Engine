@@ -3,47 +3,18 @@ package ru.aleshi.block3d
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.system.MemoryStack
 import ru.aleshi.block3d.data.ShaderData
-import ru.aleshi.block3d.types.Matrix4f
-import java.nio.Buffer
-import java.nio.FloatBuffer
+import ru.aleshi.block3d.internal.ShaderLiveType
 
 /**
  * Describes a shader program
  */
 open class Shader {
-    private companion object LiveTypeDefaults {
-        val DEFAULT_MATRIX = Matrix4f()
-    }
-
-    private sealed class LiveType(val uniformId: Int) {
-
-        abstract fun bind(buffer: Buffer)
-
-        abstract fun set(value: Any)
-
-        class MatrixLiveType(uniformId: Int) : LiveType(uniformId) {
-            var matrix: Matrix4f = DEFAULT_MATRIX
-
-            override fun bind(buffer: Buffer) {
-                glUniformMatrix4fv(uniformId, false, matrix.store(buffer as FloatBuffer))
-            }
-
-            override fun set(value: Any) {
-                if (value !is Matrix4f)
-                    throw ShaderException(
-                        ShaderException.ErrorType.PropertyTypeMismatch,
-                        "Could not cast ${value.javaClass} to ${Matrix4f::javaClass}"
-                    )
-                matrix = value
-            }
-        }
-    }
 
     private var programId: Int = 0
     private var vertexShaderId: Int = 0
     private var fragmentShaderId: Int = 0
 
-    private var uniforms = emptyMap<String, LiveType>()
+    private var uniforms = emptyMap<String, ShaderLiveType>()
 
     /**
      * Creates shader program and compiles it.
@@ -144,10 +115,9 @@ open class Shader {
     private fun fetchProperties(properties: Map<String, ShaderData.Property>) =
         properties.mapValues { entry ->
             entry.value.run {
-                //TODO: choose LiveType by Type
-                LiveType.MatrixLiveType(
-                    getUniformLocation(uniformName)
-                ).apply { defaultValue?.also { def -> set(def) } }
+                ShaderLiveType
+                    .fromType(type, getUniformLocation(uniformName))
+                    .apply { defaultValue?.also { def -> set(def) } }
             }
         }
 
