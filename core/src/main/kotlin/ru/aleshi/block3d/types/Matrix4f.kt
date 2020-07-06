@@ -1,5 +1,7 @@
 package ru.aleshi.block3d.types
 
+import java.nio.Buffer
+import java.nio.FloatBuffer
 import java.util.*
 import kotlin.math.cos
 import kotlin.math.sin
@@ -66,7 +68,7 @@ class Matrix4f(private val matrix: FloatArray) {
 
 
     /**
-     * Rotates matrix in Euler degrees and returns new matrix as result
+     * Rotates matrix in Euler degrees and returns this matrix as result
      */
     fun rotate(x: Float, y: Float, z: Float): Matrix4f {
         val xRad = x * PI_OVER_180
@@ -104,7 +106,9 @@ class Matrix4f(private val matrix: FloatArray) {
         rotationMatrix[14] = 0.0f
         rotationMatrix[15] = 1.0f
 
-        return Matrix4f().also { product -> multiplyMatrixArrays(matrix, rotationMatrix, product.matrix) }
+        multiplyMatrixArrays(matrix.copyOf(), rotationMatrix, this.matrix)
+
+        return this
     }
 
     /**
@@ -207,6 +211,14 @@ class Matrix4f(private val matrix: FloatArray) {
      */
     override fun hashCode(): Int {
         return matrix.contentHashCode()
+    }
+
+    /**
+     * Stores matrix data to float buffer
+     */
+    fun store(buffer: FloatBuffer): FloatBuffer {
+        (buffer.put(matrix) as Buffer).flip()
+        return buffer
     }
 
 
