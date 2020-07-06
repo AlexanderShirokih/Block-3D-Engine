@@ -57,7 +57,8 @@ class Matrix4f(private val matrix: FloatArray) {
     }
 
     /**
-     * Translates matrix to position (x, y, z)
+     * Translates matrix to position (x, y, z).
+     * @return this matrix
      */
     fun translate(x: Float, y: Float, z: Float): Matrix4f {
         for (i in 0..3) {
@@ -66,9 +67,15 @@ class Matrix4f(private val matrix: FloatArray) {
         return this
     }
 
+    /**
+     * Translates matrix to position
+     * @return this matrix
+     */
+    fun translate(position: Vector3f) = translate(position.x, position.y, position.z)
 
     /**
-     * Rotates matrix in Euler degrees and returns this matrix as result
+     * Rotates matrix in Euler degrees
+     * @return this matrix as result
      */
     fun rotate(x: Float, y: Float, z: Float): Matrix4f {
         val xRad = x * PI_OVER_180
@@ -89,21 +96,15 @@ class Matrix4f(private val matrix: FloatArray) {
         rotationMatrix[0] = cy * cz
         rotationMatrix[1] = -cy * sz
         rotationMatrix[2] = sy
-        rotationMatrix[3] = 0.0f
 
         rotationMatrix[4] = cxsy * cz + cx * sz
         rotationMatrix[5] = -cxsy * sz + cx * cz
         rotationMatrix[6] = -sx * cy
-        rotationMatrix[7] = 0.0f
 
         rotationMatrix[8] = -sxsy * cz + sx * sz
         rotationMatrix[9] = sxsy * sz + sx * cz
         rotationMatrix[10] = cx * cy
-        rotationMatrix[11] = 0.0f
 
-        rotationMatrix[12] = 0.0f
-        rotationMatrix[13] = 0.0f
-        rotationMatrix[14] = 0.0f
         rotationMatrix[15] = 1.0f
 
         multiplyMatrixArrays(matrix.copyOf(), rotationMatrix, this.matrix)
@@ -112,7 +113,45 @@ class Matrix4f(private val matrix: FloatArray) {
     }
 
     /**
-     * Scales matrix by factor x,y,z and returns this matrix as result
+     * Rotates matrix by Quaternion
+     * @return this matrix as result
+     */
+    fun rotate(q: Quaternion): Matrix4f {
+        val xx = q.x * q.x
+        val xy = q.x * q.y
+        val xz = q.x * q.z
+        val xw = q.x * q.w
+
+        val yy = q.y * q.y
+        val yz = q.y * q.z
+        val yw = q.y * q.w
+
+        val zz = q.z * q.z
+        val zw = q.z * q.w
+
+        val rotationMatrix = FloatArray(16)
+
+        rotationMatrix[0] = 1f - 2f * (yy + zz)
+        rotationMatrix[1] = 2f * (xy - zw)
+        rotationMatrix[2] = 2f * (xz + yw)
+
+        rotationMatrix[4] = 2f * (xy + zw)
+        rotationMatrix[5] = 1f - 2f * (xx + zz)
+        rotationMatrix[6] = 2f * (yz - xw)
+
+        rotationMatrix[8] = 2f * (xz - yw)
+        rotationMatrix[9] = 2f * (yz + xw)
+        rotationMatrix[10] = 1f - 2f * (xx + yy)
+        rotationMatrix[15] = 1f
+
+        multiplyMatrixArrays(matrix.copyOf(), rotationMatrix, this.matrix)
+
+        return this
+    }
+
+    /**
+     * Scales matrix by factor x,y,z
+     * @return this matrix as result
      */
     fun scale(x: Float, y: Float, z: Float): Matrix4f {
         for (i in 0 until 4) {
@@ -122,6 +161,12 @@ class Matrix4f(private val matrix: FloatArray) {
         }
         return this
     }
+
+    /**
+     * Scales matrix by scale vector
+     * @return this matrix as result
+     */
+    fun scale(scale: Vector3f) = scale(scale.x, scale.y, scale.z)
 
     /**
      * Computes an orthographic projection for this matrix.
@@ -141,18 +186,10 @@ class Matrix4f(private val matrix: FloatArray) {
         val rHeight = 1.0f / (top - bottom)
         val rDepth = 1.0f / (far - near)
 
+        Arrays.fill(matrix, 0.0f)
         matrix[0] = 2.0f * (rWidth)
-        matrix[1] = 0.0f
-        matrix[2] = 0.0f
-        matrix[3] = 0.0f
-        matrix[4] = 0.0f
         matrix[5] = 2.0f * (rHeight)
-        matrix[6] = 0.0f
-        matrix[7] = 0.0f
-        matrix[8] = 0.0f
-        matrix[9] = 0.0f
         matrix[10] = -2.0f * (rDepth)
-        matrix[11] = 0.0f
         matrix[12] = -(right + left) * rWidth
         matrix[13] = -(top + bottom) * rHeight
         matrix[14] = -(far + near) * rDepth
@@ -161,34 +198,25 @@ class Matrix4f(private val matrix: FloatArray) {
         return this
     }
 
+
     /**
      * Computes a perspective projection for this matrix.
      */
     fun perspective(fovY: Float, aspect: Float, zNear: Float, zFar: Float): Matrix4f {
-        val f = 1.0f / tan(fovY * PI_OVER_180 * 2f).toFloat()
-        val rangeReciprocal = 1.0f / (zNear - zFar)
+        val f = 1.0f / tan(fovY * PI_OVER_180 / 2f).toFloat()
+        val rangeReciprocal = 1.0f / (zFar - zNear)
 
+        Arrays.fill(matrix, 0.0f)
         matrix[0] = f / aspect
-        matrix[1] = 0.0f
-        matrix[2] = 0.0f
-        matrix[3] = 0.0f
-
-        matrix[4] = 0.0f
         matrix[5] = f
-        matrix[6] = 0.0f
-        matrix[7] = 0.0f
-
-        matrix[8] = 0.0f
-        matrix[9] = 0.0f
         matrix[10] = (zFar + zNear) * rangeReciprocal
         matrix[11] = -1.0f
-
-        matrix[12] = 0.0f
-        matrix[13] = 0.0f
         matrix[14] = 2.0f * zFar * zNear * rangeReciprocal
-        matrix[15] = 0.0f
-
         return this
+    }
+
+    fun setFromTransform(position: Vector3f, rotation: Quaternion, scale: Vector3f): Matrix4f {
+        return identity().translate(position.x, position.y, position.z).rotate(rotation).scale(scale)
     }
 
     /**
