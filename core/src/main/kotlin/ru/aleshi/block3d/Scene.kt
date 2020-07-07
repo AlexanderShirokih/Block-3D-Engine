@@ -17,6 +17,8 @@ abstract class Scene {
             glClearColor(background.red, background.green, background.blue, background.alpha)
         }
 
+    private val sceneObjects = mutableSetOf<SceneObject>()
+
     /**
      * Should be called once to initialize scene. Super function should be called!
      */
@@ -46,10 +48,29 @@ abstract class Scene {
     /**
      * Called on each frame to update the scene
      */
-    open fun update() = Unit
+    open fun update() {
+        sceneObjects.forEach { it.onUpdate() }
+    }
 
     /**
      * Called when scene should be stopped
      */
     open fun stop() = Unit
+
+    /**
+     * Adds new root object to scene. If object already exists in scene it will be ignored.
+     * @return `true` if the object has been added, `false` if the object is already contained in the scene.
+     */
+    fun addObject(sceneObject: SceneObject) =
+        sceneObjects.add(sceneObject).apply {
+            if (this) sceneObject.onCreate()
+        }
+
+    /**
+     * Removes object from scene
+     */
+    fun removeObject(sceneObject: SceneObject) {
+        if (sceneObjects.remove(sceneObject))
+            sceneObject.onDelete()
+    }
 }
