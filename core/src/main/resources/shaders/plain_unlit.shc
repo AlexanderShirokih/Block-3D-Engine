@@ -1,0 +1,26 @@
+properties:
+  "projectionMatrix":
+    type: "Matrix4"
+    uniformName: "projectionMatrix"
+    defaultValue: null
+  "worldMatrix":
+    type: "Matrix4"
+    uniformName: "worldMatrix"
+    defaultValue: null
+programs:
+  "OpenGL30":
+    vertexShaderCode: |
+      #version 330
+      layout (location=0) in vec3 position;
+      uniform mat4 projectionMatrix;
+      uniform mat4 worldMatrix;
+      void main() {
+        gl_Position = projectionMatrix * worldMatrix * vec4(position, 1.0);
+      }
+
+    fragmentShaderCode: |
+      #version 330
+      out vec4 fragColor;
+      void main() {
+        fragColor = vec4(0.0, 0.5, 0.5, 1.0);
+      }
