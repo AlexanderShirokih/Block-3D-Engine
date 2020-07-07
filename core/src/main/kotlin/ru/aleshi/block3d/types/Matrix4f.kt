@@ -12,7 +12,7 @@ private const val PI_OVER_180 = 0.01745329
 /**
  * Describes Matrix 4x4
  */
-class Matrix4f(private val matrix: FloatArray) {
+data class Matrix4f(private val matrix: FloatArray) {
 
     constructor() : this(FloatArray(16)) {
         identity()

@@ -1,26 +1,33 @@
 package ru.aleshi.block3d
 
 import org.lwjgl.opengl.GL20.*
-import org.lwjgl.system.MemoryStack
 import ru.aleshi.block3d.data.ShaderData
-import ru.aleshi.block3d.internal.ShaderLiveType
 
 /**
  * Describes a shader program
+ * @param data shader source data
  */
-open class Shader {
+class Shader(data: ShaderData) : IDisposable {
+
+    data class ShaderProperty(
+        val name: String,
+        val uniformId: Int,
+        val type: ShaderData.Property.Type,
+        val defaultValue: Any? = null
+    )
 
     private var programId: Int = 0
     private var vertexShaderId: Int = 0
     private var fragmentShaderId: Int = 0
 
-    private var uniforms = emptyMap<String, ShaderLiveType>()
+    internal var properties = emptyList<ShaderProperty>()
+        private set
 
     /**
      * Creates shader program and compiles it.
-     * @exception ShaderException when shader has errors at compiling or linking or validation stage
+     * @throws ShaderException when shader has errors at compiling or linking or validation stage
      */
-    fun create(data: ShaderData) {
+    init {
         // Get target shader program
         val program = data.programs[ShaderData.RenderApi.OpenGL30]
             ?: throw ShaderException(
@@ -53,7 +60,7 @@ open class Shader {
 
 
         // Fetch all properties
-        uniforms = fetchProperties(data.properties)
+        properties = fetchProperties(data.properties)
     }
 
     private fun createAndCompileShader(shaderType: Int, shaderSource: String): Int {
@@ -72,27 +79,11 @@ open class Shader {
         return shaderId
     }
 
-    fun setProperty(name: String, value: Any) {
-        val prop = uniforms[name] ?: throw ShaderException(
-            ShaderException.ErrorType.UnknownProperty, "Property \'$name\' is undefined for this shader"
-        )
-        prop.set(value)
-    }
-
     /**
      * Binds current shader program
      */
     fun bind() {
         glUseProgram(programId)
-        // Bind uniforms
-        MemoryStack.stackPush().use { stack ->
-            val matrixBuffer = stack.mallocFloat(16)
-
-            uniforms.values.forEach { prop ->
-                // Dump the matrix into a float buffer
-                prop.bind(matrixBuffer)
-            }
-        }
     }
 
     /**
@@ -102,22 +93,23 @@ open class Shader {
         glUseProgram(0)
     }
 
-    /**
-     * Disposes current shaders and associated program
-     */
-    fun dispose() {
+    override fun dispose() {
         unbind()
         if (programId != 0) {
             glDeleteProgram(programId)
+            programId = 0
         }
     }
 
     private fun fetchProperties(properties: Map<String, ShaderData.Property>) =
-        properties.mapValues { entry ->
+        properties.map { entry ->
             entry.value.run {
-                ShaderLiveType
-                    .fromType(type, getUniformLocation(uniformName))
-                    .apply { defaultValue?.also { def -> set(def) } }
+                ShaderProperty(
+                    name = entry.key,
+                    uniformId = getUniformLocation(uniformName),
+                    type = type,
+                    defaultValue = defaultValue
+                )
             }
         }
 
@@ -135,8 +127,6 @@ open class Shader {
         return programId != (other as Shader).programId
     }
 
-    override fun hashCode(): Int {
-        return programId
-    }
+    override fun hashCode(): Int = programId
 
 }

@@ -7,7 +7,6 @@ import ru.aleshi.block3d.data.ShaderData
 import ru.aleshi.block3d.types.Matrix4f
 import java.nio.Buffer
 import java.nio.FloatBuffer
-import kotlin.reflect.KType
 
 internal sealed class ShaderLiveType(val uniformId: Int) {
 
@@ -23,14 +22,6 @@ internal sealed class ShaderLiveType(val uniformId: Int) {
 
         val DEFAULT_MATRIX = Matrix4f()
 
-    }
-
-    private fun throwCastErrorMessage(desired: KType, value: Any) {
-        if (!value::class.isInstance(desired))
-            throw ShaderException(
-                ShaderException.ErrorType.PropertyTypeMismatch,
-                "Cannot cast ${value.javaClass} to $desired"
-            )
     }
 
     abstract fun bind(buffer: Buffer)

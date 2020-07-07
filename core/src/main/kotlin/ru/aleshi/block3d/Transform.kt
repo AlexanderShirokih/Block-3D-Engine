@@ -10,6 +10,17 @@ import ru.aleshi.block3d.types.Vector3f
 class Transform {
 
     /**
+     * Sets this transform from another transform
+     */
+    fun set(other: Transform) {
+        this.position = other.position.copy()
+        this.rotation = other.rotation.copy()
+        this.scale = other.scale.copy()
+        this.underlyingMatrix = other.underlyingMatrix.copy()
+        this.changed = other.changed
+    }
+
+    /**
      * Position in world coordinates
      */
     var position: Vector3f = Vector3f()
@@ -38,7 +49,7 @@ class Transform {
 
     private var changed = false
 
-    private val underlyingMatrix = Matrix4f()
+    private var underlyingMatrix = Matrix4f()
 
     /**
      * Returns matrix containing transformations

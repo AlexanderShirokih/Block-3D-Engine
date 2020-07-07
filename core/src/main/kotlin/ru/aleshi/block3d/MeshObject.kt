@@ -1,18 +1,29 @@
 package ru.aleshi.block3d
 
-class MeshObject(val mesh: Mesh, val shader: Shader) : TransformableObject() {
+class MeshObject(private val sharedMesh: Shared<Mesh>, private val sharedShader: Shared<Shader>) :
+    TransformableObject() {
+
+    private val mesh = sharedMesh.getAndInc()
+    private val shader = sharedShader.getAndInc()
+
+    /**
+     * Shader bindings instance for this object
+     */
+    val bindings = ShaderBindings(shader)
 
     override fun onUpdate() {
         shader.bind()
+        bindings.attach()
         mesh.draw()
         shader.unbind()
     }
 
     override fun onDelete() {
-        //TODO: disposing mesh will affect all copies of this mesh. We need to create something reference-counted
-//        mesh.dispose()
+        sharedMesh.decRef()
+        sharedShader.decRef()
     }
 
     override fun clone(): MeshObject =
-        MeshObject(mesh.copy(), shader.copy()).also { new -> new.transform.set(transform) }
+        MeshObject(sharedMesh, sharedShader).also { new -> new.transform.set(transform) }
+
 }

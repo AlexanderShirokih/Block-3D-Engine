@@ -6,11 +6,14 @@ import java.nio.Buffer
 
 /**
  * A class describing 3D mesh objects
+ * @param positions vertices array. Should have 3 float values per vertex
+ * @param indices indices array
  */
-class Mesh {
-    var arrayObjectId: Int = 0
-    var positionVboId: Int = 0
-    var indicesVboId: Int = 0
+class Mesh(positions: FloatArray, indices: IntArray) : IDisposable {
+
+    private var arrayObjectId: Int = 0
+    private var positionVboId: Int = 0
+    private var indicesVboId: Int = 0
 
     /**
      * Vertex count in mesh
@@ -18,7 +21,7 @@ class Mesh {
     var vertexCount: Int = 0
         private set
 
-    fun create(positions: FloatArray, indices: IntArray) {
+    init {
         if (vertexCount != 0)
             dispose()
 
@@ -67,7 +70,7 @@ class Mesh {
         glBindVertexArray(0)
     }
 
-    fun dispose() {
+    override fun dispose() {
         if (vertexCount == 0) return
 
         glDisableVertexAttribArray(0)
