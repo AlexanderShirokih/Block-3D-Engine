@@ -35,12 +35,9 @@ class ShaderBindings(shader: Shader) {
 
     /**
      * Links property named [name] with value [value]
-     * @throws ShaderException if property with name [name] is not found or cannot be linked
+     * @throws ShaderException if property with name [name] cannot be linked(type mismatch)
      */
     fun setProperty(name: String, value: Any) {
-        val prop = uniforms[name] ?: throw ShaderException(
-            ShaderException.ErrorType.UnknownProperty, "Property \'$name\' is undefined for this shader"
-        )
-        prop.set(value)
+        uniforms[name]?.set(value)
     }
 }

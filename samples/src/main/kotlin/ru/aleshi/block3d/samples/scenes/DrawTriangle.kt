@@ -13,17 +13,15 @@ class DrawTriangle : Scene() {
     private val logger = LoggerFactory.getLogger(DrawTriangle::class.java)
 
     private val projection = Matrix4f()
-    private val transform = Transform()
+    private lateinit var cube: MeshObject
 
     override fun create() {
         super.create()
 
         logger.info("Scene created!")
 
-        val shaderData = Loader.loadResource("shaders/plain_unlit.shc") as ShaderData
-
         // Create shader
-        val shader = Shader(shaderData)
+        val shader = Shader(Loader.loadResource("shaders/plain_unlit.shc") as ShaderData)
 
         // Load mesh
         val mesh = Mesh(
@@ -61,16 +59,11 @@ class DrawTriangle : Scene() {
             )
         )
 
-        val meshObject = MeshObject(Shared(mesh), Shared(shader))
+        cube = MeshObject(Shared(mesh), Shared(shader))
+        cube.bindings.setProperty("projectionMatrix", projection)
+        cube.transform.position = Vector3f(0f, 0f, -2f)
 
-        meshObject.bindings.apply {
-            setProperty("projectionMatrix", projection)
-            setProperty("worldMatrix", transform)
-        }
-
-        addObject(meshObject)
-
-        transform.position = Vector3f(0f, 0f, -2f)
+        addObject(cube)
     }
 
     override fun resize(width: Int, height: Int) {
@@ -80,6 +73,6 @@ class DrawTriangle : Scene() {
 
     override fun update() {
         super.update()
-        transform.rotation *= Quaternion.fromAxisAngle(Vector3f(0f, 1f, 1f), 1f)
+        cube.transform.rotation *= Quaternion.fromAxisAngle(Vector3f(0f, 1f, 1f), 1f)
     }
 }

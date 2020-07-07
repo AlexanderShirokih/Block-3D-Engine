@@ -11,6 +11,11 @@ class MeshObject(private val sharedMesh: Shared<Mesh>, private val sharedShader:
      */
     val bindings = ShaderBindings(shader)
 
+    override fun onCreate() {
+        // By default, link transform
+        bindings.setProperty("modelMatrix", transform)
+    }
+
     override fun onUpdate() {
         shader.bind()
         bindings.attach()
