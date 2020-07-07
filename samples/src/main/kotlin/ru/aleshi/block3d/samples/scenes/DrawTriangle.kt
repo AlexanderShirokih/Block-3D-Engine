@@ -1,6 +1,5 @@
 package ru.aleshi.block3d.samples.scenes
 
-import org.slf4j.LoggerFactory
 import ru.aleshi.block3d.*
 import ru.aleshi.block3d.data.ShaderData
 import ru.aleshi.block3d.resources.Loader
@@ -10,15 +9,11 @@ import ru.aleshi.block3d.types.Vector3f
 
 class DrawTriangle : Scene() {
 
-    private val logger = LoggerFactory.getLogger(DrawTriangle::class.java)
-
     private val projection = Matrix4f()
     private lateinit var cube: MeshObject
 
     override fun create() {
         super.create()
-
-        logger.info("Scene created!")
 
         // Create shader
         val shader = Shader(Loader.loadResource("shaders/plain_unlit.shc") as ShaderData)

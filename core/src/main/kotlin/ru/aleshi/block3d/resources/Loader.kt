@@ -31,7 +31,11 @@ object Loader {
     /**
      * Loads resource from resources folder
      */
-    fun loadResource(resourceName: String): Any = load(File(ClassLoader.getSystemResource(resourceName).file))
+    fun loadResource(resourceName: String): Any {
+        val resource = ClassLoader.getSystemResource(resourceName)
+        val ext = resource.file.substringAfterLast('.', "")
+        return loadFromInputStream(ext, resource.openStream())
+    }
 
     /**
      * Loads resource using parser depending of file extension.
