@@ -1,5 +1,6 @@
 package ru.aleshi.block3d
 
+import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.system.MemoryUtil
 import java.nio.Buffer
@@ -9,11 +10,12 @@ import java.nio.Buffer
  * @param positions vertices array. Should have 3 float values per vertex
  * @param indices indices array
  */
-class Mesh(positions: FloatArray, indices: IntArray) : IDisposable {
+class Mesh(positions: FloatArray, indices: IntArray, texCoords: FloatArray? = null) : IDisposable {
 
     private var arrayObjectId: Int = 0
     private var positionVboId: Int = 0
     private var indicesVboId: Int = 0
+    private var texCoordsVboId: Int = 0
 
     /**
      * Vertex count in mesh
@@ -55,6 +57,16 @@ class Mesh(positions: FloatArray, indices: IntArray) : IDisposable {
             indicesBuffer.apply { MemoryUtil.memFree(this) }
         }
 
+        texCoords?.let { texCoordsArray ->
+            val texCoordsBuffer = MemoryUtil.memAllocFloat(texCoordsArray.size)
+            (texCoordsBuffer.put(texCoordsArray) as Buffer).flip()
+            texCoordsVboId = glGenBuffers()
+            glBindBuffer(GL_ARRAY_BUFFER, texCoordsVboId)
+            glBufferData(GL_ARRAY_BUFFER, texCoordsBuffer, GL_STATIC_DRAW)
+            glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0)
+            MemoryUtil.memFree(texCoordsBuffer)
+        }
+
         glBindVertexArray(0)
     }
 
@@ -62,11 +74,13 @@ class Mesh(positions: FloatArray, indices: IntArray) : IDisposable {
         // Draw the mesh
         glBindVertexArray(arrayObjectId)
         glEnableVertexAttribArray(0)
+        glEnableVertexAttribArray(1)
 
         glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0)
 
         // Restore state
         glDisableVertexAttribArray(0)
+        GL20.glDisableVertexAttribArray(1)
         glBindVertexArray(0)
     }
 

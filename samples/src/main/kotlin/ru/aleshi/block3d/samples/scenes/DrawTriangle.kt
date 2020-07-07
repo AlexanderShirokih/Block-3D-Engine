@@ -1,7 +1,11 @@
 package ru.aleshi.block3d.samples.scenes
 
+import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL13
+import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import ru.aleshi.block3d.*
 import ru.aleshi.block3d.data.ShaderData
+import ru.aleshi.block3d.internal.ImageData
 import ru.aleshi.block3d.resources.Loader
 import ru.aleshi.block3d.types.Matrix4f
 import ru.aleshi.block3d.types.Quaternion
@@ -12,11 +16,32 @@ class DrawTriangle : Scene() {
     private val projection = Matrix4f()
     private lateinit var cube: MeshObject
 
+    var texId: Int = 0
+
     override fun create() {
         super.create()
 
         // Create shader
         val shader = Shader(Loader.loadResource("shaders/plain_unlit.shc") as ShaderData)
+        val texture = Loader.loadResource("textures/box.png") as ImageData
+        val glFormat = if (texture.hasAlpha) GL_RGBA else GL_RGB
+        texId = glGenTextures()
+        glBindTexture(GL_TEXTURE_2D, texId)
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+
+        glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            glFormat,
+            texture.width,
+            texture.height,
+            0,
+            glFormat,
+            GL_UNSIGNED_BYTE,
+            texture.data
+        )
 
         // Load mesh
         val mesh = Mesh(
@@ -51,11 +76,22 @@ class DrawTriangle : Scene() {
                 2, 1, 6, 2, 6, 7,
                 // Back face
                 7, 6, 4, 7, 4, 5
+            ),
+            floatArrayOf(
+                0.0f, 0.0f,
+                0.0f, 1.0f,
+                1.0f, 1.0f,
+                1.0f, 0.0f,
+                0.0f, 0.0f,
+                0.0f, 1.0f,
+                1.0f, 1.0f,
+                1.0f, 0.0f
             )
         )
 
         cube = MeshObject(Shared(mesh), Shared(shader))
         cube.bindings.setProperty("projectionMatrix", projection)
+        cube.bindings.setProperty("mainTexture", 0)
         cube.transform.position = Vector3f(0f, 0f, -2f)
 
         addObject(cube)
@@ -67,6 +103,8 @@ class DrawTriangle : Scene() {
     }
 
     override fun update() {
+        GL13.glActiveTexture(GL_TEXTURE0)
+        glBindTexture(GL_TEXTURE_2D, texId)
         super.update()
         cube.transform.rotation *= Quaternion.fromAxisAngle(Vector3f(0f, 1f, 1f), 1f)
     }

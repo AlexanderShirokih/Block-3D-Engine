@@ -15,7 +15,7 @@ internal sealed class ShaderLiveType(val uniformId: Int) {
             when (type) {
                 ShaderData.Property.Type.Float -> TODO()
                 ShaderData.Property.Type.Color -> TODO()
-                ShaderData.Property.Type.Texture2D -> TODO()
+                ShaderData.Property.Type.Texture2D -> TextureLiveType(uniformLocation)
                 ShaderData.Property.Type.Vector4 -> TODO()
                 ShaderData.Property.Type.Matrix4 -> MatrixLiveType(uniformLocation)
             }
@@ -48,6 +48,23 @@ internal sealed class ShaderLiveType(val uniformId: Int) {
                 )
         }
 
+    }
+
+    class TextureLiveType(uniformId: Int) : ShaderLiveType(uniformId) {
+        private var texId: Int = 0
+
+        override fun bind(buffer: Buffer) {
+            GL20.glUniform1i(uniformId, texId)
+        }
+
+        override fun set(value: Any) {
+            if (value !is Int)
+                throw ShaderException(
+                    ShaderException.ErrorType.PropertyTypeMismatch,
+                    "Cannot cast ${value.javaClass} to Int"
+                )
+            texId = value
+        }
     }
 
 }
