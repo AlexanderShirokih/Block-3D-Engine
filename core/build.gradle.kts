@@ -2,6 +2,7 @@ import org.gradle.internal.os.OperatingSystem
 
 plugins {
     kotlin("jvm")
+    kotlin("plugin.serialization") version "1.3.70"
 }
 
 val lwjglVersion = "3.2.3"
@@ -28,7 +29,11 @@ dependencies {
     implementation("org.slf4j:slf4j-api:1.7.30")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
+    implementation("com.charleskorn.kaml:kaml:0.17.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
+
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
+
 }
 
 tasks.test {
