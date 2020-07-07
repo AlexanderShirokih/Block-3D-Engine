@@ -9,7 +9,8 @@ import java.lang.RuntimeException
 object Loader {
 
     private val installedParsers = mutableMapOf<String, Class<out IParser>>(
-        "shc" to ShaderParser::class.java
+        "shc" to ShaderParser::class.java,
+        "png" to PNGImageParser::class.java
     )
 
     private val installedComposers = mutableMapOf<String, Class<out IComposer>>(
