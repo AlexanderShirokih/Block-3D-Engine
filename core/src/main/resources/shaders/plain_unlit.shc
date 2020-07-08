@@ -2,11 +2,9 @@ properties:
   "projectionMatrix":
     type: "Matrix4"
     uniformName: "projectionMatrix"
-    defaultValue: null
   "modelMatrix":
     type: "Matrix4"
     uniformName: "modelMatrix"
-    defaultValue: null
 programs:
   "OpenGL30":
     vertexShaderCode: |

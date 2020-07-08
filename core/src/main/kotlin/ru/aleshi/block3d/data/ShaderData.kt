@@ -1,6 +1,5 @@
 package ru.aleshi.block3d.data
 
-import kotlinx.serialization.ContextualSerialization
 import kotlinx.serialization.Serializable
 
 /**
@@ -18,13 +17,11 @@ data class ShaderData(
      * A class describing single shader property
      * @param type Property type. Should be suitable with shader type
      * @param uniformName uniform name in shader code
-     * @param defaultValue property default value
      */
     @Serializable
     data class Property(
         val type: Type,
-        val uniformName: String,
-        val defaultValue: @ContextualSerialization Any? = null
+        val uniformName: String
     ) {
         /**
          * Enum describing property types

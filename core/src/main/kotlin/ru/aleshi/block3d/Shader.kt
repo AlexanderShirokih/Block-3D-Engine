@@ -12,8 +12,7 @@ class Shader(data: ShaderData) : IDisposable {
     data class ShaderProperty(
         val name: String,
         val uniformId: Int,
-        val type: ShaderData.Property.Type,
-        val defaultValue: Any? = null
+        val type: ShaderData.Property.Type
     )
 
     private var programId: Int = 0
@@ -107,8 +106,7 @@ class Shader(data: ShaderData) : IDisposable {
                 ShaderProperty(
                     name = entry.key,
                     uniformId = getUniformLocation(uniformName),
-                    type = type,
-                    defaultValue = defaultValue
+                    type = type
                 )
             }
         }

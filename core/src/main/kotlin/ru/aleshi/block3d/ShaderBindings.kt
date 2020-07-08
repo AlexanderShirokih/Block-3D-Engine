@@ -11,11 +11,7 @@ class ShaderBindings(shader: Shader) {
     val hash = shader.hashCode()
 
     private val uniforms = shader.properties
-        .map {
-            it.name to ShaderLiveType.fromType(it.type, it.uniformId).apply {
-                it.defaultValue?.let { def -> set(def) }
-            }
-        }
+        .map { it.name to ShaderLiveType.fromType(it.type, it.uniformId) }
         .toMap()
 
     /**
