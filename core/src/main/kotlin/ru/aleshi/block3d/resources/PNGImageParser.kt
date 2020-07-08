@@ -2,7 +2,7 @@ package ru.aleshi.block3d.resources
 
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.system.MemoryUtil
-import ru.aleshi.block3d.internal.ImageData
+import ru.aleshi.block3d.data.Image2DData
 import java.io.InputStream
 import java.nio.Buffer
 import java.nio.ByteBuffer
@@ -10,7 +10,7 @@ import java.nio.ByteBuffer
 /**
  * A class used to load and save PNG images.
  * Loads Image as ImageData
- * @see ImageData
+ * @see Image2DData
  */
 class PNGImageParser : IParser {
 
@@ -34,6 +34,11 @@ class PNGImageParser : IParser {
             throw e
         }
 
-        return ImageData((buffer as Buffer).flip() as ByteBuffer, width, height, hasAlpha)
+        return Image2DData(
+            (buffer as Buffer).flip() as ByteBuffer,
+            width,
+            height,
+            hasAlpha
+        )
     }
 }

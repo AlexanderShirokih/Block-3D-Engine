@@ -1,7 +1,11 @@
 package ru.aleshi.block3d.internal
 
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL20
 import ru.aleshi.block3d.ShaderException
+import ru.aleshi.block3d.Texture
+import ru.aleshi.block3d.Texture2D
 import ru.aleshi.block3d.Transform
 import ru.aleshi.block3d.data.ShaderData
 import ru.aleshi.block3d.types.Matrix4f
@@ -51,19 +55,25 @@ internal sealed class ShaderLiveType(val uniformId: Int) {
     }
 
     class TextureLiveType(uniformId: Int) : ShaderLiveType(uniformId) {
-        private var texId: Int = 0
+
+        private var texture: Texture = Texture2D.WHITE
+
+        var slot: Int = 0
+            internal set
 
         override fun bind(buffer: Buffer) {
-            GL20.glUniform1i(uniformId, texId)
+            GL13.glActiveTexture(GL13.GL_TEXTURE0 + slot)
+            GL11.glBindTexture(texture.glType, texture.texId)
+            GL20.glUniform1i(uniformId, slot)
         }
 
         override fun set(value: Any) {
-            if (value !is Int)
+            if (value !is Texture)
                 throw ShaderException(
                     ShaderException.ErrorType.PropertyTypeMismatch,
-                    "Cannot cast ${value.javaClass} to Int"
+                    "Cannot cast ${value.javaClass} to Texture"
                 )
-            texId = value
+            texture = value
         }
     }
 

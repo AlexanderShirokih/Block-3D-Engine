@@ -10,7 +10,7 @@ import ru.aleshi.block3d.internal.GLFWWindow
 import ru.aleshi.block3d.internal.WindowConfig
 
 /**
- * Entry point to start the engine. Creates GLFW window and manages it's state.
+ * Entry point to start the engine. Creates GLFW window and manages its state.
  */
 object Launcher {
     private const val CLEAR_MASK = GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT

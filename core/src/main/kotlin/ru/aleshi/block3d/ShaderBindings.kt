@@ -2,6 +2,7 @@ package ru.aleshi.block3d
 
 import org.lwjgl.system.MemoryStack
 import ru.aleshi.block3d.internal.ShaderLiveType
+import ru.aleshi.block3d.internal.ShaderLiveType.TextureLiveType
 
 /**
  * Describes automatically bound uniforms for shader program
@@ -12,7 +13,13 @@ class ShaderBindings(shader: Shader) {
 
     private val uniforms = shader.properties
         .map { it.name to ShaderLiveType.fromType(it.type, it.uniformId) }
-        .toMap()
+        .toMap().apply {
+            // Setup texture unit slot indexes
+            values
+                .asSequence()
+                .filter { it is TextureLiveType }
+                .forEachIndexed { index, shaderLiveType -> (shaderLiveType as TextureLiveType).slot = index }
+        }
 
     /**
      * Binds uniforms to shader

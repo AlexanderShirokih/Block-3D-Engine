@@ -5,6 +5,10 @@ properties:
   "modelMatrix":
     type: "Matrix4"
     uniformName: "modelMatrix"
+  "mainTexture":
+    type: "Texture2D"
+    uniformName: "mainTexture"
+
 programs:
   "OpenGL30":
     vertexShaderCode: |

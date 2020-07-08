@@ -20,6 +20,20 @@ abstract class Scene {
     private val sceneObjects = mutableSetOf<SceneObject>()
 
     /**
+     * Switches blending state. Enabled by default
+     */
+    var blending: Boolean = false
+        set(value) {
+            if (value != field) {
+                if (value)
+                    glEnable(GL_BLEND)
+                else
+                    glDisable(GL_BLEND)
+            }
+            field = value
+        }
+
+    /**
      * Should be called once to initialize scene. Super function should be called!
      */
     open fun create() {
@@ -32,9 +46,13 @@ abstract class Scene {
         glDepthMask(true)
         glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
         // Apply default values by calling setters
         background = background
+
+        // Enable blending by default
+        blending = true
     }
 
     /**
