@@ -1,5 +1,8 @@
 package ru.aleshi.block3d
 
+/**
+ * An object that has a mesh, that can be rendered in a scene using a shader
+ */
 class MeshObject(private val sharedMesh: Shared<Mesh>, private val sharedShader: Shared<Shader>) :
     TransformableObject() {
 
@@ -12,8 +15,9 @@ class MeshObject(private val sharedMesh: Shared<Mesh>, private val sharedShader:
     val bindings = ShaderBindings(shader)
 
     override fun onCreate() {
-        // By default, link transform
-        bindings.setProperty("modelMatrix", transform)
+        // Link default properties
+        bindings.setProperty("viewModelMatrix", { Camera.active.transform.viewMatrix() * transform.matrix() })
+        bindings.setProperty("projectionMatrix", { Camera.active.projectionMatrix })
     }
 
     override fun onUpdate() {

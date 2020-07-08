@@ -4,13 +4,11 @@ import ru.aleshi.block3d.*
 import ru.aleshi.block3d.data.Image2DData
 import ru.aleshi.block3d.data.ShaderData
 import ru.aleshi.block3d.resources.Loader
-import ru.aleshi.block3d.types.Matrix4f
 import ru.aleshi.block3d.types.Quaternion
 import ru.aleshi.block3d.types.Vector3f
 
 class DrawTriangle : Scene() {
 
-    private val projection = Matrix4f()
     private lateinit var cube: MeshObject
 
     override fun create() {
@@ -66,16 +64,11 @@ class DrawTriangle : Scene() {
         )
 
         cube = MeshObject(Shared(mesh), Shared(shader))
-        cube.bindings.setProperty("projectionMatrix", projection)
         cube.bindings.setProperty("mainTexture", main)
-        cube.transform.position = Vector3f(0f, 0f, -2f)
+
+        Camera.active.transform.position = Vector3f(0f, 0f, 2f)
 
         addObject(cube)
-    }
-
-    override fun resize(width: Int, height: Int) {
-        super.resize(width, height)
-        projection.perspective(60f, width.toFloat() / height, 0.01f, 1000f)
     }
 
     override fun update() {

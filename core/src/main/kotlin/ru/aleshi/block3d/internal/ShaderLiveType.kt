@@ -42,9 +42,11 @@ internal sealed class ShaderLiveType(val uniformId: Int) {
             GL20.glUniformMatrix4fv(uniformId, false, matrixProvider().store(buffer as FloatBuffer))
         }
 
+        @Suppress("UNCHECKED_CAST")
         override fun set(value: Any) = when (value) {
             is Matrix4f -> matrixProvider = { value }
             is Transform -> matrixProvider = value::matrix
+            is Function<*> -> matrixProvider = value as () -> Matrix4f
             else ->
                 throw ShaderException(
                     ShaderException.ErrorType.PropertyTypeMismatch,
@@ -54,6 +56,9 @@ internal sealed class ShaderLiveType(val uniformId: Int) {
 
     }
 
+    /**
+     * Applies Texture to sampler uniform
+     */
     class TextureLiveType(uniformId: Int) : ShaderLiveType(uniformId) {
 
         private var texture: Texture = Texture2D.WHITE

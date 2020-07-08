@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11.*
 import ru.aleshi.block3d.types.Color4f
 
 /**
- * Scene is an entity that holds all objects, such as cameras, meshes, gui elements and other.
+ * Scene is an entity that holds all objects, such as cameras, meshes, GUI elements, and others.
  */
 abstract class Scene {
 
@@ -53,6 +53,9 @@ abstract class Scene {
 
         // Enable blending by default
         blending = true
+
+        // Add default camera to the scene
+        addObject(Camera.active)
     }
 
     /**
@@ -61,6 +64,7 @@ abstract class Scene {
     open fun resize(width: Int, height: Int) {
         // Update viewport data
         glViewport(0, 0, width, height)
+        Camera.active.onResize(width.toFloat(), height.toFloat())
     }
 
     /**
@@ -76,7 +80,7 @@ abstract class Scene {
     open fun stop() = Unit
 
     /**
-     * Adds new root object to scene. If object already exists in scene it will be ignored.
+     * Adds a new root object to the scene. If an object already exists in the scene it will be ignored.
      * @return `true` if the object has been added, `false` if the object is already contained in the scene.
      */
     fun addObject(sceneObject: SceneObject) =

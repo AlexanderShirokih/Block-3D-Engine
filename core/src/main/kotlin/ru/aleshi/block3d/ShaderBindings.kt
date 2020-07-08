@@ -37,7 +37,7 @@ class ShaderBindings(shader: Shader) {
     }
 
     /**
-     * Links property named [name] with value [value]
+     * Links property named [name] with value [value]. If a property with [name] does not exist, nothing will be done.
      * @throws ShaderException if property with name [name] cannot be linked(type mismatch)
      */
     fun setProperty(name: String, value: Any) {

@@ -2,9 +2,9 @@ properties:
   "projectionMatrix":
     type: "Matrix4"
     uniformName: "projectionMatrix"
-  "modelMatrix":
+  "viewModelMatrix":
     type: "Matrix4"
-    uniformName: "modelMatrix"
+    uniformName: "viewModelMatrix"
   "mainTexture":
     type: "Texture2D"
     uniformName: "mainTexture"
@@ -19,10 +19,10 @@ programs:
       out vec2 outTexCoord;
 
       uniform mat4 projectionMatrix;
-      uniform mat4 modelMatrix;
+      uniform mat4 viewModelMatrix;
 
       void main() {
-        gl_Position = projectionMatrix * modelMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * viewModelMatrix * vec4(position, 1.0);
         outTexCoord = texCoord;
       }
 
