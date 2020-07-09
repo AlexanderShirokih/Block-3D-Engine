@@ -1,21 +1,23 @@
 package ru.aleshi.block3d
 
-import org.lwjgl.opengl.GL20
-import org.lwjgl.opengl.GL30.*
-import org.lwjgl.system.MemoryUtil
+import org.lwjgl.opengl.GL30C.*
 import java.nio.Buffer
+import java.nio.FloatBuffer
+import java.nio.IntBuffer
+import java.nio.ShortBuffer
+
 
 /**
  * A class describing 3D mesh objects
- * @param positions vertices array. Should have 3 float values per vertex
- * @param indices indices array
  */
-class Mesh(positions: FloatArray, indices: IntArray, texCoords: FloatArray? = null) : IDisposable {
-
-    private var arrayObjectId: Int = 0
-    private var positionVboId: Int = 0
-    private var indicesVboId: Int = 0
-    private var texCoordsVboId: Int = 0
+class Mesh private constructor(
+    private var arrayObjectId: Int,
+    private val positionVboId: Int,
+    private val normalsVboId: Int,
+    private val texCoordsVboId: Int,
+    private val indicesVboId: Int,
+    private val glIndexType: Int
+) : IDisposable {
 
     /**
      * Vertex count in mesh
@@ -23,81 +25,135 @@ class Mesh(positions: FloatArray, indices: IntArray, texCoords: FloatArray? = nu
     var vertexCount: Int = 0
         private set
 
-    init {
-        if (vertexCount != 0)
-            dispose()
+    class Builder {
+        private val arrayObjectId = glGenVertexArrays()
+        private var positionVboId: Int = BUFFER_NOT_SET
+        private var normalsVboId: Int = BUFFER_NOT_SET
+        private var texCoordsVboId: Int = BUFFER_NOT_SET
+        private var indicesVboId: Int = BUFFER_NOT_SET
+        private var glIndexType: Int = 0
+        private var vertexCount: Int = 0
+        private var indicesCount: Int = 0
 
-        vertexCount = indices.size
-
-        arrayObjectId = glGenVertexArrays()
-        glBindVertexArray(arrayObjectId)
-
-        val verticesBuffer = MemoryUtil.memAllocFloat(positions.size)
-        try {
-            (verticesBuffer.put(positions) as Buffer).flip()
-
-            positionVboId = glGenBuffers().apply {
-                glBindBuffer(GL_ARRAY_BUFFER, this)
-                glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW)
-                glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0)
-                glBindBuffer(GL_ARRAY_BUFFER, 0)
-            }
-        } finally {
-            verticesBuffer.apply { MemoryUtil.memFree(this) }
+        init {
+            glBindVertexArray(arrayObjectId)
         }
 
-        val indicesBuffer = MemoryUtil.memAllocInt(indices.size)
-        try {
-            (indicesBuffer.put(indices) as Buffer).flip()
-            indicesVboId = glGenBuffers().apply {
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this)
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW)
-            }
-        } finally {
-            indicesBuffer.apply { MemoryUtil.memFree(this) }
+        fun vertices(vertexBuffer: FloatBuffer, stride: Int = 0) {
+            if (positionVboId != BUFFER_NOT_SET) throw RuntimeException("Vertices was already set")
+
+            positionVboId = glGenBuffers()
+            glBindBuffer(GL_ARRAY_BUFFER, positionVboId)
+            glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, 0)
+            glBindBuffer(GL_ARRAY_BUFFER, 0)
+            vertexCount = vertexBuffer.capacity() / 3
         }
 
-        texCoords?.let { texCoordsArray ->
-            val texCoordsBuffer = MemoryUtil.memAllocFloat(texCoordsArray.size)
-            (texCoordsBuffer.put(texCoordsArray) as Buffer).flip()
+        fun normals(normalsBuffer: FloatBuffer, stride: Int = 0) {
+            if (normalsVboId != BUFFER_NOT_SET) throw RuntimeException("Normals was already set")
+
+            normalsVboId = glGenBuffers()
+            glBindBuffer(GL_ARRAY_BUFFER, normalsVboId)
+            glBufferData(GL_ARRAY_BUFFER, normalsBuffer, GL_STATIC_DRAW)
+            glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, 0)
+            glBindBuffer(GL_ARRAY_BUFFER, 0)
+        }
+
+        fun textureCoordinates(texCoordsBuffer: FloatBuffer, stride: Int = 0) {
+            if (texCoordsVboId != BUFFER_NOT_SET) throw RuntimeException("Texture coordinates was already set")
+
             texCoordsVboId = glGenBuffers()
             glBindBuffer(GL_ARRAY_BUFFER, texCoordsVboId)
             glBufferData(GL_ARRAY_BUFFER, texCoordsBuffer, GL_STATIC_DRAW)
-            glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0)
-            MemoryUtil.memFree(texCoordsBuffer)
+            glVertexAttribPointer(2, 2, GL_FLOAT, false, stride, 0)
         }
 
-        glBindVertexArray(0)
+        private fun createIndicesBuffer(buffer: Buffer) {
+            if (indicesVboId != BUFFER_NOT_SET) throw RuntimeException("Indices was already set")
+
+            indicesVboId = glGenBuffers()
+            indicesCount = buffer.capacity()
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesVboId)
+        }
+
+        fun indices(indicesBuffer: IntBuffer) {
+            createIndicesBuffer(indicesBuffer)
+
+            glIndexType = GL_UNSIGNED_INT
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW)
+        }
+
+        fun indices(indicesBuffer: ShortBuffer) {
+            createIndicesBuffer(indicesBuffer)
+
+            glIndexType = GL_UNSIGNED_SHORT
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW)
+        }
+
+        fun build(): Mesh {
+            glBindVertexArray(0)
+            return Mesh(
+                arrayObjectId = arrayObjectId,
+                positionVboId = positionVboId,
+                normalsVboId = normalsVboId,
+                texCoordsVboId = texCoordsVboId,
+                indicesVboId = indicesVboId,
+                glIndexType = glIndexType
+            ).also { mesh ->
+                mesh.vertexCount = if (indicesCount == 0) vertexCount else indicesCount
+            }
+        }
+    }
+
+    companion object {
+        private const val BUFFER_NOT_SET = -1
+
+        fun builder(): Builder = Builder()
     }
 
     fun draw() {
-        // Draw the mesh
         glBindVertexArray(arrayObjectId)
-        glEnableVertexAttribArray(0)
-        glEnableVertexAttribArray(1)
 
-        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0)
+        //TODO: Should be enabled by default
+        glEnableVertexAttribArray(0)
+
+        if (normalsVboId != BUFFER_NOT_SET)
+            glEnableVertexAttribArray(1)
+        if (texCoordsVboId != BUFFER_NOT_SET)
+            glEnableVertexAttribArray(2)
+
+        if (indicesVboId != BUFFER_NOT_SET)
+            glDrawElements(GL_TRIANGLES, vertexCount, glIndexType, 0)
+        else
+            glDrawArrays(GL_TRIANGLES, 0, vertexCount)
 
         // Restore state
         glDisableVertexAttribArray(0)
-        GL20.glDisableVertexAttribArray(1)
+
+        if (normalsVboId != BUFFER_NOT_SET)
+            glDisableVertexAttribArray(1)
+        if (texCoordsVboId != BUFFER_NOT_SET)
+            glDisableVertexAttribArray(2)
+
         glBindVertexArray(0)
     }
 
     override fun dispose() {
-        if (vertexCount == 0) return
-
-        glDisableVertexAttribArray(0)
+        if (arrayObjectId == 0) return
 
         // Delete the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, 0)
         glDeleteBuffers(positionVboId)
+        glDeleteBuffers(normalsVboId)
+        glDeleteBuffers(texCoordsVboId)
         glDeleteBuffers(indicesVboId)
 
         // Delete the VAO
         glBindVertexArray(0)
         glDeleteVertexArrays(arrayObjectId)
 
-        vertexCount = 0
+        arrayObjectId = 0
     }
 }

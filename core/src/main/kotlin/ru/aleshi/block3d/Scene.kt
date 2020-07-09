@@ -28,7 +28,7 @@ abstract class Scene {
     private val sceneObjects = mutableSetOf<SceneObject>()
 
     /**
-     * Switches blending state. Enabled by default
+     * Switches blending state. Disables by default
      */
     var blending: Boolean = false
         set(value) {
@@ -42,12 +42,25 @@ abstract class Scene {
         }
 
     /**
+     * Switches back face culling. Enabled by default.
+     */
+    var cullFace: Boolean = false
+        set(value) {
+            if (value != field) {
+                if (value)
+                    glEnable(GL_CULL_FACE)
+                else
+                    glDisable(GL_CULL_FACE)
+                field = value
+            }
+        }
+
+    /**
      * Should be called once to initialize scene. Super function should be called!
      */
     open fun create() {
         // Apply default settings
         glEnable(GL_DEPTH_TEST)
-        glEnable(GL_NORMALIZE)
         glClearDepth(1.0)
         glDepthFunc(GL_LESS)
         glDepthRange(0.0, 1.0)
@@ -59,8 +72,8 @@ abstract class Scene {
         // Apply default values by calling setters
         background = background
 
-        // Enable blending by default
-        blending = true
+        // Enable culling back faces
+        cullFace = true
 
         // Add default camera to the scene
         addObject(Camera.active)

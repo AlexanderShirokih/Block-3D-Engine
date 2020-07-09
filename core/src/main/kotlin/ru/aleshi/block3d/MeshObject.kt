@@ -4,7 +4,7 @@ package ru.aleshi.block3d
  * An object that has a mesh, that can be rendered in a scene using a shader
  * @constructor Creates a new mesh object using [sharedMesh] and [material] that will be copied.
  */
-class MeshObject(private val sharedMesh: Shared<Mesh>, mat: Material) :
+open class MeshObject(private val sharedMesh: Shared<Mesh>, mat: Material) :
     TransformableObject() {
 
     private val mesh = sharedMesh.getAndInc()

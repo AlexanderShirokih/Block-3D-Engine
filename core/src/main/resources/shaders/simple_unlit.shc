@@ -8,13 +8,16 @@ properties:
   "mainTexture":
     type: "Texture2D"
     uniformName: "mainTexture"
+  "color":
+    type: "Color"
+    uniformName: "color"
 
 programs:
   "OpenGL30":
     vertexShaderCode: |
       #version 330
       layout (location=0) in vec3 position;
-      layout (location=1) in vec2 texCoord;
+      layout (location=2) in vec2 texCoord;
 
       out vec2 outTexCoord;
 
@@ -32,7 +35,8 @@ programs:
       out vec4 fragColor;
 
       uniform sampler2D mainTexture;
+      uniform vec4 color;
 
       void main() {
-        fragColor = texture(mainTexture, outTexCoord);
+        fragColor = texture(mainTexture, outTexCoord) * color;
       }
