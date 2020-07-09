@@ -204,14 +204,14 @@ data class Matrix4f(private val matrix: FloatArray) {
      */
     fun perspective(fovY: Float, aspect: Float, zNear: Float, zFar: Float): Matrix4f {
         val f = 1.0f / tan(fovY * PI_OVER_180 / 2f).toFloat()
-        val rangeReciprocal = 1.0f / (zFar - zNear)
+        val zm = -1.0f / (zFar - zNear)
 
         Arrays.fill(matrix, 0.0f)
         matrix[0] = f / aspect
         matrix[5] = f
-        matrix[10] = (zFar + zNear) * rangeReciprocal
+        matrix[10] = (zFar + zNear) * zm
         matrix[11] = -1.0f
-        matrix[14] = 2.0f * zFar * zNear * rangeReciprocal
+        matrix[14] = 2.0f * zFar * zNear * zm
         return this
     }
 
