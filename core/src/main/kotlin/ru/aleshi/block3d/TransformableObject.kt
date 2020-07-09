@@ -13,38 +13,57 @@ open class TransformableObject : SceneObject(), Iterable<TransformableObject> {
     private val children = mutableListOf<TransformableObject>()
 
     /**
-     * Gets parent object, if exists. For root objects will be `null`.
-     * Sets the new parent object of this child.
-     * If this child already have parent then previous parent will be replaced. `null` to detach parent
+     * Gets parent object, if it exists. For root objects will be `null`.
+     * Sets the new parent object of this child. If this child already has a parent then
+     * the previous parent will be replaced. `null` to detach parent.
+     * Note that if the parent object was removed, object adds to root of the scene.
      */
     var parent: TransformableObject? = null
         set(newParent) {
-            // Remove previous parent
-            parent?.children?.remove(this)
+            if (newParent == field)
+                return
 
+            // Remove previous parent
+            field?.children?.remove(this) ?: Scene.current.removeObject(this)
+
+            transform.parent = newParent?.transform
             newParent?.children?.add(this)
             field = newParent
-        }
 
+            if (newParent == null)
+                Scene.current.addObject(this)
+            else
+                create()
+        }
 
     override fun update() {
-        //TODO: Handle matrices at this level
-        // update current matrix
-        onUpdate()
+        super.update()
 
         for (child in this) {
-            // update child matrix
-            child.onUpdate()
+            child.update()
         }
+    }
+
+    override fun postUpdate() {
+        super.postUpdate()
+        transform.hasChanges = false
+
+        for (child in this) {
+            child.postUpdate()
+        }
+    }
+
+    override fun destroy() {
+        forEach { child -> child.destroy() }
     }
 
     override fun onCreate() = Unit
 
     override fun onUpdate() = Unit
 
-    override fun onDelete() {
-        forEach { child -> child.onDelete() }
-    }
+    override fun onPostUpdate() = Unit
+
+    override fun onDestroy() = Unit
 
     /**
      * Creates deep copy of this object

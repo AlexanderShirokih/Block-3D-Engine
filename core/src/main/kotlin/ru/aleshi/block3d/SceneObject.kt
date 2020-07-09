@@ -5,8 +5,30 @@ package ru.aleshi.block3d
  */
 abstract class SceneObject {
 
+    private var created: Boolean = false
+
     internal open fun update() {
+        if (!created) return
         onUpdate()
+    }
+
+    internal open fun postUpdate() {
+        if (!created) return
+        onPostUpdate()
+    }
+
+    internal open fun create() {
+        if (!created) {
+            onCreate()
+            created = true
+        }
+    }
+
+    internal open fun destroy() {
+        if (created) {
+            onDestroy()
+            created = false
+        }
     }
 
     /**
@@ -20,8 +42,13 @@ abstract class SceneObject {
     abstract fun onUpdate()
 
     /**
+     * Called every time after [onUpdate] state was completed for all objects
+     */
+    abstract fun onPostUpdate()
+
+    /**
      * Called before object should be deleted
      */
-    abstract fun onDelete()
+    abstract fun onDestroy()
 
 }

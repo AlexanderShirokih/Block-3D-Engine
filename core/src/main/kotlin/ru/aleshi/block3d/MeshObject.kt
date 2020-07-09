@@ -16,6 +16,10 @@ class MeshObject(private val sharedMesh: Shared<Mesh>, private val sharedShader:
 
     override fun onCreate() {
         // Link default properties
+        linkDefaults()
+    }
+
+    private fun linkDefaults() {
         bindings.setProperty("viewModelMatrix", { Camera.active.transform.viewMatrix() * transform.matrix() })
         bindings.setProperty("projectionMatrix", { Camera.active.projectionMatrix })
     }
@@ -27,12 +31,15 @@ class MeshObject(private val sharedMesh: Shared<Mesh>, private val sharedShader:
         shader.unbind()
     }
 
-    override fun onDelete() {
+    override fun onDestroy() {
         sharedMesh.decRef()
         sharedShader.decRef()
     }
 
     override fun clone(): MeshObject =
-        MeshObject(sharedMesh, sharedShader).also { new -> new.transform.set(transform) }
+        MeshObject(sharedMesh, sharedShader).also { new ->
+            new.transform.set(transform)
+            new.linkDefaults()
+        }
 
 }

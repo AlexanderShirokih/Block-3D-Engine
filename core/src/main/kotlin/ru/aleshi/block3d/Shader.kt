@@ -1,6 +1,6 @@
 package ru.aleshi.block3d
 
-import org.lwjgl.opengl.GL20.*
+import org.lwjgl.opengl.GL20C.*
 import ru.aleshi.block3d.data.ShaderData
 
 /**

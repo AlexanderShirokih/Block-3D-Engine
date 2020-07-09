@@ -52,7 +52,10 @@ object Launcher {
         if (!caps.OpenGL30)
             throw RuntimeException("OpenGL 3.0 at least required to run the engine")
 
-        return World(window).apply { resizeScenes(config.width, config.height) }
+        return World(window).apply {
+            makeCurrent()
+            resizeScenes(config.width, config.height)
+        }
     }
 
 }

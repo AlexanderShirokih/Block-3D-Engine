@@ -16,8 +16,8 @@ class Transform {
         this.position = other.position.copy()
         this.rotation = other.rotation.copy()
         this.scale = other.scale.copy()
-        this.underlyingMatrix = other.underlyingMatrix.copy()
-        this.changed = other.changed
+        this.underlyingMatrix.set(underlyingMatrix)
+        this.hasChanges = other.hasChanges
     }
 
     /**
@@ -25,7 +25,7 @@ class Transform {
      */
     var position: Vector3f = Vector3f()
         set(value) {
-            changed = true
+            hasChanges = true
             field = value
         }
 
@@ -34,7 +34,7 @@ class Transform {
      */
     var rotation: Quaternion = Quaternion()
         set(value) {
-            changed = true
+            hasChanges = true
             field = value
         }
 
@@ -43,23 +43,40 @@ class Transform {
      */
     var scale: Vector3f = Vector3f(1f, 1f, 1f)
         set(value) {
-            changed = true
+            hasChanges = true
             field = value
         }
 
-    private var changed = false
+    /**
+     * `true` if transform was changes since last frame
+     */
+    internal var hasChanges = false
 
     private var underlyingMatrix = Matrix4f()
+
+    /**
+     * Sets the parent transform object
+     */
+    var parent: Transform? = null
+        set(value) {
+            if (field !== value)
+                hasChanges = true
+            field = value
+        }
 
     /**
      * Returns matrix containing transformations
      */
     fun matrix(): Matrix4f {
         // Update matrix if needed
-        return if (changed) {
-            changed = false
-            underlyingMatrix
-                .identity()
+        val parentHasChanges = parent?.hasChanges ?: false
+
+        return if (hasChanges || parentHasChanges) {
+            val base =
+                if (parent == null) underlyingMatrix.identity()
+                else underlyingMatrix.set(parent!!.underlyingMatrix)
+
+            base
                 .translate(position)
                 .rotate(rotation)
                 .scale(scale)
@@ -70,8 +87,8 @@ class Transform {
      * Same as [matrix], but negates position vector
      */
     fun viewMatrix(): Matrix4f {
-        return if (changed) {
-            changed = false
+        return if (hasChanges) {
+            hasChanges = false
 
             val (x, y, z) = position
 

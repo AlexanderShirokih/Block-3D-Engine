@@ -17,6 +17,14 @@ abstract class Scene {
             glClearColor(background.red, background.green, background.blue, background.alpha)
         }
 
+    companion object {
+        /**
+         * Returns current scene of current world
+         */
+        val current: Scene
+            get() = World.current.currentScene
+    }
+
     private val sceneObjects = mutableSetOf<SceneObject>()
 
     /**
@@ -71,7 +79,8 @@ abstract class Scene {
      * Called on each frame to update the scene
      */
     open fun update() {
-        sceneObjects.forEach { it.onUpdate() }
+        sceneObjects.forEach { it.update() }
+        sceneObjects.forEach { it.postUpdate() }
     }
 
     /**
@@ -80,19 +89,21 @@ abstract class Scene {
     open fun stop() = Unit
 
     /**
-     * Adds a new root object to the scene. If an object already exists in the scene it will be ignored.
+     * Adds a new root object to the scene. Since the object added to the scene it will updates.
+     * If an object already exists in the scene it will be ignored.
+     * Another way to add object to the scene is to set its parent to `null`.
      * @return `true` if the object has been added, `false` if the object is already contained in the scene.
      */
     fun addObject(sceneObject: SceneObject) =
         sceneObjects.add(sceneObject).apply {
-            if (this) sceneObject.onCreate()
+            if (this) sceneObject.create()
         }
 
     /**
-     * Removes object from scene
+     * Removes object from the scene
      */
     fun removeObject(sceneObject: SceneObject) {
         if (sceneObjects.remove(sceneObject))
-            sceneObject.onDelete()
+            sceneObject.destroy()
     }
 }

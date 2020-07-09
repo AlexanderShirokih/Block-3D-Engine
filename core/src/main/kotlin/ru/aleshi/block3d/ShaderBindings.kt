@@ -43,4 +43,12 @@ class ShaderBindings(shader: Shader) {
     fun setProperty(name: String, value: Any) {
         uniforms[name]?.set(value)
     }
+
+    /**
+     * Gets currently linked value of property named [name].
+     * @return `null` if property named [name] doesn't exists.
+     */
+    fun getProperty(name: String): Any? =
+        uniforms[name]?.get()
+
 }

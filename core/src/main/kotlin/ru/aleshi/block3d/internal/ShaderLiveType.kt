@@ -32,6 +32,8 @@ internal sealed class ShaderLiveType(val uniformId: Int) {
 
     abstract fun set(value: Any)
 
+    abstract fun get(): Any
+
     /**
      * Applies Matrix4f to mat4 uniform
      */
@@ -53,6 +55,8 @@ internal sealed class ShaderLiveType(val uniformId: Int) {
                     "Cannot cast ${value.javaClass} to Matrix4f or Transform"
                 )
         }
+
+        override fun get() = matrixProvider
 
     }
 
@@ -80,6 +84,8 @@ internal sealed class ShaderLiveType(val uniformId: Int) {
                 )
             texture = value
         }
+
+        override fun get() = texture
     }
 
 }

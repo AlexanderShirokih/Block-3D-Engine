@@ -18,7 +18,13 @@ class World(
     var alive: Boolean = true
         private set
 
-    private var currentScene: Scene = StubScene
+    companion object {
+        lateinit var current: World
+            private set
+    }
+
+    var currentScene: Scene = StubScene
+        private set
 
     /**
      * Called internally when window size changed
@@ -39,6 +45,13 @@ class World(
 
         // Launch start scene
         launchScene(startScene)
+    }
+
+    /**
+     * Saves instance of this world to [World.current]
+     */
+    fun makeCurrent() {
+        current = this
     }
 
     /**
