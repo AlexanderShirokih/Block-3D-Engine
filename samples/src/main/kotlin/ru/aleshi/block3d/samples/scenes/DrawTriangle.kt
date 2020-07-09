@@ -11,10 +11,13 @@ class DrawTriangle : Scene() {
 
     private lateinit var cube: MeshObject
 
-
-    fun buildMeshObject(): MeshObject {
+    private fun buildMeshObject(): MeshObject {
         val shader = Shader(Loader.loadResource("shaders/plain_unlit.shc") as ShaderData)
         val main = Texture2D(Loader.loadResource("textures/box.png") as Image2DData)
+
+        val material = Material(Shared(shader)).apply {
+            setProperty("mainTexture", main)
+        }
 
         // Load mesh
         val mesh = Mesh(
@@ -62,12 +65,8 @@ class DrawTriangle : Scene() {
             )
         )
 
-        val mo = MeshObject(Shared(mesh), Shared(shader))
-        mo.bindings.setProperty("mainTexture", main)
-        return mo
+        return MeshObject(Shared(mesh), material)
     }
-
-    lateinit var cube2: MeshObject
 
     override fun create() {
         super.create()
@@ -76,24 +75,14 @@ class DrawTriangle : Scene() {
         cube = buildMeshObject()
         addObject(cube)
 
-        cube2 = cube.clone()
-        cube2.bindings.setProperty("mainTexture", cube.bindings.getProperty("mainTexture")!!)
-
-        cube2.apply {
+        cube.clone().apply {
             parent = cube
             transform.position = Vector3f(-1.5f, 0f, 0f)
         }
     }
 
-    var t = 0f
     override fun update() {
         super.update()
         cube.transform.rotation *= Quaternion.fromAxisAngle(Vector3f(0f, 0f, 1f), 1f)
-        t += 1f
-
-        if (t > 200f) {
-            cube2.parent = null
-            t = -1000000000f
-        }
     }
 }

@@ -30,7 +30,7 @@ internal sealed class ShaderLiveType(val uniformId: Int) {
 
     abstract fun bind(buffer: Buffer)
 
-    abstract fun set(value: Any)
+    abstract fun set(value: Any?)
 
     abstract fun get(): Any
 
@@ -45,7 +45,8 @@ internal sealed class ShaderLiveType(val uniformId: Int) {
         }
 
         @Suppress("UNCHECKED_CAST")
-        override fun set(value: Any) = when (value) {
+        override fun set(value: Any?) = when (value) {
+            null -> matrixProvider = { DEFAULT_MATRIX }
             is Matrix4f -> matrixProvider = { value }
             is Transform -> matrixProvider = value::matrix
             is Function<*> -> matrixProvider = value as () -> Matrix4f
@@ -76,12 +77,16 @@ internal sealed class ShaderLiveType(val uniformId: Int) {
             GL20.glUniform1i(uniformId, slot)
         }
 
-        override fun set(value: Any) {
-            if (value !is Texture)
-                throw ShaderException(
-                    ShaderException.ErrorType.PropertyTypeMismatch,
-                    "Cannot cast ${value.javaClass} to Texture"
-                )
+        override fun set(value: Any?) {
+            if (value == null) {
+                texture = Texture2D.WHITE
+                return
+            } else
+                if (value !is Texture)
+                    throw ShaderException(
+                        ShaderException.ErrorType.PropertyTypeMismatch,
+                        "Cannot cast ${value.javaClass} to Texture"
+                    )
             texture = value
         }
 

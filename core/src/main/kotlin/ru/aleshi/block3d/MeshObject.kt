@@ -2,44 +2,51 @@ package ru.aleshi.block3d
 
 /**
  * An object that has a mesh, that can be rendered in a scene using a shader
+ * @constructor Creates a new mesh object using [sharedMesh] and [material] that will be copied.
  */
-class MeshObject(private val sharedMesh: Shared<Mesh>, private val sharedShader: Shared<Shader>) :
+class MeshObject(private val sharedMesh: Shared<Mesh>, mat: Material) :
     TransformableObject() {
 
     private val mesh = sharedMesh.getAndInc()
-    private val shader = sharedShader.getAndInc()
+    private var shader: Shader = mat.shaderInstance
 
     /**
-     * Shader bindings instance for this object
+     * Shader material instance for this object
      */
-    val bindings = ShaderBindings(shader)
+    var material: Material = mat.copy()
+        set(value) {
+            if (value != field) {
+                field.dispose()
+            }
+            shader = value.shaderInstance
+            field = value
+            linkDefaults()
+        }
 
-    override fun onCreate() {
-        // Link default properties
+    init {
         linkDefaults()
     }
 
     private fun linkDefaults() {
-        bindings.setProperty("viewModelMatrix", { Camera.active.transform.viewMatrix() * transform.matrix() })
-        bindings.setProperty("projectionMatrix", { Camera.active.projectionMatrix })
+        material.setProperty("viewModelMatrix", { Camera.active.transform.viewMatrix() * transform.matrix() })
+        material.setProperty("projectionMatrix", { Camera.active.projectionMatrix })
     }
 
     override fun onUpdate() {
         shader.bind()
-        bindings.attach()
+        material.attach()
         mesh.draw()
         shader.unbind()
     }
 
     override fun onDestroy() {
         sharedMesh.decRef()
-        sharedShader.decRef()
+        material.dispose()
     }
 
     override fun clone(): MeshObject =
-        MeshObject(sharedMesh, sharedShader).also { new ->
+        MeshObject(sharedMesh, material).also { new ->
             new.transform.set(transform)
-            new.linkDefaults()
         }
 
 }

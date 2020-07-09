@@ -5,13 +5,15 @@ import ru.aleshi.block3d.internal.ShaderLiveType
 import ru.aleshi.block3d.internal.ShaderLiveType.TextureLiveType
 
 /**
- * Describes automatically bound uniforms for shader program
+ * Describes automatically bound properties for shader program
  */
-class ShaderBindings(shader: Shader) {
+class Material(val shader: Shared<Shader>) : IDisposable {
+
+    internal val shaderInstance: Shader = shader.getAndInc()
 
     val hash = shader.hashCode()
 
-    private val uniforms = shader.properties
+    private val uniforms = shaderInstance.properties
         .map { it.name to ShaderLiveType.fromType(it.type, it.uniformId) }
         .toMap().apply {
             // Setup texture unit slot indexes
@@ -38,9 +40,10 @@ class ShaderBindings(shader: Shader) {
 
     /**
      * Links property named [name] with value [value]. If a property with [name] does not exist, nothing will be done.
+     * @param value the new value of the property. If `null` then the default value will set.
      * @throws ShaderException if property with name [name] cannot be linked(type mismatch)
      */
-    fun setProperty(name: String, value: Any) {
+    fun setProperty(name: String, value: Any?) {
         uniforms[name]?.set(value)
     }
 
@@ -51,4 +54,17 @@ class ShaderBindings(shader: Shader) {
     fun getProperty(name: String): Any? =
         uniforms[name]?.get()
 
+    /**
+     * Copies all shader properties to new material instance
+     */
+    fun copy(): Material =
+        Material(shader).also { new ->
+            uniforms.keys.forEach { property ->
+                new.setProperty(property, getProperty(property))
+            }
+        }
+
+    override fun dispose() {
+        shader.decRef()
+    }
 }
