@@ -16,14 +16,14 @@ class DrawTriangle : Scene() {
 
     override fun create() {
         super.create()
-        Camera.active.transform.position = Vector3f(0f, 0f, 4f)
+        Camera.active.transform.position = Vector3f(0f, 0f, 6f)
 
         cube = Box().apply {
             material.setProperty("mainTexture", Texture2D(Loader.loadResource("textures/box.png") as Image2DData))
 
             clone().also { secondCube ->
                 secondCube.parent = this
-                secondCube.transform.position = Vector3f(-1.5f, 0f, 0f)
+                secondCube.transform.position = Vector3f(-2.5f, 0f, 0f)
             }
             addObject(this)
         }
@@ -32,7 +32,7 @@ class DrawTriangle : Scene() {
     override fun update() {
         super.update()
         cube.transform.rotation *= Quaternion.fromAxisAngle(
-            Vector3f(0f, 1f, 0f), 1f
+            Vector3f(0f, 1f, 1f), 1f
         )
     }
 }

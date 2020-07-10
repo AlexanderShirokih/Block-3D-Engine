@@ -102,8 +102,13 @@ class Mesh private constructor(
                 indicesVboId = indicesVboId,
                 glIndexType = glIndexType
             ).also { mesh ->
+                if (indicesVboId == BUFFER_NOT_SET) {
+                    mesh.dispose()
+                    throw RuntimeException("Indices buffer was not specified")
+                }
                 mesh.vertexCount = if (indicesCount == 0) vertexCount else indicesCount
             }
+
         }
     }
 
@@ -124,10 +129,7 @@ class Mesh private constructor(
         if (texCoordsVboId != BUFFER_NOT_SET)
             glEnableVertexAttribArray(2)
 
-        if (indicesVboId != BUFFER_NOT_SET)
-            glDrawElements(GL_TRIANGLES, vertexCount, glIndexType, 0)
-        else
-            glDrawArrays(GL_TRIANGLES, 0, vertexCount)
+        glDrawElements(GL_TRIANGLES, vertexCount, glIndexType, 0)
 
         // Restore state
         glDisableVertexAttribArray(0)

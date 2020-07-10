@@ -5,7 +5,8 @@ import ru.aleshi.block3d.*
 import java.nio.Buffer
 
 /**
- * 3D Box object. By default uses [Defaults.MATERIAL_UNLIT] material.
+ * A box mesh object.
+ * @constructor creates a new object with shared box mesh and [Defaults.MATERIAL_UNLIT] material.
  */
 class Box : MeshObject(sharedBoxMesh, Defaults.MATERIAL_UNLIT) {
 
