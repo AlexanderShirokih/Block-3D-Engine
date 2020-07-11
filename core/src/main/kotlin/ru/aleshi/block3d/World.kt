@@ -3,10 +3,12 @@ package ru.aleshi.block3d
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.lwjgl.opengl.GL11C
 import ru.aleshi.block3d.input.Mouse
 import ru.aleshi.block3d.internal.DispatchingRunnable
 import ru.aleshi.block3d.internal.StubScene
+import ru.aleshi.block3d.resources.ResourceList
 
 /**
  * Root class for all engine hierarchy
@@ -72,8 +74,12 @@ class World(
     internal fun create(startScene: Scene) {
         window.setWindowResizeCallback(::resizeScenes)
 
-        // Launch start scene
-        launchScene(startScene)
+        worldScope.launch {
+            ResourceList.loadDefaultResources()
+
+            // Launch start scene
+            launchScene(startScene)
+        }
     }
 
     /**
@@ -98,6 +104,7 @@ class World(
         currentScene.stop()
         alive = false
 
+        ResourceList.default.dispose()
         worldJob.cancel()
     }
 

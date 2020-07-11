@@ -1,6 +1,8 @@
 package ru.aleshi.block3d.resources
 
 import de.matthiasmann.twl.utils.PNGDecoder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.lwjgl.system.MemoryUtil
 import ru.aleshi.block3d.data.Image2DData
 import java.io.InputStream
@@ -14,8 +16,9 @@ import java.nio.ByteBuffer
  */
 class PNGImageParser : IParser {
 
-    override fun parse(inputStream: InputStream): Any {
-        val decoder = PNGDecoder(inputStream)
+    @Suppress("BlockingMethodInNonBlockingContext")
+    override suspend fun parse(inputStream: InputStream): Any {
+        val decoder = withContext(Dispatchers.IO) { PNGDecoder(inputStream) }
 
         if (!decoder.isRGB)
             throw RuntimeException("Cannot load image, because it's not an RGB")
@@ -28,7 +31,7 @@ class PNGImageParser : IParser {
         val buffer = MemoryUtil.memAlloc(width * height * bytesPerPixel)
 
         try {
-            decoder.decode(buffer, width * bytesPerPixel, desiredFormat)
+            withContext(Dispatchers.IO) { decoder.decode(buffer, width * bytesPerPixel, desiredFormat) }
         } catch (e: Exception) {
             MemoryUtil.memFree(buffer)
             throw e

@@ -4,11 +4,13 @@ import kotlinx.serialization.Serializable
 
 /**
  * Data class describing shader program with all API variants and properties
+ * @param name Unique shader name. By this name the shader will be loaded to resource list.
  * @param properties Map of properties where key is a property name, value is associated Property
  * @param programs Map of shader programs where key is a render api, value is associated ShaderProgram
  */
 @Serializable
 data class ShaderData(
+    val name: String,
     val properties: Map<String, Property>,
     val programs: Map<RenderApi, ShaderProgram>
 ) {

@@ -1,8 +1,7 @@
 package ru.aleshi.block3d
 
 import ru.aleshi.block3d.data.Image2DData
-import ru.aleshi.block3d.data.ShaderData
-import ru.aleshi.block3d.resources.Loader
+import ru.aleshi.block3d.resources.ResourceList
 import ru.aleshi.block3d.types.Color4f
 import java.nio.Buffer
 import java.nio.ByteBuffer
@@ -35,7 +34,7 @@ object Defaults {
      *  color       : Main color. Default 0.75 grayscale
      */
     val MATERIAL_UNLIT by lazy {
-        Material(Shared(Shader(Loader.loadResource("shaders/simple_unlit.shc") as ShaderData))).apply {
+        Material(ResourceList.default.requireShader("Simple/Unlit")).apply {
             setProperty("color", Color4f.grayscale(0.75f))
         }
     }

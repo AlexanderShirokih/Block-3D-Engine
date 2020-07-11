@@ -12,6 +12,6 @@ interface IParser {
      * Parses some data from input stream and returns newly created object depending of parser type.
      */
     @Throws(IOException::class)
-    fun parse(inputStream: InputStream): Any
+    suspend fun parse(inputStream: InputStream): Any
 
 }

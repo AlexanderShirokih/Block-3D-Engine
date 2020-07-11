@@ -17,20 +17,15 @@ class TestScene : Scene() {
         Camera.active.transform.position = Vector3f(0f, 0f, 6f)
 
         sceneScope.launch {
-            withContext(Dispatchers.Default) {
-                Thread.sleep(1000L)
-            }
-            withContext(Dispatchers.Main) {
-                val sphere = Sphere()
-                addObject(sphere)
+            val sphere = Sphere()
+            addObject(sphere)
 
-                val sphere2 = Sphere()
+            val sphere2 = Sphere()
 
-                sphere2.parent = sphere
-                sphere2.transform.position = Vector3f(-2.5f, 0f, 0f)
+            sphere2.parent = sphere
+            sphere2.transform.position = Vector3f(-2.5f, 0f, 0f)
 
-                model = sphere
-            }
+            model = sphere
         }
     }
 

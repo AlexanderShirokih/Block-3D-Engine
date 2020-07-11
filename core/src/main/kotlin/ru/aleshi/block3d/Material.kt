@@ -7,13 +7,11 @@ import ru.aleshi.block3d.internal.ShaderLiveType.TextureLiveType
 /**
  * Describes automatically bound properties for shader program
  */
-class Material(val shader: Shared<Shader>) : IDisposable {
-
-    internal val shaderInstance: Shader = shader.getAndInc()
+class Material(val shader: Shader) {
 
     val hash = shader.hashCode()
 
-    private val uniforms = shaderInstance.properties
+    private val uniforms = shader.properties
         .map { it.name to ShaderLiveType.fromType(it.type, it.uniformId) }
         .toMap().apply {
             // Setup texture unit slot indexes
@@ -63,8 +61,4 @@ class Material(val shader: Shared<Shader>) : IDisposable {
                 new.setProperty(property, getProperty(property))
             }
         }
-
-    override fun dispose() {
-        shader.decRef()
-    }
 }

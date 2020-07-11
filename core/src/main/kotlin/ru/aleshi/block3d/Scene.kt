@@ -4,12 +4,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.lwjgl.opengl.GL11.*
+import ru.aleshi.block3d.resources.ResourceList
 import ru.aleshi.block3d.types.Color4f
 
 /**
  * Scene is an entity that holds all objects, such as cameras, meshes, GUI elements, and others.
  */
 abstract class Scene {
+
+    /**
+     * The scene resource list.
+     */
+    val resources: ResourceList = ResourceList(ResourceList.default)
 
     /**
      * Background color for the scene
@@ -116,6 +122,7 @@ abstract class Scene {
      * Called when scene should be stopped
      */
     open fun stop() {
+        resources.dispose()
         sceneJob.cancel()
     }
 

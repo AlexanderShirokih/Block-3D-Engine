@@ -8,18 +8,15 @@ open class MeshObject(private val sharedMesh: Shared<Mesh>, mat: Material) :
     TransformableObject() {
 
     private val mesh = sharedMesh.getAndInc()
-    private var shader: Shader = mat.shaderInstance
+    private var shader: Shader = mat.shader
 
     /**
      * Shader material instance for this object
      */
     var material: Material = mat.copy()
         set(value) {
-            if (value != field) {
-                field.dispose()
-            }
-            shader = value.shaderInstance
             field = value
+            shader = value.shader
             linkDefaults()
         }
 
@@ -41,7 +38,6 @@ open class MeshObject(private val sharedMesh: Shared<Mesh>, mat: Material) :
 
     override fun onDestroy() {
         sharedMesh.decRef()
-        material.dispose()
     }
 
     override fun clone(): MeshObject =
