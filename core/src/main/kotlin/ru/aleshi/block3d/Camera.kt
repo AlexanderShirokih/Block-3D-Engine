@@ -11,6 +11,7 @@ class Camera : TransformableObject() {
     private var shouldUpdateMatrix = true
 
     internal val projectionMatrix = Matrix4f()
+    internal val viewMatrix = Matrix4f()
 
     companion object {
         var active: Camera = Camera()
@@ -76,6 +77,14 @@ class Camera : TransformableObject() {
         if (shouldUpdateMatrix) {
             shouldUpdateMatrix = false
             projectionMatrix.perspective(fov, aspect, near, far)
+        }
+        if (transform.hasChanges) {
+            val (x, y, z) = transform.position
+
+            viewMatrix
+                .identity()
+                .translate(-x, -y, -z)
+                .rotate(transform.rotation)
         }
     }
 }

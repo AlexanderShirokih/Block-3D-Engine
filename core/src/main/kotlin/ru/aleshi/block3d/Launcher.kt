@@ -4,16 +4,15 @@ import org.lwjgl.Version
 import org.lwjgl.glfw.GLFW.glfwGetVersionString
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
-import org.lwjgl.opengl.GL11C.*
 import org.slf4j.LoggerFactory
 import ru.aleshi.block3d.internal.GLFWWindow
 import ru.aleshi.block3d.internal.WindowConfig
+import ru.aleshi.block3d.primitives.Sphere
 
 /**
  * Entry point to start the engine. Creates GLFW window and manages its state.
  */
 object Launcher {
-    private const val CLEAR_MASK = GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
     private val logger = LoggerFactory.getLogger(Launcher::class.java)
 
     /**
@@ -26,20 +25,21 @@ object Launcher {
         logger.info("GLFW version: {}", glfwGetVersionString())
 
         return initWindowAndCreateWorld(config).apply {
+            dispatcher.ownerThreadId = Thread.currentThread().id
+
             create(startingScene)
+
             //Render until the user attempts to close window or escape key pressed
             while (window.isRunning) {
-                // Clear framebuffer
-                glClear(CLEAR_MASK)
-
-                // Update the world
-                update()
-
-                // Update window events
-                window.update()
+                dispatcher.run()
             }
 
             stop()
+
+            // Run estimated stopping tasks
+            while (dispatcher.hasPendingEvents()) {
+                dispatcher.runPendingEvents()
+            }
 
             window.destroy()
         }

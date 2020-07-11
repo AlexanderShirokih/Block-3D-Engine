@@ -28,7 +28,7 @@ open class MeshObject(private val sharedMesh: Shared<Mesh>, mat: Material) :
     }
 
     private fun linkDefaults() {
-        material.setProperty("viewModelMatrix", { Camera.active.transform.viewMatrix() * transform.matrix() })
+        material.setProperty("viewModelMatrix", { Camera.active.viewMatrix * transform.matrix() })
         material.setProperty("projectionMatrix", { Camera.active.projectionMatrix })
     }
 

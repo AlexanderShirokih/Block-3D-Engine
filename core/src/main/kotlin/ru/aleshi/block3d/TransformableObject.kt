@@ -39,18 +39,20 @@ open class TransformableObject : SceneObject(), Iterable<TransformableObject> {
     override fun update() {
         super.update()
 
-        for (child in this) {
-            child.update()
-        }
+        if (children.isNotEmpty())
+            for (child in this) {
+                child.update()
+            }
     }
 
     override fun postUpdate() {
         super.postUpdate()
         transform.hasChanges = false
 
-        for (child in this) {
-            child.postUpdate()
-        }
+        if (children.isNotEmpty())
+            for (child in this) {
+                child.postUpdate()
+            }
     }
 
     override fun destroy() {

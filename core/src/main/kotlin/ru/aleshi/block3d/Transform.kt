@@ -83,21 +83,4 @@ class Transform {
         } else underlyingMatrix
     }
 
-    /**
-     * Same as [matrix], but negates position vector
-     */
-    fun viewMatrix(): Matrix4f {
-        return if (hasChanges) {
-            hasChanges = false
-
-            val (x, y, z) = position
-
-            underlyingMatrix
-                .identity()
-                .translate(-x, -y, -z)
-                .rotate(rotation)
-                .scale(scale)
-        } else underlyingMatrix
-    }
-
 }

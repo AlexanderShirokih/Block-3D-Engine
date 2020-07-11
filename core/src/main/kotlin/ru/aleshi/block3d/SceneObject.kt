@@ -8,7 +8,8 @@ abstract class SceneObject {
     private var created: Boolean = false
 
     internal open fun update() {
-        if (!created) return
+        if (!created)
+            return
         onUpdate()
     }
 

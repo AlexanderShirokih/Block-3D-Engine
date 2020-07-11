@@ -1,5 +1,8 @@
 package ru.aleshi.block3d
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import org.lwjgl.opengl.GL11.*
 import ru.aleshi.block3d.types.Color4f
 
@@ -25,7 +28,19 @@ abstract class Scene {
             get() = World.current.currentScene
     }
 
+    private val sceneJob: Job by lazy { Job(World.current.worldJob) }
+
+    /**
+     * Per-scene coroutine scope.
+     */
+    val sceneScope: CoroutineScope by lazy { CoroutineScope(Dispatchers.Main + sceneJob) }
+
     private val sceneObjects = mutableSetOf<SceneObject>()
+
+    /**
+     * The list of objects that currently present of the scene
+     */
+    var objects: Set<SceneObject> = sceneObjects
 
     /**
      * Switches blending state. Disables by default
@@ -91,6 +106,7 @@ abstract class Scene {
     /**
      * Called on each frame to update the scene
      */
+
     open fun update() {
         sceneObjects.forEach { it.update() }
         sceneObjects.forEach { it.postUpdate() }
@@ -99,7 +115,9 @@ abstract class Scene {
     /**
      * Called when scene should be stopped
      */
-    open fun stop() = Unit
+    open fun stop() {
+        sceneJob.cancel()
+    }
 
     /**
      * Adds a new root object to the scene. Since the object added to the scene it will updates.

@@ -9,7 +9,7 @@ import ru.aleshi.block3d.internal.WindowConfig
 abstract class Window {
 
     /**
-     * `true` while window is not going to destroy
+     * `true` while window is not going to be destroyed
      */
     abstract val isRunning: Boolean
 

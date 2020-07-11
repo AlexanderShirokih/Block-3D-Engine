@@ -30,7 +30,9 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
     implementation("com.charleskorn.kaml:kaml:0.17.0")
+
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
 
     implementation("im.bci:pngdecoder:0.13")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")

@@ -1,6 +1,11 @@
 package ru.aleshi.block3d
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import org.lwjgl.opengl.GL11C
 import ru.aleshi.block3d.input.Mouse
+import ru.aleshi.block3d.internal.DispatchingRunnable
 import ru.aleshi.block3d.internal.StubScene
 
 /**
@@ -12,6 +17,28 @@ class World(
      */
     val window: Window
 ) {
+
+    internal val worldJob = Job()
+
+    /**
+     * Worlds coroutine scope
+     */
+    val worldScope = CoroutineScope(Dispatchers.Main + worldJob)
+
+    /**
+     * Current rendering dispatcher instance
+     */
+    internal val dispatcher: DispatchingRunnable = DispatchingRunnable(Runnable {
+        // Clear the framebuffer
+        GL11C.glClear(CLEAR_MASK)
+
+        // Update the world
+        update()
+
+        // Update window events
+        window.update()
+    })
+
     /**
      * `true` until world isn't destroyed
      */
@@ -19,6 +46,8 @@ class World(
         private set
 
     companion object {
+        private const val CLEAR_MASK = GL11C.GL_COLOR_BUFFER_BIT or GL11C.GL_DEPTH_BUFFER_BIT
+
         lateinit var current: World
             private set
     }
@@ -63,16 +92,18 @@ class World(
     }
 
     /**
-     * Called internally to stop current world
+     * Called internally to stop the current world
      */
     internal fun stop() {
         currentScene.stop()
         alive = false
+
+        worldJob.cancel()
     }
 
     /**
      * Call to set the current scene.
-     * It will destroy current scene and load new.
+     * It will destroy the current scene and loads new.
      */
     fun launchScene(scene: Scene) {
         currentScene.stop()
