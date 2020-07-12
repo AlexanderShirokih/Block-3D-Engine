@@ -1,31 +1,32 @@
 package ru.aleshi.block3d.samples.scenes
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 import ru.aleshi.block3d.Camera
 import ru.aleshi.block3d.MeshObject
 import ru.aleshi.block3d.Scene
-import ru.aleshi.block3d.primitives.Sphere
+import ru.aleshi.block3d.TransformableObject
+import ru.aleshi.block3d.resources.Loader
+import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Quaternion
 import ru.aleshi.block3d.types.Vector3f
 
 class TestScene : Scene() {
 
-    private var model: MeshObject? = null
+    private var model: TransformableObject? = null
 
     override fun create() {
         super.create()
         Camera.active.transform.position = Vector3f(0f, 0f, 6f)
 
         sceneScope.launch {
-            val sphere = Sphere()
-            addObject(sphere)
+            val obj = Loader.loadResource("models/pyramid_and_cube.obj") as TransformableObject
 
-            val sphere2 = Sphere()
-
-            sphere2.parent = sphere
-            sphere2.transform.position = Vector3f(-2.5f, 0f, 0f)
-
-            model = sphere
+            obj.forEach {
+                it as MeshObject
+                it.material.setProperty("color", Color4f.random)
+            }
+            addObject(obj)
+            model = obj
         }
     }
 

@@ -74,7 +74,7 @@ class Transform {
         return if (hasChanges || parentHasChanges) {
             val base =
                 if (parent == null) underlyingMatrix.identity()
-                else underlyingMatrix.set(parent!!.underlyingMatrix)
+                else underlyingMatrix.set(parent!!.matrix())
 
             base
                 .translate(position)

@@ -31,7 +31,7 @@ class PNGImageParser : IParser {
         val buffer = MemoryUtil.memAlloc(width * height * bytesPerPixel)
 
         try {
-            withContext(Dispatchers.IO) { decoder.decode(buffer, width * bytesPerPixel, desiredFormat) }
+            withContext(Dispatchers.Default) { decoder.decode(buffer, width * bytesPerPixel, desiredFormat) }
         } catch (e: Exception) {
             MemoryUtil.memFree(buffer)
             throw e

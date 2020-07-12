@@ -1,16 +1,20 @@
 package ru.aleshi.block3d.resources
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.*
 import java.lang.RuntimeException
 
 /**
  * Common gate for parsing all supported resource types
  */
+@Suppress("BlockingMethodInNonBlockingContext")
 object Loader {
 
     private val installedParsers = mutableMapOf<String, Class<out IParser>>(
         "shc" to ShaderParser::class.java,
-        "png" to PNGImageParser::class.java
+        "png" to PNGImageParser::class.java,
+        "obj" to WavefrontObjectParser::class.java
     )
 
     private val installedComposers = mutableMapOf<String, Class<out IComposer>>(
@@ -32,17 +36,18 @@ object Loader {
     /**
      * Loads resource from resources folder
      */
-    fun loadResource(resourceName: String): Any {
+    suspend fun loadResource(resourceName: String): Any {
         val resource = ClassLoader.getSystemResource(resourceName)
         val ext = resource.file.substringAfterLast('.', "")
-        return loadFromInputStream(ext, resource.openStream())
+        val stream = withContext(Dispatchers.IO) { resource.openStream() }
+        return loadFromInputStream(ext, stream)
     }
 
     /**
      * Loads resource using parser depending of file extension.
      * @see loadFromInputStream
      */
-    fun load(file: File): Any = loadFromInputStream(file.extension, FileInputStream(file))
+    suspend fun load(file: File): Any = loadFromInputStream(file.extension, FileInputStream(file))
 
     /**
      * Loads object of type [type] from input stream. After reading stream will be closed.
@@ -51,8 +56,8 @@ object Loader {
      * @throws java.io.IOException if something went wrong while reading from input stream
      * @throws Exception This method can also throw any other exception types depending of parser
      */
-    fun loadFromInputStream(type: String, inputStream: InputStream): Any =
-        inputStream.use(getParser(type)::parse)
+    suspend fun loadFromInputStream(type: String, inputStream: InputStream): Any =
+        inputStream.use { getParser(type).parse(it) }
 
     /**
      * Stores object [obj] to file [file] using composer depending of file extension.

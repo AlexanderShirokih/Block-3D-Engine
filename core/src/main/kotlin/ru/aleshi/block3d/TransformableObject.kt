@@ -40,7 +40,7 @@ open class TransformableObject : SceneObject(), Iterable<TransformableObject> {
         super.update()
 
         if (children.isNotEmpty())
-            for (child in this) {
+            for (child in children) {
                 child.update()
             }
     }
@@ -50,7 +50,7 @@ open class TransformableObject : SceneObject(), Iterable<TransformableObject> {
         transform.hasChanges = false
 
         if (children.isNotEmpty())
-            for (child in this) {
+            for (child in children) {
                 child.postUpdate()
             }
     }
