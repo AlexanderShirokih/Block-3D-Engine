@@ -13,6 +13,7 @@ import java.nio.ShortBuffer
 /**
  * Loads Wavefront models (.OBJ)
  */
+@Suppress("UNCHECKED_CAST")
 class WavefrontObjectParser : IParser {
 
     private fun MutableList<String>.getIndexAndPut(face: String): Int {
@@ -51,7 +52,6 @@ class WavefrontObjectParser : IParser {
             var texCoordsOffset = 1
 
             var root: TransformableObject? = null
-
 
             facesList.forEachIndexed { index, remappedFaceList ->
                 val buffersSize = remappedFaceList.indexMappings.size * 3
