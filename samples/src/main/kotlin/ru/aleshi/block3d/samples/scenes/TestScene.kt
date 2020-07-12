@@ -6,7 +6,6 @@ import ru.aleshi.block3d.MeshObject
 import ru.aleshi.block3d.Scene
 import ru.aleshi.block3d.TransformableObject
 import ru.aleshi.block3d.resources.Loader
-import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Quaternion
 import ru.aleshi.block3d.types.Vector3f
 
@@ -19,12 +18,16 @@ class TestScene : Scene() {
         Camera.active.transform.position = Vector3f(0f, 0f, 6f)
 
         sceneScope.launch {
-            val obj = Loader.loadResource("models/pyramid_and_cube.obj") as TransformableObject
+            val obj = Loader.loadResource("models/cube.obj") as TransformableObject
+            obj as MeshObject
 
-            obj.forEach {
-                it as MeshObject
-                it.material.setProperty("color", Color4f.random)
+            obj.material.setProperty("mainTexture", Loader.loadResource("textures/CubeTex.png"))
+
+            obj.clone().also { clone ->
+                clone.parent = obj
+                clone.transform.position = Vector3f(-4f, 0f, 0f)
             }
+
             addObject(obj)
             model = obj
         }

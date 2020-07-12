@@ -7,8 +7,10 @@ package ru.aleshi.block3d
 open class MeshObject(private val sharedMesh: Shared<Mesh>, mat: Material) :
     TransformableObject() {
 
-    private val mesh = sharedMesh.getAndInc()
-    private var shader: Shader = mat.shader
+    internal val mesh = sharedMesh.getAndInc()
+
+    internal var shader: Shader = mat.shader
+        private set
 
     /**
      * Shader material instance for this object
@@ -29,14 +31,12 @@ open class MeshObject(private val sharedMesh: Shared<Mesh>, mat: Material) :
         material.setProperty("projectionMatrix", { Camera.active.projectionMatrix })
     }
 
-    override fun onUpdate() {
-        shader.bind()
-        material.attach()
-        mesh.draw()
-        shader.unbind()
+    override fun onCreate() {
+        Scene.current.attachToRenderer(this)
     }
 
     override fun onDestroy() {
+        Scene.current.detachFromRenderer(this)
         sharedMesh.decRef()
     }
 

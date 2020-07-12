@@ -13,11 +13,6 @@ abstract class SceneObject {
         onUpdate()
     }
 
-    internal open fun postUpdate() {
-        if (!created) return
-        onPostUpdate()
-    }
-
     internal open fun create() {
         if (!created) {
             onCreate()

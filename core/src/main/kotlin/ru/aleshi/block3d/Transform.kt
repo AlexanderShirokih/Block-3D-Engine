@@ -67,20 +67,22 @@ class Transform {
     /**
      * Returns matrix containing transformations
      */
-    fun matrix(): Matrix4f {
-        // Update matrix if needed
-        val parentHasChanges = parent?.hasChanges ?: false
+    fun matrix(): Matrix4f = underlyingMatrix
 
-        return if (hasChanges || parentHasChanges) {
+    /**
+     * Recalculates object matrix if needed
+     */
+    fun updateMatrix() {
+        if (hasChanges) {
             val base =
                 if (parent == null) underlyingMatrix.identity()
-                else underlyingMatrix.set(parent!!.matrix())
+                else underlyingMatrix.set(parent!!.underlyingMatrix)
 
             base
                 .translate(position)
                 .rotate(rotation)
                 .scale(scale)
-        } else underlyingMatrix
+        }
     }
 
 }

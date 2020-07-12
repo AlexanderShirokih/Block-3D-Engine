@@ -4,13 +4,23 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.lwjgl.opengl.GL11.*
+import ru.aleshi.block3d.renderer.AbstractRenderer
 import ru.aleshi.block3d.resources.ResourceList
 import ru.aleshi.block3d.types.Color4f
 
 /**
- * Scene is an entity that holds all objects, such as cameras, meshes, GUI elements, and others.
+ * Scene is an entity that holds all objects, such as cameras, meshes, light sources, GUI elements, and others.
  */
 abstract class Scene {
+
+    private var sceneRenderer: AbstractRenderer = ru.aleshi.block3d.renderer.SimpleForwardRenderer()
+
+    /**
+     * Sets the current scene renderer. Default scene renderer is SimpleForwardRenderer
+     */
+    fun setRenderer(renderer: AbstractRenderer) {
+        sceneRenderer = renderer
+    }
 
     /**
      * The scene resource list.
@@ -115,7 +125,8 @@ abstract class Scene {
 
     open fun update() {
         sceneObjects.forEach { it.update() }
-        sceneObjects.forEach { it.postUpdate() }
+
+        sceneRenderer.render()
     }
 
     /**
@@ -130,7 +141,7 @@ abstract class Scene {
      * Adds a new root object to the scene. Since the object added to the scene it will updates.
      * If an object already exists in the scene it will be ignored.
      * Another way to add object to the scene is to set its parent to `null`.
-     * @return `true` if the object has been added, `false` if the object is already contained in the scene.
+     * @return `true` if the object has been added, `false` if the object has already contained in the scene.
      */
     fun addObject(sceneObject: SceneObject) =
         sceneObjects.add(sceneObject).apply {
@@ -144,4 +155,9 @@ abstract class Scene {
         if (sceneObjects.remove(sceneObject))
             sceneObject.destroy()
     }
+
+    internal fun attachToRenderer(meshObject: MeshObject) = sceneRenderer.attachToRenderer(meshObject)
+
+    internal fun detachFromRenderer(meshObject: MeshObject) = sceneRenderer.detachFromRenderer(meshObject)
+
 }
