@@ -1,5 +1,7 @@
 package ru.aleshi.block3d
 
+import ru.aleshi.block3d.shader.Shader
+
 /**
  * An object that has a mesh, that can be rendered in a scene using a shader
  * @constructor Creates a new mesh object using [sharedMesh] and [material] that will be copied.
@@ -27,8 +29,9 @@ open class MeshObject(private val sharedMesh: Shared<Mesh>, mat: Material) :
     }
 
     private fun linkDefaults() {
-        material.setProperty("viewModelMatrix", { Camera.active.viewMatrix * transform.matrix() })
+        material.setProperty("modelViewMatrix", { Camera.active.viewMatrix * transform.matrix() })
         material.setProperty("projectionMatrix", { Camera.active.projectionMatrix })
+        material.setProperty("cameraPosition", { Camera.active.transform.position })
     }
 
     override fun onCreate() {

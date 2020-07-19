@@ -8,7 +8,7 @@ import java.nio.Buffer
  * A box mesh object.
  * @constructor creates a new object with shared box mesh and [Defaults.MATERIAL_UNLIT] material.
  */
-class Box : MeshObject(sharedBoxMesh, Defaults.MATERIAL_UNLIT) {
+class Box : MeshObject(sharedBoxMesh, Defaults.MATERIAL_LIT) {
 
     companion object {
         private val sharedBoxMesh: Shared<Mesh> by lazy { Shared(generateMesh()) }

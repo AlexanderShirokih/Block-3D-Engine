@@ -11,7 +11,7 @@ import java.nio.Buffer
  * A single-sided plane, lying on the x-z axis.
  * @constructor creates a new object with shared plane mesh and [Defaults.MATERIAL_UNLIT] material.
  */
-class Plane : MeshObject(sharedPlaneMesh, Defaults.MATERIAL_UNLIT) {
+class Plane : MeshObject(sharedPlaneMesh, Defaults.MATERIAL_LIT) {
 
     companion object {
 

@@ -17,7 +17,7 @@ class Sphere : MeshObject {
     /**
      * Creates a new instance with the copy of the sphere mesh. Default sphere size: 20 slices x 20 stacks.
      */
-    constructor() : super(sharedMeshObject, Defaults.MATERIAL_UNLIT)
+    constructor() : super(sharedMeshObject, Defaults.MATERIAL_LIT)
 
     /**
      * Creates a new instance with newly created sphere mesh sized by [slices] and [stacks].

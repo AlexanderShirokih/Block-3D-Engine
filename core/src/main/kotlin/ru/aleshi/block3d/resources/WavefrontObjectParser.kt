@@ -98,7 +98,7 @@ class WavefrontObjectParser : IParser {
                 MemoryUtil.memFree(normalsBuffer)
                 MemoryUtil.memFree(texCoordsBuffer)
 
-                val meshObject = MeshObject(Shared(mesh), Defaults.MATERIAL_UNLIT)
+                val meshObject = MeshObject(Shared(mesh), Defaults.MATERIAL_LIT)
                 if (numObjects == 1)
                     root = meshObject
                 else {

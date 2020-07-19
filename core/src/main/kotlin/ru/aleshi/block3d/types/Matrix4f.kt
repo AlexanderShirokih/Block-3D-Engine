@@ -10,7 +10,7 @@ import kotlin.math.tan
 private const val PI_OVER_180 = 0.01745329
 
 /**
- * Describes Matrix 4x4
+ * Describes row major matrix 4x4
  */
 data class Matrix4f(private val matrix: FloatArray) {
 
@@ -249,5 +249,9 @@ data class Matrix4f(private val matrix: FloatArray) {
         return buffer
     }
 
+    /**
+     * Extracts position from matrix and it as new vector
+     */
+    fun position(): Vector3f = Vector3f(matrix[12], matrix[13], matrix[14])
 
 }

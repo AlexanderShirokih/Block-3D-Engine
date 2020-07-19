@@ -1,4 +1,4 @@
-package ru.aleshi.block3d
+package ru.aleshi.block3d.shader
 
 import java.lang.Exception
 
@@ -12,7 +12,6 @@ class ShaderException(type: ErrorType, errorDescription: String, shaderCode: Str
         CompilationError,
         LinkingError,
         UniformLocationError,
-        UnknownProperty,
         PropertyTypeMismatch
     }
 }

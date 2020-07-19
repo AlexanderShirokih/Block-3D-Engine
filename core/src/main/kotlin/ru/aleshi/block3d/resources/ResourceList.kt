@@ -1,7 +1,7 @@
 package ru.aleshi.block3d.resources
 
 import ru.aleshi.block3d.IDisposable
-import ru.aleshi.block3d.Shader
+import ru.aleshi.block3d.shader.Shader
 import ru.aleshi.block3d.data.ShaderData
 
 /**
@@ -19,7 +19,7 @@ class ResourceList(private val parent: ResourceList? = null) : IDisposable {
             if (default.shaders.isNotEmpty())
                 throw RuntimeException("Default resource list is not empty!")
 
-            val shaders = listOf("simple_unlit.shc")
+            val shaders = listOf("simple_unlit.shc", "simple_lit.shc")
 
             for (shaderName in shaders) {
                 val shaderData = Loader.loadResource("shaders/$shaderName") as ShaderData

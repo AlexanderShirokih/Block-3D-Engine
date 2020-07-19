@@ -28,8 +28,8 @@ data class ShaderData(
         /**
          * Enum describing property types
          */
-        enum class Type {
-            Float, Color, Texture2D, Vector4, Matrix4
+        enum class Type(val describingType: Class<*>? = null) {
+            Float, Color, Texture2D, Vector3, Matrix4, PointLight(ru.aleshi.block3d.lights.PointLight::class.java)
         }
     }
 

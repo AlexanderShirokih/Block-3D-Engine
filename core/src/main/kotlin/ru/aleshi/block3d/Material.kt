@@ -1,8 +1,9 @@
 package ru.aleshi.block3d
 
 import org.lwjgl.system.MemoryStack
-import ru.aleshi.block3d.internal.ShaderLiveType
-import ru.aleshi.block3d.internal.ShaderLiveType.TextureLiveType
+import ru.aleshi.block3d.shader.ShaderLiveType
+import ru.aleshi.block3d.shader.ShaderLiveType.TextureLiveType
+import ru.aleshi.block3d.shader.Shader
 
 /**
  * Describes automatically bound properties for shader program
@@ -12,7 +13,7 @@ class Material(val shader: Shader) {
     val hash = shader.hashCode()
 
     private val uniforms = shader.properties
-        .map { it.name to ShaderLiveType.fromType(it.type, it.uniformId) }
+        .map { it.name to ShaderLiveType.fromType(it) }
         .toMap().apply {
             // Setup texture unit slot indexes
             values

@@ -13,6 +13,9 @@ data class Vector3f(
 
     companion object {
         @JvmField
+        val zero = Vector3f(0f, 0f, 0f)
+
+        @JvmField
         val right = Vector3f(1f, 0f, 0f)
 
         @JvmField
