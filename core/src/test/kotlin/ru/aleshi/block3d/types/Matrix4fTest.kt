@@ -1,6 +1,6 @@
 package ru.aleshi.block3d.types
 
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class Matrix4fTest {
@@ -9,7 +9,7 @@ class Matrix4fTest {
     fun `identity() makes matrix identity`() {
         val matrix = Matrix4f().identity()
 
-        Assertions.assertArrayEquals(
+        assertArrayEquals(
             floatArrayOf(
                 1f, 0f, 0f, 0f,
                 0f, 1f, 0f, 0f,
@@ -24,7 +24,7 @@ class Matrix4fTest {
     fun `new matrix should be identity`() {
         val matrix = Matrix4f()
 
-        Assertions.assertArrayEquals(
+        assertArrayEquals(
             floatArrayOf(
                 1f, 0f, 0f, 0f,
                 0f, 1f, 0f, 0f,
@@ -45,7 +45,7 @@ class Matrix4fTest {
         )
         val targetMatrix = Matrix4f(target)
         val matrix4f = Matrix4f().set(targetMatrix)
-        Assertions.assertArrayEquals(target, matrix4f.array())
+        assertArrayEquals(target, matrix4f.array())
     }
 
     @Test
@@ -63,8 +63,19 @@ class Matrix4fTest {
             4f, 1f, 2f, 3f
         )
 
-        Assertions.assertEquals(Matrix4f(a), Matrix4f(a))
-        Assertions.assertNotEquals(Matrix4f(a), Matrix4f(b))
+        assertEquals(Matrix4f(a), Matrix4f(a))
+        assertNotEquals(Matrix4f(a), Matrix4f(b))
+    }
+
+    @Test
+    fun `test multiplication by vector3`() {
+        val mat = Matrix4f().translate(10f, 0f, 0f)
+
+        assertEquals(Vector3f(10f, 0f, 0f), mat.position())
+
+        val result = mat * Vector3f(10f, 10f, 10f)
+
+        assertEquals(Vector3f(20f, 10f, 10f), result)
     }
 
 }

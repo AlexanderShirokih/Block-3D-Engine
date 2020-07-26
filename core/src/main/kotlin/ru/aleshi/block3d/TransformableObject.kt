@@ -24,16 +24,11 @@ open class TransformableObject : SceneObject(), Iterable<TransformableObject> {
                 return
 
             // Remove previous parent
-            field?.children?.remove(this) ?: Scene.current.removeObject(this)
+            field?.children?.remove(this)
 
             transform.parent = newParent?.transform
             newParent?.children?.add(this)
             field = newParent
-
-            if (newParent == null)
-                Scene.current.addObject(this)
-            else
-                create()
         }
 
     override fun update() {

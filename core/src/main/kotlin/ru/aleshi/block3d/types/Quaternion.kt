@@ -17,6 +17,12 @@ data class Quaternion(
     companion object {
 
         /**
+         * Returns new quaternion with random rotation
+         */
+        val random: Quaternion
+            get() = fromAxisAngle(Vector3f.random, 360f)
+
+        /**
          * Sets quaternion from Euler angles
          */
         @JvmStatic
@@ -80,4 +86,37 @@ data class Quaternion(
         return this
     }
 
+    /**
+     * Creates Matrix4f from this quaternion rotation
+     */
+    fun toMatrix4f(): Matrix4f {
+        val xx = x * x
+        val xy = x * y
+        val xz = x * z
+        val xw = x * w
+
+        val yy = y * y
+        val yz = y * z
+        val yw = y * w
+
+        val zz = z * z
+        val zw = z * w
+
+        val rotationMatrix = FloatArray(16)
+
+        rotationMatrix[0] = 1f - 2f * (yy + zz)
+        rotationMatrix[1] = 2f * (xy - zw)
+        rotationMatrix[2] = 2f * (xz + yw)
+
+        rotationMatrix[4] = 2f * (xy + zw)
+        rotationMatrix[5] = 1f - 2f * (xx + zz)
+        rotationMatrix[6] = 2f * (yz - xw)
+
+        rotationMatrix[8] = 2f * (xz - yw)
+        rotationMatrix[9] = 2f * (yz + xw)
+        rotationMatrix[10] = 1f - 2f * (xx + yy)
+        rotationMatrix[15] = 1f
+
+        return Matrix4f(rotationMatrix)
+    }
 }

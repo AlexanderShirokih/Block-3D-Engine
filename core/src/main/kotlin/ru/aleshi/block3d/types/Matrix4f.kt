@@ -47,6 +47,18 @@ data class Matrix4f(private val matrix: FloatArray) {
         return result
     }
 
+    /**
+     * Multiplies this matrix to [Vector4f].
+     * @return new [Vector4f] with result of multiplication
+     */
+    operator fun times(v: Vector4f): Vector4f {
+        val x = matrix[0] * v.x + matrix[4] * v.y + matrix[8] * v.z + matrix[12] * v.w
+        val y = matrix[1] * v.x + matrix[5] * v.y + matrix[9] * v.z + matrix[13] * v.w
+        val z = matrix[2] * v.x + matrix[6] * v.y + matrix[10] * v.z + matrix[14] * v.w
+        val w = matrix[3] * v.x + matrix[7] * v.y + matrix[11] * v.z + matrix[15] * v.w
+        return Vector4f(x, y, z, w)
+    }
+
     private fun multiplyMatrixArrays(l: FloatArray, r: FloatArray, res: FloatArray) {
         for (i in 0 until 4) {
             res[i] = l[i] * r[0] + l[i + 4] * r[1] + l[i + 8] * r[2] + l[i + 12] * r[3]
@@ -117,35 +129,7 @@ data class Matrix4f(private val matrix: FloatArray) {
      * @return this matrix as result
      */
     fun rotate(q: Quaternion): Matrix4f {
-        val xx = q.x * q.x
-        val xy = q.x * q.y
-        val xz = q.x * q.z
-        val xw = q.x * q.w
-
-        val yy = q.y * q.y
-        val yz = q.y * q.z
-        val yw = q.y * q.w
-
-        val zz = q.z * q.z
-        val zw = q.z * q.w
-
-        val rotationMatrix = FloatArray(16)
-
-        rotationMatrix[0] = 1f - 2f * (yy + zz)
-        rotationMatrix[1] = 2f * (xy - zw)
-        rotationMatrix[2] = 2f * (xz + yw)
-
-        rotationMatrix[4] = 2f * (xy + zw)
-        rotationMatrix[5] = 1f - 2f * (xx + zz)
-        rotationMatrix[6] = 2f * (yz - xw)
-
-        rotationMatrix[8] = 2f * (xz - yw)
-        rotationMatrix[9] = 2f * (yz + xw)
-        rotationMatrix[10] = 1f - 2f * (xx + yy)
-        rotationMatrix[15] = 1f
-
-        multiplyMatrixArrays(matrix.copyOf(), rotationMatrix, this.matrix)
-
+        multiplyMatrixArrays(matrix.copyOf(), q.toMatrix4f().matrix, this.matrix)
         return this
     }
 

@@ -21,7 +21,7 @@ class Transform {
     }
 
     /**
-     * Position in world coordinates
+     * Position in local coordinates
      */
     var position: Vector3f = Vector3f()
         set(value) {
@@ -30,7 +30,7 @@ class Transform {
         }
 
     /**
-     * Rotation quaternion
+     * Rotation quaternion in local coordinates
      */
     var rotation: Quaternion = Quaternion()
         set(value) {
@@ -39,7 +39,7 @@ class Transform {
         }
 
     /**
-     * Object scale
+     * Object scale in local coordinates
      */
     var scale: Vector3f = Vector3f(1f, 1f, 1f)
         set(value) {
