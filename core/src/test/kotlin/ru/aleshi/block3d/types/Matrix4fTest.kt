@@ -68,14 +68,14 @@ class Matrix4fTest {
     }
 
     @Test
-    fun `test multiplication by vector3`() {
+    fun `test multiplication by vector4`() {
         val mat = Matrix4f().translate(10f, 0f, 0f)
 
         assertEquals(Vector3f(10f, 0f, 0f), mat.position())
 
-        val result = mat * Vector3f(10f, 10f, 10f)
+        val result = mat * Vector4f(10f, 10f, 10f, 1.0f)
 
-        assertEquals(Vector3f(20f, 10f, 10f), result)
+        assertEquals(Vector4f(20f, 10f, 10f, 1.0f), result)
     }
 
 }

@@ -1,17 +1,14 @@
 package ru.aleshi.block3d.primitives
 
 import org.lwjgl.system.MemoryUtil
-import ru.aleshi.block3d.Defaults
-import ru.aleshi.block3d.Mesh
-import ru.aleshi.block3d.MeshObject
-import ru.aleshi.block3d.Shared
+import ru.aleshi.block3d.*
 import java.nio.Buffer
 
 /**
  * A single-sided plane, lying on the x-z axis.
- * @constructor creates a new object with shared plane mesh and [Defaults.MATERIAL_UNLIT] material.
+ * @constructor creates a new object with shared plane mesh and [Defaults.MATERIAL_LIT] material.
  */
-class Plane : MeshObject(sharedPlaneMesh, Defaults.MATERIAL_LIT) {
+class Plane(instanceMaterial: Material = Defaults.MATERIAL_LIT) : MeshObject(sharedPlaneMesh, instanceMaterial) {
 
     companion object {
 

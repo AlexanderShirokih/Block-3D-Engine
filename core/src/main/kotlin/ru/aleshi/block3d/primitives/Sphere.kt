@@ -1,10 +1,7 @@
 package ru.aleshi.block3d.primitives
 
 import org.lwjgl.system.MemoryUtil
-import ru.aleshi.block3d.Defaults
-import ru.aleshi.block3d.Mesh
-import ru.aleshi.block3d.MeshObject
-import ru.aleshi.block3d.Shared
+import ru.aleshi.block3d.*
 import java.nio.Buffer
 import kotlin.math.cos
 import kotlin.math.sin
@@ -17,12 +14,16 @@ class Sphere : MeshObject {
     /**
      * Creates a new instance with the copy of the sphere mesh. Default sphere size: 20 slices x 20 stacks.
      */
-    constructor() : super(sharedMeshObject, Defaults.MATERIAL_LIT)
+    constructor(instanceMaterial: Material = Defaults.MATERIAL_LIT) : super(sharedMeshObject, instanceMaterial)
 
     /**
      * Creates a new instance with newly created sphere mesh sized by [slices] and [stacks].
      */
-    constructor(slices: Int, stacks: Int) : super(Shared(buildSphereMesh(slices, stacks)), Defaults.MATERIAL_UNLIT)
+    constructor(slices: Int, stacks: Int, instanceMaterial: Material = Defaults.MATERIAL_LIT) : super(
+        Shared(
+            buildSphereMesh(slices, stacks)
+        ), instanceMaterial
+    )
 
     companion object {
         private const val SLICES = 20
