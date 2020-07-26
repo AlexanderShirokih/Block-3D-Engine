@@ -138,15 +138,22 @@ abstract class Scene {
     }
 
     /**
-     * Adds a new root object to the scene. Since the object added to the scene it will updates.
+     * Adds a new object to the scene. Since the object added to the scene as root, it will updates.
      * If an object already exists in the scene it will be ignored.
-     * Another way to add object to the scene is to set its parent to `null`.
-     * @return `true` if the object has been added, `false` if the object has already contained in the scene.
+     * @param parent if `null` object will be added as root object of the scene. Otherwise it will updates
+     * since parent object added.
      */
-    fun addObject(sceneObject: SceneObject) =
-        sceneObjects.add(sceneObject).apply {
-            if (this) sceneObject.create()
+    fun addObject(sceneObject: SceneObject, parent: TransformableObject? = null) {
+        if (parent == null)
+            sceneObjects.add(sceneObject).apply {
+                if (this) sceneObject.create()
+            }
+        else {
+            if (sceneObject is TransformableObject)
+                sceneObject.parent = parent
+            sceneObject.create()
         }
+    }
 
     /**
      * Removes object from the scene

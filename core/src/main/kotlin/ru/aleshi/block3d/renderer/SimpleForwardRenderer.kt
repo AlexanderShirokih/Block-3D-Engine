@@ -19,7 +19,7 @@ class SimpleForwardRenderer : AbstractRenderer() {
             val shader = meshObject.shader
             shader.bind()
             meshObject.material.attach()
-            meshObject.mesh.draw()
+            meshObject.mesh.draw(meshObject.material.drawMode)
             shader.unbind()
         }
     }

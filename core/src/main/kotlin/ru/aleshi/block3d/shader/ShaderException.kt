@@ -9,7 +9,8 @@ class ShaderException(type: ErrorType, errorDescription: String, shaderCode: Str
     Exception("ShaderError: $type.\nDescription: $errorDescription\n${if (shaderCode.isEmpty()) "" else "Shader code $shaderCode"}") {
     enum class ErrorType {
         SourceError,
-        CompilationError,
+        VertexCompilationError,
+        FragmentCompilationError,
         LinkingError,
         UniformLocationError,
         PropertyTypeMismatch

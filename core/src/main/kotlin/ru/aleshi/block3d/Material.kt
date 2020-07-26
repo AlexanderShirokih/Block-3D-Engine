@@ -1,16 +1,24 @@
 package ru.aleshi.block3d
 
+import org.lwjgl.opengl.GL30C
 import org.lwjgl.system.MemoryStack
 import ru.aleshi.block3d.shader.ShaderLiveType
 import ru.aleshi.block3d.shader.ShaderLiveType.TextureLiveType
 import ru.aleshi.block3d.shader.Shader
 
 /**
- * Describes automatically bound properties for shader program
+ * Describes automatically bound properties for shader program.
+ * @property drawMode Model rendering mode
  */
-class Material(val shader: Shader) {
+class Material(val shader: Shader, var drawMode: DrawMode = DrawMode.SOLID) {
 
-    val hash = shader.hashCode()
+    /**
+     * Mesh rendering mode.
+     * [SOLID] - for solid triangles drawing. [LINES] - for line drawing. [POINTS] - points drawing.
+     */
+    enum class DrawMode(internal val glValue: Int) {
+        SOLID(GL30C.GL_TRIANGLES), LINES(GL30C.GL_LINES), POINTS(GL30C.GL_POINTS)
+    }
 
     private val uniforms = shader.properties
         .map { it.name to ShaderLiveType.fromType(it) }
@@ -57,7 +65,7 @@ class Material(val shader: Shader) {
      * Copies all shader properties to new material instance
      */
     fun copy(): Material =
-        Material(shader).also { new ->
+        Material(shader, drawMode).also { new ->
             uniforms.keys.forEach { property ->
                 new.setProperty(property, getProperty(property))
             }

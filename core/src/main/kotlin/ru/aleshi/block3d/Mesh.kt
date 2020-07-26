@@ -8,7 +8,7 @@ import java.nio.ShortBuffer
 
 
 /**
- * A class describing 3D mesh objects
+ * A class describing 3D mesh objects. Contains id's of written to the memory geometry.
  */
 class Mesh private constructor(
     private var arrayObjectId: Int,
@@ -18,7 +18,6 @@ class Mesh private constructor(
     private val indicesVboId: Int,
     private val glIndexType: Int
 ) : IDisposable {
-
     /**
      * Vertex count in mesh
      */
@@ -118,7 +117,7 @@ class Mesh private constructor(
         fun builder(): Builder = Builder()
     }
 
-    fun draw() {
+    fun draw(drawMode: Material.DrawMode) {
         glBindVertexArray(arrayObjectId)
 
         //TODO: Should be enabled by default
@@ -129,7 +128,7 @@ class Mesh private constructor(
         if (texCoordsVboId != BUFFER_NOT_SET)
             glEnableVertexAttribArray(2)
 
-        glDrawElements(GL_TRIANGLES, vertexCount, glIndexType, 0)
+        glDrawElements(drawMode.glValue, vertexCount, glIndexType, 0)
 
         // Restore state
         glDisableVertexAttribArray(0)

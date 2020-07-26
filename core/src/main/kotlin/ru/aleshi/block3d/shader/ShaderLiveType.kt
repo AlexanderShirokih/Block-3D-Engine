@@ -7,6 +7,8 @@ import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL13C
 import org.lwjgl.opengl.GL20C
 import ru.aleshi.block3d.*
+import ru.aleshi.block3d.lights.DirectionalLight
+import ru.aleshi.block3d.lights.LightSource
 import ru.aleshi.block3d.lights.PointLight
 import ru.aleshi.block3d.shader.Shader.ShaderProperty.SingleShaderProperty
 import ru.aleshi.block3d.types.Color4f
@@ -21,11 +23,12 @@ internal sealed class ShaderLiveType {
         fun fromType(shaderProperty: ShaderProperty): ShaderLiveType =
             when (shaderProperty.type) {
                 Type.Float -> FloatLiveType(shaderProperty)
-                Type.Color -> ColorLiveType(shaderProperty)
+                Type.ColorRGB -> ColorLiveType(false, shaderProperty)
+                Type.ColorRGBA -> ColorLiveType(true, shaderProperty)
                 Type.Texture2D -> TextureLiveType(shaderProperty)
                 Type.Vector3 -> Vector3LiveType(shaderProperty)
                 Type.Matrix4 -> MatrixLiveType(shaderProperty)
-                Type.PointLight -> PointLightLiveType(shaderProperty)
+                Type.LightSource -> LightSourceLiveType(shaderProperty)
             }
 
         val DEFAULT_MATRIX = Matrix4f()
@@ -107,14 +110,18 @@ internal sealed class ShaderLiveType {
     }
 
     /**
-     * Applies [Color4f] to vec4 uniform
+     * Applies [Color4f] to vec4 or vec3 uniform.
+     * @param hasAlpha if `true` then color applies as vec4 otherwise as vec3.
      */
-    class ColorLiveType(shaderProperty: ShaderProperty) : ShaderLiveType() {
+    class ColorLiveType(val hasAlpha: Boolean, shaderProperty: ShaderProperty) : ShaderLiveType() {
         private val uniformId: Int = (shaderProperty as SingleShaderProperty).uniformId
         private var color: Color4f = Color4f.white
 
         override fun bind(buffer: Buffer) {
-            GL20C.glUniform4f(uniformId, color.red, color.green, color.blue, color.alpha)
+            if (hasAlpha)
+                GL20C.glUniform4f(uniformId, color.red, color.green, color.blue, color.alpha)
+            else
+                GL20C.glUniform3f(uniformId, color.red, color.green, color.blue)
         }
 
         override fun set(value: Any?) {
@@ -187,15 +194,15 @@ internal sealed class ShaderLiveType {
     }
 
     /**
-     * Applies [PointLight] to shader structure PointLight
+     * Applies [LightSource] to shader structure PointLight
      */
-    class PointLightLiveType(shaderProperty: ShaderProperty) : ShaderLiveType() {
+    class LightSourceLiveType(shaderProperty: ShaderProperty) : ShaderLiveType() {
         private val intensityId: Int
         private val colourId: Int
         private val attId: Int
         private val positionId: Int
 
-        var pointLight: PointLight? = null
+        var lightSource: LightSource? = null
 
         private fun Map<String, Int>.getOrThrow(paramName: String) =
             this[paramName] ?: error("Required param \'$paramName\' is not found in the uniformsMap")
@@ -209,24 +216,27 @@ internal sealed class ShaderLiveType {
         }
 
         override fun bind(buffer: Buffer) {
-            pointLight?.apply {
+            lightSource?.apply {
                 val position = viewModelPosition
                 GL20C.glUniform1f(intensityId, intensity)
-                GL20C.glUniform1f(attId, attenuation)
+                GL20C.glUniform1f(attId, if (this is PointLight) attenuation else 0f)
                 GL20C.glUniform3f(colourId, color.red, color.green, color.blue)
                 GL20C.glUniform3f(positionId, position.x, position.y, position.z)
             }
         }
 
         override fun set(value: Any?) {
-            pointLight = when (value) {
+            lightSource = when (value) {
                 null -> null
-                is PointLight -> value
-                else -> throw createTypeCastException(value, listOf(PointLight::class.java))
+                is LightSource -> value
+                else -> throw createTypeCastException(
+                    value,
+                    listOf(LightSource::class.java, PointLight::class.java, DirectionalLight::class.java)
+                )
             }
         }
 
-        override fun get(): Any? = pointLight
+        override fun get(): Any? = lightSource
     }
 
 }

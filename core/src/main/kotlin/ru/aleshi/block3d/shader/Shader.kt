@@ -93,7 +93,12 @@ class Shader(data: ShaderData) : IDisposable {
 
         if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == GL_FALSE)
             throw ShaderException(
-                ShaderException.ErrorType.CompilationError,
+                when (shaderType) {
+                    GL_VERTEX_SHADER -> ShaderException.ErrorType.VertexCompilationError
+                    GL_FRAGMENT_SHADER ->
+                        ShaderException.ErrorType.FragmentCompilationError
+                    else -> error("Unknown shader type: $shaderType")
+                },
                 glGetShaderInfoLog(shaderId, 1024),
                 shaderSource
             )
@@ -133,7 +138,7 @@ class Shader(data: ShaderData) : IDisposable {
                             .map {
                                 val name = it.getAnnotation(LinkableProperty::class.java).name
                                 if (name.isEmpty())
-                                    //public static void ClassName.propertyName$annotations()
+                                //public static void ClassName.propertyName$annotations()
                                     it.name.substringBefore("$")
                                 else
                                     name
