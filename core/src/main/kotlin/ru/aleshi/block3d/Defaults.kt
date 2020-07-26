@@ -42,13 +42,15 @@ object Defaults {
     /**
      * Simple texture lit material.
      * Properties:
-     *  mainTexture : Primary texture. Default [Defaults.TEXTURE_WHITE]
-     *  color       : Main color. Default 0.75 grayscale
+     *  mainTexture   : Primary texture. Default [Defaults.TEXTURE_WHITE]
+     *  ambientColor  : Ambient color . Default [Color4f.grayscale]`(0.25f)`
+     *  specularColor : Specular color. Default [Color4f.grayscale]`(0.5f)`
+     *  reflectance   : Specular factor power. Default `10f`.
      */
     val MATERIAL_LIT by lazy {
         Material(ResourceList.default.requireShader("Simple/Lit")).apply {
-            setProperty("color", Color4f.grayscale(0.75f))
-            setProperty("specular", Color4f(0.5f, 0.5f, 0.5f))
+            setProperty("ambientColor", Color4f.grayscale(0.25f))
+            setProperty("specularColor", Color4f.grayscale(0.5f))
             setProperty("reflectance", 10f)
         }
     }

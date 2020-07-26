@@ -21,12 +21,12 @@ abstract class LightSource : TransformableObject() {
      * Light intensity coefficient
      */
     @LinkableProperty
-    var intensity: Float = 0f
+    var intensity: Float = 1f
 
     /**
      * Light position in view-model space
      */
     @LinkableProperty("vmPosition")
-    val viewModelPosition: Vector3f
+    open val viewModelPosition: Vector3f
         get() = (Camera.active.viewMatrix * transform.matrix()).position()
 }

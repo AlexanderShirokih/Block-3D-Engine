@@ -113,7 +113,7 @@ internal sealed class ShaderLiveType {
      * Applies [Color4f] to vec4 or vec3 uniform.
      * @param hasAlpha if `true` then color applies as vec4 otherwise as vec3.
      */
-    class ColorLiveType(val hasAlpha: Boolean, shaderProperty: ShaderProperty) : ShaderLiveType() {
+    class ColorLiveType(private val hasAlpha: Boolean, shaderProperty: ShaderProperty) : ShaderLiveType() {
         private val uniformId: Int = (shaderProperty as SingleShaderProperty).uniformId
         private var color: Color4f = Color4f.white
 

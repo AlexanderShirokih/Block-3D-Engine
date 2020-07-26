@@ -10,7 +10,7 @@ properties:
     type: "Texture2D"
     uniformName: "mainTexture"
   "color":
-    type: "Color"
+    type: "ColorRGBA"
     uniformName: "color"
 
 programs:
