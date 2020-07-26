@@ -1,2 +1,2 @@
 rootProject.name = "block3d-engine"
-include("core", "samples")
+include("core", "samples", "debugging")

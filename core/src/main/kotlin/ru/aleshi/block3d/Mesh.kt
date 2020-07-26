@@ -1,6 +1,7 @@
 package ru.aleshi.block3d
 
 import org.lwjgl.opengl.GL30C.*
+import org.lwjgl.system.MemoryUtil
 import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -38,6 +39,13 @@ class Mesh private constructor(
             glBindVertexArray(arrayObjectId)
         }
 
+        fun vertices(vertexArray: FloatArray) {
+            val vBuffer = MemoryUtil.memAllocFloat(vertexArray.size).put(vertexArray)
+            (vBuffer as Buffer).flip()
+            vertices(vBuffer)
+            MemoryUtil.memFree(vBuffer)
+        }
+
         fun vertices(vertexBuffer: FloatBuffer, stride: Int = 0) {
             if (positionVboId != BUFFER_NOT_SET) throw RuntimeException("Vertices was already set")
 
@@ -46,7 +54,9 @@ class Mesh private constructor(
             glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
             glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, 0)
             glBindBuffer(GL_ARRAY_BUFFER, 0)
-            vertexCount = vertexBuffer.capacity() / 3
+
+            val buffCap = vertexBuffer.capacity()
+            vertexCount = buffCap / 3
         }
 
         fun normals(normalsBuffer: FloatBuffer, stride: Int = 0) {
@@ -75,6 +85,13 @@ class Mesh private constructor(
             indicesCount = buffer.capacity()
 
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesVboId)
+        }
+
+        fun indices(indicesArray: ShortArray) {
+            val iBuffer = MemoryUtil.memAllocShort(indicesArray.size).put(indicesArray)
+            (iBuffer as Buffer).flip()
+            indices(iBuffer)
+            MemoryUtil.memFree(iBuffer)
         }
 
         fun indices(indicesBuffer: IntBuffer) {
@@ -117,7 +134,16 @@ class Mesh private constructor(
         fun builder(): Builder = Builder()
     }
 
-    fun draw(drawMode: Material.DrawMode) {
+    /**
+     * Sets the current vertex buffer data
+     */
+    fun setVertices(buffer: FloatBuffer) {
+        glBindBuffer(GL_ARRAY_BUFFER, positionVboId)
+        glBufferSubData(GL_ARRAY_BUFFER, 0, buffer)
+        glBindBuffer(GL_ARRAY_BUFFER, 0)
+    }
+
+    fun draw() {
         glBindVertexArray(arrayObjectId)
 
         //TODO: Should be enabled by default
@@ -128,7 +154,7 @@ class Mesh private constructor(
         if (texCoordsVboId != BUFFER_NOT_SET)
             glEnableVertexAttribArray(2)
 
-        glDrawElements(drawMode.glValue, vertexCount, glIndexType, 0)
+        glDrawElements(GL_TRIANGLES, vertexCount, glIndexType, 0)
 
         // Restore state
         glDisableVertexAttribArray(0)

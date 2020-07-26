@@ -10,8 +10,8 @@ class Camera : TransformableObject() {
 
     private var shouldUpdateMatrix = true
 
-    internal val projectionMatrix = Matrix4f()
-    internal val viewMatrix = Matrix4f()
+    val projectionMatrix = Matrix4f()
+    val viewMatrix = Matrix4f()
 
     companion object {
         var active: Camera = Camera()

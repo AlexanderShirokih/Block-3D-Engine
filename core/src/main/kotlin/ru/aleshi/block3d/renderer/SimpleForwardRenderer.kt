@@ -2,7 +2,7 @@ package ru.aleshi.block3d.renderer
 
 import ru.aleshi.block3d.MeshObject
 
-class SimpleForwardRenderer : AbstractRenderer() {
+open class SimpleForwardRenderer : AbstractRenderer() {
 
     private val renderingList = mutableListOf<MeshObject>()
 
@@ -19,7 +19,7 @@ class SimpleForwardRenderer : AbstractRenderer() {
             val shader = meshObject.shader
             shader.bind()
             meshObject.material.attach()
-            meshObject.mesh.draw(meshObject.material.drawMode)
+            meshObject.mesh.draw()
             shader.unbind()
         }
     }

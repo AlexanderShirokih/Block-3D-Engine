@@ -1,24 +1,16 @@
 package ru.aleshi.block3d
 
-import org.lwjgl.opengl.GL30C
 import org.lwjgl.system.MemoryStack
+import ru.aleshi.block3d.shader.Shader
 import ru.aleshi.block3d.shader.ShaderLiveType
 import ru.aleshi.block3d.shader.ShaderLiveType.TextureLiveType
-import ru.aleshi.block3d.shader.Shader
+import ru.aleshi.block3d.types.Matrix4f
+import java.nio.FloatBuffer
 
 /**
  * Describes automatically bound properties for shader program.
- * @property drawMode Model rendering mode
  */
-class Material(val shader: Shader, var drawMode: DrawMode = DrawMode.SOLID) {
-
-    /**
-     * Mesh rendering mode.
-     * [SOLID] - for solid triangles drawing. [LINES] - for line drawing. [POINTS] - points drawing.
-     */
-    enum class DrawMode(internal val glValue: Int) {
-        SOLID(GL30C.GL_TRIANGLES), LINES(GL30C.GL_LINES), POINTS(GL30C.GL_POINTS)
-    }
+class Material(val shader: Shader) {
 
     private val uniforms = shader.properties
         .map { it.name to ShaderLiveType.fromType(it) }
@@ -31,9 +23,9 @@ class Material(val shader: Shader, var drawMode: DrawMode = DrawMode.SOLID) {
         }
 
     /**
-     * Binds uniforms to shader
+     * Binds uniforms to shader. Used internally by renderer
      */
-    internal fun attach() {
+    fun attach() {
         // Bind uniforms
         MemoryStack.stackPush().use { stack ->
             val matrixBuffer = stack.mallocFloat(16)
@@ -43,6 +35,28 @@ class Material(val shader: Shader, var drawMode: DrawMode = DrawMode.SOLID) {
                 prop.bind(matrixBuffer)
             }
         }
+    }
+
+    companion object {
+        private val stubBuffer = FloatBuffer.allocate(0)
+    }
+
+    /**
+     * Binds specified property with name [name] and custom value [value].
+     */
+    fun attach(name: String, value: Any?) {
+        val liveType = uniforms.entries
+            .first { (pName, _) -> pName == name }
+            .value
+        liveType.set(value)
+
+        if (value is Matrix4f) {
+            MemoryStack.stackPush().use { stack ->
+                val matrixBuffer = stack.mallocFloat(16)
+                liveType.bind(matrixBuffer)
+            }
+        } else
+            liveType.bind(stubBuffer)
     }
 
     /**
@@ -65,7 +79,7 @@ class Material(val shader: Shader, var drawMode: DrawMode = DrawMode.SOLID) {
      * Copies all shader properties to new material instance
      */
     fun copy(): Material =
-        Material(shader, drawMode).also { new ->
+        Material(shader).also { new ->
             uniforms.keys.forEach { property ->
                 new.setProperty(property, getProperty(property))
             }
