@@ -131,20 +131,9 @@ class Shader(data: ShaderData) : IDisposable {
     private fun fetchProperties(properties: Map<String, ShaderData.Property>) =
         properties.map { entry ->
             entry.value.run {
-                if (type.describingType != null) {
-                    val linkable =
-                        type.describingType.methods
-                            .filter { it.isAnnotationPresent(LinkableProperty::class.java) }
-                            .map {
-                                val name = it.getAnnotation(LinkableProperty::class.java).name
-                                if (name.isEmpty())
-                                //public static void ClassName.propertyName$annotations()
-                                    it.name.substringBefore("$")
-                                else
-                                    name
-                            }
+                if (type.properties != null) {
                     ShaderProperty.ComplexShaderProperty(
-                        uniformsMap = linkable.associateWith { getUniformLocation("$uniformName.$it") },
+                        uniformsMap = type.properties.asList().associateWith { getUniformLocation("$uniformName.$it") },
                         name = entry.key,
                         type = type
                     )

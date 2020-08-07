@@ -7,9 +7,7 @@ import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL13C
 import org.lwjgl.opengl.GL20C
 import ru.aleshi.block3d.*
-import ru.aleshi.block3d.lights.DirectionalLight
 import ru.aleshi.block3d.lights.LightSource
-import ru.aleshi.block3d.lights.PointLight
 import ru.aleshi.block3d.shader.Shader.ShaderProperty.SingleShaderProperty
 import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Matrix4f
@@ -201,6 +199,7 @@ internal sealed class ShaderLiveType {
         private val colourId: Int
         private val attId: Int
         private val positionId: Int
+        private val cutOffId: Int
 
         var lightSource: LightSource? = null
 
@@ -213,13 +212,29 @@ internal sealed class ShaderLiveType {
             colourId = bindings.getOrThrow("color")
             attId = bindings.getOrThrow("attenuation")
             positionId = bindings.getOrThrow("vmPosition")
+            cutOffId = bindings.getOrThrow("cutoff")
         }
 
         override fun bind(buffer: Buffer) {
             lightSource?.apply {
-                val position = viewModelPosition
+                val position: Vector3f
+                val att: Float
+                var cutoff = 1.01f
+
+                if (type == LightSource.Type.Directional) {
+                    position = viewModelDirection
+                    att = 0f
+                } else {
+                    position = viewModelPosition
+                    att = attenuation
+
+                    if (type == LightSource.Type.Spot)
+                        cutoff = cutoffCos
+                }
+
                 GL20C.glUniform1f(intensityId, intensity)
-                GL20C.glUniform1f(attId, if (this is PointLight) attenuation else 0f)
+                GL20C.glUniform1f(attId, att)
+                GL20C.glUniform1f(cutOffId, cutoff)
                 GL20C.glUniform3f(colourId, color.red, color.green, color.blue)
                 GL20C.glUniform3f(positionId, position.x, position.y, position.z)
             }
@@ -229,10 +244,7 @@ internal sealed class ShaderLiveType {
             lightSource = when (value) {
                 null -> null
                 is LightSource -> value
-                else -> throw createTypeCastException(
-                    value,
-                    listOf(LightSource::class.java, PointLight::class.java, DirectionalLight::class.java)
-                )
+                else -> throw createTypeCastException(value, listOf(LightSource::class.java))
             }
         }
 

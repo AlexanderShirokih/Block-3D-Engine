@@ -87,8 +87,15 @@ programs:
 
         if(light.attenuation > 0.0) {
             float distance = length(L);
-            float attenuationInv = 1.0 + light.attenuation * distance * distance;
-            return (diffuse + vec4((ambientColor + specular), 1.0)) / attenuationInv;
+            float attenuation = 1.0 / (1.0 + light.attenuation * distance * distance);
+            vec4 color = diffuse + vec4(specular, 1.0);
+
+            if(light.cutoff < 1.0) {
+                const float eps = 0.05;
+                attenuation *= (specLambertian - light.cutoff)/eps;
+                attenuation = clamp(attenuation, 0.0, 1.0);
+            }
+            return vec4(ambientColor, 1.0) + color * attenuation;
           }
         else
             return (diffuse + vec4(ambientColor + specular, 1.0));
