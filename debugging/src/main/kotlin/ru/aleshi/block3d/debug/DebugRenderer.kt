@@ -2,7 +2,7 @@ package ru.aleshi.block3d.debug
 
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30C
-import ru.aleshi.block3d.Camera
+import ru.aleshi.block3d.scenic.Camera
 import ru.aleshi.block3d.Defaults
 import ru.aleshi.block3d.Material
 import ru.aleshi.block3d.renderer.SimpleForwardRenderer

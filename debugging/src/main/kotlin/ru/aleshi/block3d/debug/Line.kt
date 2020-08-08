@@ -2,7 +2,7 @@ package ru.aleshi.block3d.debug
 
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryUtil
-import ru.aleshi.block3d.Scene
+import ru.aleshi.block3d.scenic.Scene
 import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Vector3f
 import java.nio.Buffer

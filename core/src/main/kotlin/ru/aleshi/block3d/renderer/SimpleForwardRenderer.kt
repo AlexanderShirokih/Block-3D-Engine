@@ -1,6 +1,6 @@
 package ru.aleshi.block3d.renderer
 
-import ru.aleshi.block3d.MeshObject
+import ru.aleshi.block3d.scenic.MeshObject
 
 open class SimpleForwardRenderer : AbstractRenderer() {
 

@@ -1,7 +1,7 @@
 package ru.aleshi.block3d.lights
 
-import ru.aleshi.block3d.Camera
-import ru.aleshi.block3d.TransformableObject
+import ru.aleshi.block3d.scenic.Camera
+import ru.aleshi.block3d.scenic.TransformableObject
 import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Vector3f
 import ru.aleshi.block3d.types.Vector4f

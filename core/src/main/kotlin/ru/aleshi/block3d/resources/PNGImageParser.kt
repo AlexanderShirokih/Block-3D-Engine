@@ -5,7 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.lwjgl.system.MemoryUtil
 import ru.aleshi.block3d.Texture2D
-import ru.aleshi.block3d.data.Image2DData
+import ru.aleshi.block3d.internal.data.Image2DData
 import java.io.InputStream
 import java.nio.Buffer
 import java.nio.ByteBuffer

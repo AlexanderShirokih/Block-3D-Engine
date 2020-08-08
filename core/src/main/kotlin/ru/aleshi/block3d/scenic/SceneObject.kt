@@ -1,4 +1,4 @@
-package ru.aleshi.block3d
+package ru.aleshi.block3d.scenic
 
 /**
  * Base class for all kind of objects, such as cameras, renderable objects, etc

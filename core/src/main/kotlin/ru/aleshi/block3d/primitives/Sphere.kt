@@ -2,6 +2,7 @@ package ru.aleshi.block3d.primitives
 
 import org.lwjgl.system.MemoryUtil
 import ru.aleshi.block3d.*
+import ru.aleshi.block3d.scenic.MeshObject
 import java.nio.Buffer
 import kotlin.math.cos
 import kotlin.math.sin

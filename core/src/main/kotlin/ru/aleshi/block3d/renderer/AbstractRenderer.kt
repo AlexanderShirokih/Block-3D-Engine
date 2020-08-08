@@ -1,6 +1,6 @@
 package ru.aleshi.block3d.renderer
 
-import ru.aleshi.block3d.MeshObject
+import ru.aleshi.block3d.scenic.MeshObject
 
 /**
  * Renderer is used to draw all object on the scene

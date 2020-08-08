@@ -4,6 +4,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.lwjgl.system.MemoryUtil
 import ru.aleshi.block3d.*
+import ru.aleshi.block3d.scenic.MeshObject
+import ru.aleshi.block3d.scenic.TransformableObject
 import java.io.BufferedReader
 import java.io.InputStream
 import java.nio.Buffer
@@ -98,7 +100,8 @@ class WavefrontObjectParser : IParser {
                 MemoryUtil.memFree(normalsBuffer)
                 MemoryUtil.memFree(texCoordsBuffer)
 
-                val meshObject = MeshObject(Shared(mesh), Defaults.MATERIAL_LIT)
+                val meshObject =
+                    MeshObject(Shared(mesh), Defaults.MATERIAL_LIT)
                 if (numObjects == 1)
                     root = meshObject
                 else {

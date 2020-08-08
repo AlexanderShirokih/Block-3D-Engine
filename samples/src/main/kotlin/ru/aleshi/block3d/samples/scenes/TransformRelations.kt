@@ -1,9 +1,9 @@
 package ru.aleshi.block3d.samples.scenes
 
-import ru.aleshi.block3d.Camera
+import ru.aleshi.block3d.scenic.Camera
 import ru.aleshi.block3d.Defaults
-import ru.aleshi.block3d.Scene
-import ru.aleshi.block3d.TransformableObject
+import ru.aleshi.block3d.scenic.Scene
+import ru.aleshi.block3d.scenic.TransformableObject
 import ru.aleshi.block3d.primitives.Sphere
 import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Quaternion

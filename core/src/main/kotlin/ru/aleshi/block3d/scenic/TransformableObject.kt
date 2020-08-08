@@ -1,4 +1,6 @@
-package ru.aleshi.block3d
+package ru.aleshi.block3d.scenic
+
+import ru.aleshi.block3d.Transform
 
 /**
  * Base class for objects that can have position in world space. Also this kind of objects can have childs

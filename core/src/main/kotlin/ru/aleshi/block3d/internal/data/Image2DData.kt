@@ -1,4 +1,4 @@
-package ru.aleshi.block3d.data
+package ru.aleshi.block3d.internal.data
 
 import java.nio.ByteBuffer
 

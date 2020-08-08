@@ -1,5 +1,6 @@
-package ru.aleshi.block3d
+package ru.aleshi.block3d.scenic
 
+import ru.aleshi.block3d.repeat
 import ru.aleshi.block3d.types.Matrix4f
 import kotlin.math.abs
 
@@ -14,7 +15,8 @@ class Camera : TransformableObject() {
     val viewMatrix = Matrix4f()
 
     companion object {
-        var active: Camera = Camera()
+        var active: Camera =
+            Camera()
     }
 
     /**

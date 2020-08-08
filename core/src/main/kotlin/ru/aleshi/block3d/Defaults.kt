@@ -1,6 +1,6 @@
 package ru.aleshi.block3d
 
-import ru.aleshi.block3d.data.Image2DData
+import ru.aleshi.block3d.internal.data.Image2DData
 import ru.aleshi.block3d.resources.ResourceList
 import ru.aleshi.block3d.types.Color4f
 import java.nio.Buffer

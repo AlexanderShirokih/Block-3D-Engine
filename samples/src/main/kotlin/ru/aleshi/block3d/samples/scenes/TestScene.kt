@@ -1,9 +1,9 @@
 package ru.aleshi.block3d.samples.scenes
 
 import kotlinx.coroutines.launch
-import ru.aleshi.block3d.Camera
-import ru.aleshi.block3d.Scene
-import ru.aleshi.block3d.TransformableObject
+import ru.aleshi.block3d.scenic.Camera
+import ru.aleshi.block3d.scenic.Scene
+import ru.aleshi.block3d.scenic.TransformableObject
 import ru.aleshi.block3d.debug.DebugRenderer
 import ru.aleshi.block3d.lights.LightSource
 import ru.aleshi.block3d.primitives.Box

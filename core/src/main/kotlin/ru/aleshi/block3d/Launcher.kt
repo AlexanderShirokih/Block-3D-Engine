@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL
 import org.slf4j.LoggerFactory
 import ru.aleshi.block3d.internal.GLFWWindow
 import ru.aleshi.block3d.internal.WindowConfig
-import ru.aleshi.block3d.primitives.Sphere
+import ru.aleshi.block3d.scenic.Scene
 
 /**
  * Entry point to start the engine. Creates GLFW window and manages its state.

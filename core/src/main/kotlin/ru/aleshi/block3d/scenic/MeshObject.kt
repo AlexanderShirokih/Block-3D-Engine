@@ -1,5 +1,6 @@
-package ru.aleshi.block3d
+package ru.aleshi.block3d.scenic
 
+import ru.aleshi.block3d.*
 import ru.aleshi.block3d.shader.Shader
 
 /**

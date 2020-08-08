@@ -1,9 +1,10 @@
-package ru.aleshi.block3d
+package ru.aleshi.block3d.scenic
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.lwjgl.opengl.GL11.*
+import ru.aleshi.block3d.World
 import ru.aleshi.block3d.renderer.AbstractRenderer
 import ru.aleshi.block3d.renderer.SimpleForwardRenderer
 import ru.aleshi.block3d.resources.ResourceList

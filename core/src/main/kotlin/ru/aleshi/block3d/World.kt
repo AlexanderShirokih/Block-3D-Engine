@@ -9,6 +9,7 @@ import ru.aleshi.block3d.input.Mouse
 import ru.aleshi.block3d.internal.DispatchingRunnable
 import ru.aleshi.block3d.internal.StubScene
 import ru.aleshi.block3d.resources.ResourceList
+import ru.aleshi.block3d.scenic.Scene
 
 /**
  * Root class for all engine hierarchy
