@@ -11,7 +11,7 @@ class SolidColorBackground : Background {
     /**
      * Fill color
      */
-    var color: Color4f = Color4f.magenta
+    var color: Color4f = Color4f.black
         set(value) {
             field = value
             onApply()
