@@ -8,7 +8,6 @@ import ru.aleshi.block3d.World
 import ru.aleshi.block3d.renderer.AbstractRenderer
 import ru.aleshi.block3d.renderer.SimpleForwardRenderer
 import ru.aleshi.block3d.resources.ResourceList
-import ru.aleshi.block3d.types.Color4f
 
 /**
  * Scene is an entity that holds all objects, such as cameras, meshes, light sources, GUI elements, and others.
@@ -36,12 +35,12 @@ abstract class Scene {
     val resources: ResourceList = ResourceList(ResourceList.default)
 
     /**
-     * Background color for the scene
+     * Scene background
      */
-    var background: Color4f = Color4f.magenta
+    var background: Background = SolidColorBackground()
         set(value) {
             field = value
-            glClearColor(background.red, background.green, background.blue, background.alpha)
+            field.onApply()
         }
 
     companion object {
@@ -101,7 +100,6 @@ abstract class Scene {
         // Apply default settings
         glEnable(GL_DEPTH_TEST)
         glClearDepth(1.0)
-        glDepthFunc(GL_LESS)
         glDepthRange(0.0, 1.0)
         glDepthMask(true)
         glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST)
@@ -115,7 +113,7 @@ abstract class Scene {
         cullFace = true
 
         // Add default camera to the scene
-        addObject(Camera.active)
+        add(Camera.active)
     }
 
     /**
@@ -135,6 +133,8 @@ abstract class Scene {
         sceneObjects.forEach { it.update() }
 
         sceneRenderer.render()
+
+        background.onSceneDrawn()
     }
 
     /**
@@ -151,7 +151,7 @@ abstract class Scene {
      * @param parent if `null` object will be added as root object of the scene. Otherwise it will updates
      * since parent object added.
      */
-    fun addObject(sceneObject: SceneObject, parent: TransformableObject? = null) {
+    fun add(sceneObject: SceneObject, parent: TransformableObject? = null) {
         if (parent == null)
             sceneObjects.add(sceneObject).apply {
                 if (this) sceneObject.create()
@@ -166,7 +166,7 @@ abstract class Scene {
     /**
      * Removes object from the scene
      */
-    fun removeObject(sceneObject: SceneObject) {
+    fun remove(sceneObject: SceneObject) {
         if (sceneObjects.remove(sceneObject))
             sceneObject.destroy()
     }

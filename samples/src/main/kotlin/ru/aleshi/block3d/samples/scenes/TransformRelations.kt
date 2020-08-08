@@ -2,12 +2,18 @@ package ru.aleshi.block3d.samples.scenes
 
 import ru.aleshi.block3d.scenic.Camera
 import ru.aleshi.block3d.Defaults
+import ru.aleshi.block3d.Launcher
 import ru.aleshi.block3d.scenic.Scene
 import ru.aleshi.block3d.scenic.TransformableObject
 import ru.aleshi.block3d.primitives.Sphere
+import ru.aleshi.block3d.scenic.SolidColorBackground
 import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Quaternion
 import ru.aleshi.block3d.types.Vector3f
+
+fun main() {
+    Launcher.start(TransformRelations())
+}
 
 /**
  * This example shows work of relative transformations in object hierarchy
@@ -22,25 +28,25 @@ class TransformRelations : Scene() {
 
     override fun create() {
         super.create()
-        background = Color4f.grayscale(0.13f)
+        (background as SolidColorBackground).color = Color4f.grayscale(0.13f)
         Camera.active.transform.position = Vector3f.forward * 60f
         Camera.active.transform.rotation = Quaternion.fromAxisAngle(Vector3f.right, -35f)
 
         sun = Sphere(Defaults.MATERIAL_UNLIT).apply {
-            addObject(this)
+            add(this)
             transform.scale = Vector3f(10f)
             material.setProperty("color", Color4f(1f, 1f, 0f))
         }
 
         earth = Sphere(Defaults.MATERIAL_UNLIT).apply {
-            addObject(this, sun)
+            add(this, sun)
             transform.scale = Vector3f(.5f)
             transform.position = Vector3f.right * 3f
             material.setProperty("color", Color4f(0f, 0f, 1f))
         }
 
         moon = Sphere(Defaults.MATERIAL_UNLIT).apply {
-            addObject(this, earth)
+            add(this, earth)
             transform.scale = Vector3f(0.3f)
             transform.position = Vector3f.forward * 1.5f
             material.setProperty("color", Color4f.grayscale(0.7f))

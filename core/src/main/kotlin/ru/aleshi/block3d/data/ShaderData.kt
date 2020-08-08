@@ -29,7 +29,7 @@ data class ShaderData(
          * Enum describing property types
          */
         enum class Type(val properties: Array<String>? = null) {
-            Float, ColorRGB, ColorRGBA, Texture2D, Vector3, Matrix4,
+            Float, ColorRGB, ColorRGBA, Texture2D, TextureCube, Vector3, Matrix4,
             LightSource(arrayOf("intensity", "attenuation", "cutoff", "color", "vmPosition"))
         }
     }

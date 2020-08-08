@@ -4,6 +4,9 @@ import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL30.glGenerateMipmap
 import org.lwjgl.system.MemoryUtil
 import ru.aleshi.block3d.internal.data.Image2DData
+import ru.aleshi.block3d.types.Color4f
+import java.nio.Buffer
+import java.nio.ByteBuffer
 
 /**
  * A class representing texture 2D for binding it to the shader as sampler2D
@@ -13,18 +16,18 @@ class Texture2D(imageData: Image2DData) : Texture(GL_TEXTURE_2D) {
 
     init {
         val glFormat = if (imageData.hasAlpha) GL_RGBA else GL_RGB
-        glBindTexture(GL_TEXTURE_2D, texId)
+        glBindTexture(glType, texId)
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
 
         glTexParameteri(
-            GL_TEXTURE_2D,
+            glType,
             GL_TEXTURE_MIN_FILTER,
             if (imageData.generateMipmaps) GL_LINEAR_MIPMAP_LINEAR else GL_NEAREST
         )
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        glTexParameteri(glType, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
         glTexImage2D(
-            GL_TEXTURE_2D,
+            glType,
             0,
             glFormat,
             imageData.width,
@@ -39,6 +42,28 @@ class Texture2D(imageData: Image2DData) : Texture(GL_TEXTURE_2D) {
             glGenerateMipmap(GL_TEXTURE_2D)
 
         MemoryUtil.memFree(imageData.data)
+    }
+
+    companion object {
+        /**
+         * Creates [Texture2D] with size 1x1 and filled with [color].
+         */
+        @JvmStatic
+        fun ofColor(color: Color4f) = Texture2D(
+            Image2DData(
+                data = ByteBuffer
+                    .allocateDirect(4)
+                    .put((color.red * 0xFF).toByte())
+                    .put((color.green * 0xFF).toByte())
+                    .put((color.blue * 0xFF).toByte())
+                    .put((color.alpha * 0xFF).toByte())
+                    .apply { (this as Buffer).flip() } as ByteBuffer,
+                width = 1,
+                height = 1,
+                hasAlpha = true,
+                generateMipmaps = false
+            )
+        )
     }
 
 }

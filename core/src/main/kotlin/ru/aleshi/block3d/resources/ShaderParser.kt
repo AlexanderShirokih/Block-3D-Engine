@@ -19,7 +19,6 @@ class ShaderParser : IParser, IComposer {
 
     override fun compose(outputStream: OutputStream, obj: Any) {
         val string = Yaml.default.stringify(ShaderData.serializer(), obj as ShaderData)
-        println(string)
         outputStream.bufferedWriter().apply {
             write(string)
             flush()

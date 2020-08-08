@@ -29,10 +29,20 @@ open class MeshObject(private val sharedMesh: Shared<Mesh>, mat: Material) :
         linkDefaults()
     }
 
+    //.copy().run { array().apply { this[12] = 0f; this[13] = 0f; this[14] = 0f } }
+
     private fun linkDefaults() {
         material.setProperty("modelViewMatrix", { Camera.active.viewMatrix * transform.matrix() })
         material.setProperty("projectionMatrix", { Camera.active.projectionMatrix })
         material.setProperty("cameraPosition", { Camera.active.transform.position })
+        material.setProperty("viewMatrix", { Camera.active.viewMatrix })
+        material.setProperty(
+            "viewMatrixAtCenter",
+            {
+                Camera.active.run {
+                    viewMatrix.copy().apply { array().apply { this[12] = 0f; this[13] = 0f; this[14] = 0f } }
+                }
+            })
     }
 
     override fun onCreate() {

@@ -2,6 +2,10 @@ package ru.aleshi.block3d.resources
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import ru.aleshi.block3d.Texture2D
+import ru.aleshi.block3d.TextureCube
+import ru.aleshi.block3d.internal.data.Image2DData
+import ru.aleshi.block3d.internal.data.ImageCubeData
 import java.io.*
 import java.lang.RuntimeException
 
@@ -11,10 +15,11 @@ import java.lang.RuntimeException
 @Suppress("BlockingMethodInNonBlockingContext")
 object Loader {
 
-    private val installedParsers = mutableMapOf<String, Class<out IParser>>(
+    private val installedParsers = mutableMapOf(
         "shc" to ShaderParser::class.java,
         "png" to PNGImageParser::class.java,
-        "obj" to WavefrontObjectParser::class.java
+        "obj" to WavefrontObjectParser::class.java,
+        "cubemap.json" to CubeMapParser::class.java
     )
 
     private val installedComposers = mutableMapOf<String, Class<out IComposer>>(
@@ -37,8 +42,8 @@ object Loader {
      * Loads resource from resources folder
      */
     suspend fun loadResource(resourceName: String): Any {
-        val resource = ClassLoader.getSystemResource(resourceName)
-        val ext = resource.file.substringAfterLast('.', "")
+        val resource = ClassLoader.getSystemResource(resourceName) ?: throw ResourceNotFoundException(resourceName)
+        val ext = resource.file.substringAfter('.', "")
         val stream = withContext(Dispatchers.IO) { resource.openStream() }
         return loadFromInputStream(ext, stream)
     }
@@ -47,7 +52,7 @@ object Loader {
      * Loads resource using parser depending of file extension.
      * @see loadFromInputStream
      */
-    suspend fun load(file: File): Any = loadFromInputStream(file.extension, FileInputStream(file))
+    suspend fun load(file: File): Any = loadFromInputStream(file.name.substringAfter('.', ""), FileInputStream(file))
 
     /**
      * Loads object of type [type] from input stream. After reading stream will be closed.
@@ -105,3 +110,14 @@ object Loader {
     fun removeComposer(extension: String) =
         installedComposers.remove(extension) != null
 }
+
+
+/**
+ * Casts resource loaded by [Loader] as [Image2DData] and creates [Texture2D] from it
+ */
+fun Any.asTexture2D(): Texture2D = Texture2D(this as Image2DData)
+
+/**
+ * Casts resource loaded by [Loader] as [ImageCubeData] and creates [TextureCube] from it
+ */
+fun Any.asTextureCube(): TextureCube = TextureCube(this as ImageCubeData)

@@ -1,10 +1,7 @@
 package ru.aleshi.block3d
 
-import ru.aleshi.block3d.internal.data.Image2DData
 import ru.aleshi.block3d.resources.ResourceList
 import ru.aleshi.block3d.types.Color4f
-import java.nio.Buffer
-import java.nio.ByteBuffer
 
 /**
  * Contains instances for default resources.
@@ -16,15 +13,7 @@ object Defaults {
      * White texture with size 1x1 pixels
      */
     val TEXTURE_WHITE by lazy {
-        Texture2D(
-            Image2DData(
-                data = (ByteBuffer.allocateDirect(4).putInt(0xFFFFFFFF.toInt()) as Buffer).flip() as ByteBuffer,
-                width = 1,
-                height = 1,
-                hasAlpha = true,
-                generateMipmaps = false
-            )
-        )
+        Texture2D.ofColor(Color4f.white)
     }
 
     /**
@@ -53,6 +42,15 @@ object Defaults {
             setProperty("specularColor", Color4f.grayscale(0.5f))
             setProperty("reflectance", 10f)
         }
+    }
+
+    /**
+     * Material which is used to draw simple skybox.
+     * Properties:
+     *  skyboxMap   : Cubemap containing background.
+     */
+    val MATERIAL_SKYBOX by lazy {
+        Material(ResourceList.default.requireShader("Skybox/CubemapSkybox"))
     }
 
 }

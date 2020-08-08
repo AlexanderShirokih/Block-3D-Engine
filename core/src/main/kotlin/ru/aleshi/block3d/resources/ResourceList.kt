@@ -19,7 +19,7 @@ class ResourceList(private val parent: ResourceList? = null) : IDisposable {
             if (default.shaders.isNotEmpty())
                 throw RuntimeException("Default resource list is not empty!")
 
-            val shaders = listOf("simple_unlit.shc", "simple_lit.shc")
+            val shaders = listOf("simple_unlit.shc", "simple_lit.shc", "skybox_cubemap.shc")
 
             for (shaderName in shaders) {
                 val shaderData = Loader.loadResource("shaders/$shaderName") as ShaderData

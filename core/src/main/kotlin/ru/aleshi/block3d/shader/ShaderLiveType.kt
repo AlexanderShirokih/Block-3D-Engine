@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL13C
 import org.lwjgl.opengl.GL20C
 import ru.aleshi.block3d.*
-import ru.aleshi.block3d.lights.LightSource
+import ru.aleshi.block3d.scenic.LightSource
 import ru.aleshi.block3d.shader.Shader.ShaderProperty.SingleShaderProperty
 import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Matrix4f
@@ -23,7 +23,7 @@ internal sealed class ShaderLiveType {
                 Type.Float -> FloatLiveType(shaderProperty)
                 Type.ColorRGB -> ColorLiveType(false, shaderProperty)
                 Type.ColorRGBA -> ColorLiveType(true, shaderProperty)
-                Type.Texture2D -> TextureLiveType(shaderProperty)
+                Type.Texture2D, Type.TextureCube -> TextureLiveType(shaderProperty)
                 Type.Vector3 -> Vector3LiveType(shaderProperty)
                 Type.Matrix4 -> MatrixLiveType(shaderProperty)
                 Type.LightSource -> LightSourceLiveType(shaderProperty)
@@ -99,7 +99,7 @@ internal sealed class ShaderLiveType {
                 if (value !is Texture)
                     throw createTypeCastException(
                         value,
-                        listOf(Texture2D::class.java)
+                        listOf(Texture2D::class.java, TextureCube::class.java)
                     )
             texture = value
         }

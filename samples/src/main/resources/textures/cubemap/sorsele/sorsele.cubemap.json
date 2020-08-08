@@ -1,0 +1,10 @@
+{
+  "faceImagePaths": {
+    "Right": "textures/cubemap/sorsele/posx.png",
+    "Left": "textures/cubemap/sorsele/negx.png",
+    "Up": "textures/cubemap/sorsele/posy.png",
+    "Down": "textures/cubemap/sorsele/negy.png",
+    "Front": "textures/cubemap/sorsele/posz.png",
+    "Back": "textures/cubemap/sorsele/negz.png"
+  }
+}

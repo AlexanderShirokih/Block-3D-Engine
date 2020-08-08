@@ -18,7 +18,7 @@ object Launcher {
     /**
      * Creates the World instance and initializes GLFW window.
      */
-    fun start(config: WindowConfig, startingScene: Scene): World {
+    fun start(startingScene: Scene, config: WindowConfig = WindowConfig()): World {
         GLFWErrorCallback.createPrint(System.err).set()
         logger.info("Starting Block3D Engine")
         logger.info("LWJGL version: {}", Version.getVersion())

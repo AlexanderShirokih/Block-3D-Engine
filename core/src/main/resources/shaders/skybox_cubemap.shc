@@ -1,0 +1,38 @@
+name: "Skybox/CubemapSkybox"
+properties:
+  "projectionMatrix":
+    type: "Matrix4"
+    uniformName: "projectionMatrix"
+  "viewMatrixAtCenter":
+    type: "Matrix4"
+    uniformName: "viewMatrix"
+  "mainTexture":
+    type: "TextureCube"
+    uniformName: "skyboxMap"
+
+programs:
+  "OpenGL30":
+    vertexShaderCode: |
+      #version 330
+      layout (location=0) in vec3 position;
+
+      out vec3 outTexCoord;
+
+      uniform mat4 projectionMatrix;
+      uniform mat4 viewMatrix;
+
+      void main() {
+        gl_Position = (projectionMatrix * viewMatrix * vec4(position, 1.0)).xyww;
+        outTexCoord = position;
+      }
+
+    fragmentShaderCode: |
+      #version 330
+      in  vec3 outTexCoord;
+      out vec4 fragColor;
+
+      uniform samplerCube skyboxMap;
+
+      void main() {
+        fragColor = texture(skyboxMap, outTexCoord);
+      }

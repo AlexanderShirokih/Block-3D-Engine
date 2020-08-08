@@ -4,17 +4,15 @@ import de.matthiasmann.twl.utils.PNGDecoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.lwjgl.system.MemoryUtil
-import ru.aleshi.block3d.Texture2D
 import ru.aleshi.block3d.internal.data.Image2DData
 import java.io.InputStream
 import java.nio.Buffer
 import java.nio.ByteBuffer
 
 /**
- * A class used to load and save PNG images.
- * Loads Image as Texture2D
+ * A class used to load PNG images.
+ * Loads Image as [Image2DData]
  * @see Image2DData
- * @see Texture2D
  */
 class PNGImageParser : IParser {
 
@@ -33,19 +31,17 @@ class PNGImageParser : IParser {
         val buffer = MemoryUtil.memAlloc(width * height * bytesPerPixel)
 
         try {
-            withContext(Dispatchers.Default) { decoder.decodeFlipped(buffer, width * bytesPerPixel, desiredFormat) }
+            withContext(Dispatchers.Default) { decoder.decode(buffer, width * bytesPerPixel, desiredFormat) }
         } catch (e: Exception) {
             MemoryUtil.memFree(buffer)
             throw e
         }
 
-        val imageData = Image2DData(
+        return Image2DData(
             (buffer as Buffer).flip() as ByteBuffer,
             width,
             height,
             hasAlpha
         )
-
-        return Texture2D(imageData)
     }
 }

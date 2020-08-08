@@ -1,6 +1,6 @@
 package ru.aleshi.block3d
 
-import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL11.*
 
 /**
  * Common class for all texture kinds
@@ -8,12 +8,12 @@ import org.lwjgl.opengl.GL11
  */
 abstract class Texture internal constructor(val glType: Int) : IDisposable {
 
-    internal var texId: Int = GL11.glGenTextures()
+    internal var texId: Int = glGenTextures()
         private set
 
     override fun dispose() {
         if (texId != 0) {
-            GL11.glDeleteTextures(texId)
+            glDeleteTextures(texId)
             texId = 0
         }
     }

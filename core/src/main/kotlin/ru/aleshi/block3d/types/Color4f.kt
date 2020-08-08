@@ -15,11 +15,13 @@ data class Color4f(
     companion object {
         val black = Color4f(0f, 0f, 0f)
         val gray = Color4f(0.5f, 0.5f, 0.5f)
+        val yellow = Color4f(1f, 1f, 0f)
         val white = Color4f(1f, 1f, 1f)
         val red = Color4f(1f, 0f, 0f)
         val green = Color4f(0f, 1f, 0f)
         val blue = Color4f(0f, 0f, 1f)
         val magenta = Color4f(1f, 0f, 1f)
+        val purple = Color4f(0.5f, 0f, 0.5f)
 
         val random: Color4f
             get() = Color4f(Random.Default.nextFloat(), Random.Default.nextFloat(), Random.Default.nextFloat(), 1f)
