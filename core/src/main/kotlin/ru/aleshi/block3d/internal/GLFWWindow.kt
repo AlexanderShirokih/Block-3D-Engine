@@ -60,7 +60,8 @@ class GLFWWindow : Window() {
             Mouse
         )
 
-        glfwSwapInterval(1) // V-sync
+        glfwSwapInterval(if (config.vSync) 1 else 0) // V-sync
+
         glfwShowWindow(windowHandle)
     }
 
