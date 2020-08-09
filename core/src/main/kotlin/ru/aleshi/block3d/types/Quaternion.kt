@@ -3,6 +3,7 @@ package ru.aleshi.block3d.types
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 /**
  * A class describing rotation
@@ -20,7 +21,7 @@ data class Quaternion(
          * Returns new quaternion with random rotation
          */
         val random: Quaternion
-            get() = fromAxisAngle(Vector3f.random, 360f)
+            get() = fromAxisAngle(Vector3f.one, Random.nextFloat())
 
         /**
          * Sets quaternion from Euler angles

@@ -48,6 +48,14 @@ data class Matrix4f(private val matrix: FloatArray) {
     }
 
     /**
+     * Multiplies two matrices and stores result to [out] matrix and returns it
+     */
+    fun times(m: Matrix4f, out: Matrix4f): Matrix4f {
+        multiplyMatrixArrays(matrix, m.matrix, out.matrix)
+        return out
+    }
+
+    /**
      * Multiplies this matrix to [Vector4f].
      * @return new [Vector4f] with result of multiplication
      */

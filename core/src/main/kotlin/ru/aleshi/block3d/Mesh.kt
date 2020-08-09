@@ -7,7 +7,6 @@ import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import java.nio.ShortBuffer
 
-
 /**
  * A class describing 3D mesh objects. Contains id's of written to the memory geometry.
  */
@@ -19,11 +18,13 @@ class Mesh private constructor(
     private val indicesVboId: Int,
     private val glIndexType: Int
 ) : IDisposable {
+
     /**
      * Vertex count in mesh
      */
     var vertexCount: Int = 0
         private set
+
 
     class Builder {
         private val arrayObjectId = glGenVertexArrays()
@@ -120,7 +121,11 @@ class Mesh private constructor(
             ).also { mesh ->
                 if (indicesVboId == BUFFER_NOT_SET) {
                     mesh.dispose()
-                    throw RuntimeException("Indices buffer was not specified")
+                    throw MeshRenderingException("Indices buffer was not specified")
+                }
+                if (positionVboId == BUFFER_NOT_SET) {
+                    mesh.dispose()
+                    throw MeshRenderingException("Vertex buffer was not specified")
                 }
                 mesh.vertexCount = if (indicesCount == 0) vertexCount else indicesCount
             }
@@ -143,7 +148,10 @@ class Mesh private constructor(
         glBindBuffer(GL_ARRAY_BUFFER, 0)
     }
 
-    fun draw() {
+    /**
+     * Binds vertex arrays
+     */
+    fun bind() {
         glBindVertexArray(arrayObjectId)
 
         //TODO: Should be enabled by default
@@ -153,9 +161,12 @@ class Mesh private constructor(
             glEnableVertexAttribArray(1)
         if (texCoordsVboId != BUFFER_NOT_SET)
             glEnableVertexAttribArray(2)
+    }
 
-        glDrawElements(GL_TRIANGLES, vertexCount, glIndexType, 0)
-
+    /**
+     * Resets vertex binding
+     */
+    fun unbind() {
         // Restore state
         glDisableVertexAttribArray(0)
 
@@ -165,6 +176,13 @@ class Mesh private constructor(
             glDisableVertexAttribArray(2)
 
         glBindVertexArray(0)
+    }
+
+    /**
+     * Draws the mesh
+     */
+    fun draw() {
+        glDrawElements(GL_TRIANGLES, vertexCount, glIndexType, 0)
     }
 
     override fun dispose() {
@@ -183,4 +201,21 @@ class Mesh private constructor(
 
         arrayObjectId = 0
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Mesh
+
+        if (arrayObjectId != other.arrayObjectId) return false
+        if (positionVboId != other.positionVboId) return false
+        if (normalsVboId != other.normalsVboId) return false
+        if (texCoordsVboId != other.texCoordsVboId) return false
+        if (indicesVboId != other.indicesVboId) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int = arrayObjectId
 }

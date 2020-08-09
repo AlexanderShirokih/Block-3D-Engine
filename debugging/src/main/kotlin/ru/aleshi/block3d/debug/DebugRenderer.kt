@@ -2,6 +2,7 @@ package ru.aleshi.block3d.debug
 
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30C
+import org.lwjgl.system.MemoryStack
 import ru.aleshi.block3d.scenic.Camera
 import ru.aleshi.block3d.Defaults
 import ru.aleshi.block3d.Material
@@ -48,7 +49,7 @@ class DebugRenderer : SimpleForwardRenderer() {
             val shader = debugMaterial.shader
             shader.bind()
 
-            debugMaterial.attach()
+            MemoryStack.stackPush().use { stack -> debugMaterial.attach(stack.mallocFloat(16)) }
 
             if (drawMode != DrawMode.SOLID)
                 GL30C.glPolygonMode(GL30C.GL_FRONT_AND_BACK, DrawMode.SOLID.glValue)

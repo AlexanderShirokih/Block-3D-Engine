@@ -24,16 +24,12 @@ class Material(val shader: Shader) {
 
     /**
      * Binds uniforms to shader. Used internally by renderer
+     * @param buffer allocated float buffer for binding float values like matrix4x4
      */
-    fun attach() {
+    fun attach(buffer: FloatBuffer) {
         // Bind uniforms
-        MemoryStack.stackPush().use { stack ->
-            val matrixBuffer = stack.mallocFloat(16)
-
-            uniforms.values.forEach { prop ->
-                // Dump the matrix into a float buffer
-                prop.bind(matrixBuffer)
-            }
+        for (prop in uniforms.values) {
+            prop.bind(buffer)
         }
     }
 

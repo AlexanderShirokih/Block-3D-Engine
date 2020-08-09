@@ -1,6 +1,7 @@
 package ru.aleshi.block3d.scenic
 
 import org.lwjgl.opengl.GL11C
+import org.lwjgl.system.MemoryStack
 import ru.aleshi.block3d.TextureCube
 import ru.aleshi.block3d.internal.data.ImageCubeData
 import ru.aleshi.block3d.primitives.SkyBox
@@ -22,8 +23,12 @@ class SkyBoxBackground(private val skyBoxMap: TextureCube) : Background {
     override fun onSceneDrawn() {
         skyBox.shader.apply {
             bind()
-            skyBox.material.attach()
-            skyBox.mesh.draw()
+            MemoryStack.stackPush().use { stack -> skyBox.material.attach(stack.mallocFloat(16)) }
+            skyBox.mesh.apply {
+                bind()
+                draw()
+                unbind()
+            }
             unbind()
         }
     }

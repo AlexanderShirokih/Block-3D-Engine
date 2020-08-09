@@ -1,27 +1,61 @@
 package ru.aleshi.block3d.renderer
 
+import org.lwjgl.system.MemoryStack
+import ru.aleshi.block3d.Mesh
 import ru.aleshi.block3d.scenic.MeshObject
+import ru.aleshi.block3d.shader.Shader
 
 open class SimpleForwardRenderer : AbstractRenderer() {
 
-    private val renderingList = mutableListOf<MeshObject>()
+    // Use two level grouping
+    private val renderingList = hashMapOf<Mesh, MutableMap<Shader, MutableSet<MeshObject>>>()
 
     override fun attachToRenderer(meshObject: MeshObject) {
-        renderingList.add(meshObject)
+        val mesh = meshObject.mesh
+        val shader = meshObject.shader
+
+        val shaderGroup = renderingList[mesh]
+        if (shaderGroup == null) {
+            renderingList[mesh] = hashMapOf(shader to mutableSetOf(meshObject))
+            return
+        }
+
+        val meshSet = shaderGroup[shader]
+        if (meshSet == null) {
+            shaderGroup[shader] = mutableSetOf(meshObject)
+            return
+        }
+
+        meshSet.add(meshObject)
     }
 
     override fun detachFromRenderer(meshObject: MeshObject) {
-        renderingList.remove(meshObject)
+        val mesh = meshObject.mesh
+        val shader = meshObject.shader
+
+        val shaderGroups = renderingList[mesh] ?: return
+        val meshSet = shaderGroups[shader] ?: return
+
+        meshSet.remove(meshObject)
     }
 
     override fun render() {
-        for (meshObject in renderingList) {
-            val shader = meshObject.shader
-            shader.bind()
-            meshObject.material.attach()
-            meshObject.mesh.draw()
-            shader.unbind()
+        // Bind uniforms
+        MemoryStack.stackPush().use { stack ->
+            val buffer = stack.mallocFloat(16)
+
+            for ((mesh, shaderGroup) in renderingList) {
+                mesh.bind()
+                for ((shader, meshObjects) in shaderGroup) {
+                    shader.bind()
+                    for (instance in meshObjects) {
+                        instance.material.attach(buffer)
+                        mesh.draw()
+                    }
+                    shader.unbind()
+                }
+                mesh.unbind()
+            }
         }
     }
-
 }
