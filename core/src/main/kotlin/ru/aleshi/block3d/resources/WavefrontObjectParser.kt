@@ -46,7 +46,7 @@ class WavefrontObjectParser : IParser {
                 listOf(vertexList, normalList, texCoordsList, facesList).all { it.size == vertexList.size }
 
             if (!allDataPresent)
-                throw RuntimeException("Not all data present. Vertex({$vertexList.size}), normals({$normalList.size}), texture coordinates({$texCoordsList.size}) and faces({$facesList.size}) groups count not matches")
+                throw Block3DException("Not all data present. Vertex({$vertexList.size}), normals({$normalList.size}), texture coordinates({$texCoordsList.size}) and faces({$facesList.size}) groups count not matches")
 
             val numObjects = facesList.size
             var vertexOffset = 1
@@ -110,7 +110,7 @@ class WavefrontObjectParser : IParser {
                     meshObject.parent = root
                 }
             }
-            return root ?: throw RuntimeException("Parsed model doesn't have any mesh in it")
+            return root ?: throw Block3DException("Parsed model doesn't have any mesh in it")
         }
 
     private fun remapIndices(pair: Pair<String, MutableList<Any>>): RemappedFaceList {
@@ -159,7 +159,7 @@ class WavefrontObjectParser : IParser {
                     "vt" -> it[0] to floatArrayOf(it[1].toFloat(), it[2].toFloat())
                     "f" -> if (it.size == 4) {
                         it[0] to listOf(it[1], it[2], it[3])
-                    } else throw RuntimeException("Only triangle faces supported")
+                    } else throw Block3DException("Only triangle faces supported")
                     "o", "g", "mtllib", "usemtl" -> it[0] to it[1]
                     else -> null
                 }

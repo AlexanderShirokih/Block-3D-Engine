@@ -50,7 +50,7 @@ object Launcher {
 
         val caps = GL.createCapabilities()
         if (!caps.OpenGL30)
-            throw RuntimeException("OpenGL 3.0 at least required to run the engine")
+            throw Block3DException("OpenGL 3.0 at least required to run the engine")
 
         return World(window).apply {
             makeCurrent()

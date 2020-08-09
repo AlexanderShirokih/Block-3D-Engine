@@ -48,7 +48,7 @@ class Mesh private constructor(
         }
 
         fun vertices(vertexBuffer: FloatBuffer, stride: Int = 0) {
-            if (positionVboId != BUFFER_NOT_SET) throw RuntimeException("Vertices was already set")
+            if (positionVboId != BUFFER_NOT_SET) throw Block3DException("Vertices was already set")
 
             positionVboId = glGenBuffers()
             glBindBuffer(GL_ARRAY_BUFFER, positionVboId)
@@ -61,7 +61,7 @@ class Mesh private constructor(
         }
 
         fun normals(normalsBuffer: FloatBuffer, stride: Int = 0) {
-            if (normalsVboId != BUFFER_NOT_SET) throw RuntimeException("Normals was already set")
+            if (normalsVboId != BUFFER_NOT_SET) throw Block3DException("Normals was already set")
 
             normalsVboId = glGenBuffers()
             glBindBuffer(GL_ARRAY_BUFFER, normalsVboId)
@@ -71,7 +71,7 @@ class Mesh private constructor(
         }
 
         fun textureCoordinates(texCoordsBuffer: FloatBuffer, stride: Int = 0) {
-            if (texCoordsVboId != BUFFER_NOT_SET) throw RuntimeException("Texture coordinates was already set")
+            if (texCoordsVboId != BUFFER_NOT_SET) throw Block3DException("Texture coordinates was already set")
 
             texCoordsVboId = glGenBuffers()
             glBindBuffer(GL_ARRAY_BUFFER, texCoordsVboId)
@@ -80,7 +80,7 @@ class Mesh private constructor(
         }
 
         private fun createIndicesBuffer(buffer: Buffer) {
-            if (indicesVboId != BUFFER_NOT_SET) throw RuntimeException("Indices was already set")
+            if (indicesVboId != BUFFER_NOT_SET) throw Block3DException("Indices was already set")
 
             indicesVboId = glGenBuffers()
             indicesCount = buffer.capacity()

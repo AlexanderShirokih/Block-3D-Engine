@@ -1,5 +1,6 @@
 package ru.aleshi.block3d.resources
 
+import ru.aleshi.block3d.Block3DException
 import ru.aleshi.block3d.IDisposable
 import ru.aleshi.block3d.shader.Shader
 import ru.aleshi.block3d.data.ShaderData
@@ -17,7 +18,7 @@ class ResourceList(private val parent: ResourceList? = null) : IDisposable {
 
         suspend fun loadDefaultResources() {
             if (default.shaders.isNotEmpty())
-                throw RuntimeException("Default resource list is not empty!")
+                throw Block3DException("Default resource list is not empty!")
 
             val shaders = listOf("simple_unlit.shc", "simple_lit.shc", "skybox_cubemap.shc")
 
@@ -31,12 +32,12 @@ class ResourceList(private val parent: ResourceList? = null) : IDisposable {
     /**
      * Adds resource to this resource list.
      * @throws ResourceAlreadyExistsException If resource with name already exists in the corresponding category.
-     * @throws RuntimeException If the resource cannot be assigned to a category
+     * @throws Block3DException If the resource cannot be assigned to a category
      */
     fun addResource(name: String, resource: Any) {
         val res = when (resource) {
             is Shader -> shaders.putIfAbsent(name, resource) to "shader"
-            else -> throw RuntimeException("The resource with type ${resource.javaClass} cannot be assigned to a category")
+            else -> throw Block3DException("The resource with type ${resource.javaClass} cannot be assigned to a category")
         }
 
         if (res.first != null)

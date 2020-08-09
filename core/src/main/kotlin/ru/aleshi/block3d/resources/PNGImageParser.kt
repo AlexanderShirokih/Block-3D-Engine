@@ -4,6 +4,7 @@ import de.matthiasmann.twl.utils.PNGDecoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.lwjgl.system.MemoryUtil
+import ru.aleshi.block3d.Block3DException
 import ru.aleshi.block3d.internal.data.Image2DData
 import java.io.InputStream
 import java.nio.Buffer
@@ -21,7 +22,7 @@ class PNGImageParser : IParser {
         val decoder = withContext(Dispatchers.IO) { PNGDecoder(inputStream) }
 
         if (!decoder.isRGB)
-            throw RuntimeException("Cannot load image, because it's not an RGB")
+            throw Block3DException("Cannot load image, because it's not an RGB")
 
         val hasAlpha = decoder.hasAlpha()
         val width = decoder.width
