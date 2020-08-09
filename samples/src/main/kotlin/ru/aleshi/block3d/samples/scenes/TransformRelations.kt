@@ -55,7 +55,7 @@ class TransformRelations : Scene() {
 
     override fun update() {
         super.update()
-        sun.transform.rotation *= rotation
-        earth.transform.rotation *= rotation * rotation
+        sun.transform.rotate(rotation)
+        earth.transform.rotate(rotation * rotation)
     }
 }

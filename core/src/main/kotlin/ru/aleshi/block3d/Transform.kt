@@ -30,6 +30,14 @@ class Transform {
         }
 
     /**
+     * Translates position to [v]
+     */
+    fun translate(v: Vector3f) {
+        position.plusAssign(v)
+        hasChanges = true
+    }
+
+    /**
      * Rotation quaternion in local coordinates
      */
     var rotation: Quaternion = Quaternion()
@@ -37,6 +45,14 @@ class Transform {
             hasChanges = true
             field = value
         }
+
+    /**
+     * Adds rotation by quaternion [q]
+     */
+    fun rotate(q: Quaternion) {
+        rotation.timesAssign(q)
+        hasChanges = true
+    }
 
     /**
      * Object scale in local coordinates
@@ -47,12 +63,29 @@ class Transform {
             field = value
         }
 
+
+    /**
+     * Multiplies current object scale to factor [s]
+     */
+    fun scale(s: Float) {
+        scale.timesAssign(s)
+        hasChanges = true
+    }
+
     /**
      * `true` if transform was changes since last frame
      */
     internal var hasChanges = false
 
     private var underlyingMatrix = Matrix4f()
+
+    /**
+     * Marks transform matrix for update
+     */
+    fun invalidate() {
+        hasChanges = true
+    }
+
 
     /**
      * Sets the parent transform object
@@ -70,9 +103,10 @@ class Transform {
     fun matrix(): Matrix4f = underlyingMatrix
 
     /**
-     * Recalculates object matrix if needed
+     * Recalculates object matrix if needed.
+     * @return `true` if matrix was updates
      */
-    fun updateMatrix() {
+    fun updateMatrix(): Boolean {
         if (hasChanges) {
             val base =
                 if (parent == null) underlyingMatrix.identity()
@@ -82,7 +116,11 @@ class Transform {
                 .translate(position)
                 .rotate(rotation)
                 .scale(scale)
+
+            hasChanges = false
+            return true
         }
+        return false
     }
 
 }

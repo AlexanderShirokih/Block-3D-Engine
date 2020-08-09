@@ -17,23 +17,19 @@ fun main() {
 
 class SkyBoxTest : Scene() {
 
-    private lateinit var mainCamera: Camera
-
     override fun create() {
         super.create()
-        mainCamera = Camera.active
         Camera.active.transform.position = Vector3f(0f, 0f, 4f)
 
-        sceneScope.launch {
-            background =
-                SkyBoxBackground(Loader.loadResource("textures/cubemap/sorsele/sorsele.cubemap.json") as ImageCubeData)
+        add(Box())
 
-            add(Box())
+        sceneScope.launch {
+            background = SkyBoxBackground(Loader.loadResource("textures/cubemap/sorsele.cubemap.json") as ImageCubeData)
         }
     }
 
     override fun update() {
         super.update()
-        Camera.active.transform.rotation *= Quaternion.fromAxisAngle(Vector3f.up, 1f)
+        Camera.active.transform.rotate(Quaternion.fromAxisAngle(Vector3f.up, 1f))
     }
 }

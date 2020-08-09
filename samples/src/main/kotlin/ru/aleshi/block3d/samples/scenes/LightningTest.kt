@@ -59,6 +59,6 @@ class TransformRelationsTest : Scene() {
 
     override fun update() {
         super.update()
-        root.transform.rotation *= Quaternion.fromAxisAngle(Vector3f.up, 1f)
+        root.transform.rotate(Quaternion.fromAxisAngle(Vector3f.up, 1f))
     }
 }

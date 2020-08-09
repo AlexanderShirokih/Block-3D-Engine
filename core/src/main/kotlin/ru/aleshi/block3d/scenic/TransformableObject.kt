@@ -34,14 +34,17 @@ open class TransformableObject : SceneObject(), Iterable<TransformableObject> {
         }
 
     override fun update() {
-        transform.updateMatrix()
+        val wasChanged = transform.updateMatrix()
 
         super.update()
 
         if (children.isNotEmpty())
-            for (child in children) {
+            if (wasChanged) for (child in children) {
+                child.transform.invalidate()
                 child.update()
             }
+            else for (child in children)
+                child.update()
     }
 
     override fun destroy() {

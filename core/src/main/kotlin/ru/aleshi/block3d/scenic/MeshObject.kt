@@ -29,8 +29,6 @@ open class MeshObject(private val sharedMesh: Shared<Mesh>, mat: Material) :
         linkDefaults()
     }
 
-    //.copy().run { array().apply { this[12] = 0f; this[13] = 0f; this[14] = 0f } }
-
     private fun linkDefaults() {
         material.setProperty("modelViewMatrix", { Camera.active.viewMatrix * transform.matrix() })
         material.setProperty("projectionMatrix", { Camera.active.projectionMatrix })

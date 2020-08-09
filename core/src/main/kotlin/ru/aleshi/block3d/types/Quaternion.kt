@@ -55,7 +55,6 @@ data class Quaternion(
         }
     }
 
-
     /**
      * Multiplies two quaternions and returns the result quaternion
      */
@@ -66,6 +65,17 @@ data class Quaternion(
         val vz = w * q.z + z * q.w + x * q.y - y * q.x
         val sc = w * q.w - x * q.x - y * q.y - z * q.z
         return Quaternion(vx, vy, vz, sc)
+    }
+
+    /**
+     * Adds rotation to this quaternion
+     */
+    operator fun timesAssign(q: Quaternion) {
+        val vx = w * q.x + x * q.w + y * q.z - z * q.y
+        val vy = w * q.y + y * q.w + z * q.x - x * q.z
+        val vz = w * q.z + z * q.w + x * q.y - y * q.x
+        val sc = w * q.w - x * q.x - y * q.y - z * q.z
+        x = vx; y = vy; z = vz; w = sc
     }
 
     /**

@@ -75,7 +75,7 @@ class Camera : TransformableObject() {
         active = this
     }
 
-    override fun onUpdate() {
+    override fun update() {
         if (shouldUpdateMatrix) {
             shouldUpdateMatrix = false
             projectionMatrix.perspective(fov, aspect, near, far)
@@ -88,5 +88,7 @@ class Camera : TransformableObject() {
                 .translate(-x, -y, -z)
                 .rotate(transform.rotation)
         }
+        super.update()
     }
+
 }
