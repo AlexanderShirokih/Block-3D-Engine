@@ -3,6 +3,8 @@ package ru.aleshi.block3d.primitives
 import org.lwjgl.system.MemoryUtil
 import ru.aleshi.block3d.*
 import ru.aleshi.block3d.scenic.MeshObject
+import ru.aleshi.block3d.types.AABB
+import ru.aleshi.block3d.types.Vector3f
 import java.nio.Buffer
 import kotlin.math.cos
 import kotlin.math.sin
@@ -29,6 +31,9 @@ class Sphere : MeshObject {
     companion object {
         private const val SLICES = 20
         private const val STACKS = 20
+
+        @JvmStatic
+        private val SPHERE_BOUNDS = AABB(Vector3f(-1f), Vector3f.one)
 
         private val sharedMeshObject: Shared<Mesh> by lazy { Shared(buildSphereMesh(SLICES, STACKS)) }
 
@@ -69,6 +74,7 @@ class Sphere : MeshObject {
             (indexBuffer as Buffer).flip()
 
             return Mesh.builder().apply {
+                bounds(SPHERE_BOUNDS)
                 vertices(vertexBuffer, 20)
                 normals(vertexBuffer, 20)
                 (vertexBuffer as Buffer).position(3)

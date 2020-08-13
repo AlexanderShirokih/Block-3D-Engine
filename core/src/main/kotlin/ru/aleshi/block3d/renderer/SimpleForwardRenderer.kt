@@ -10,6 +10,8 @@ open class SimpleForwardRenderer : AbstractRenderer() {
     // Use two level grouping
     private val renderingList = hashMapOf<Mesh, MutableMap<Shader, MutableSet<MeshObject>>>()
 
+    private val frustumCulling = Frustum()
+
     override fun attachToRenderer(meshObject: MeshObject) {
         val mesh = meshObject.mesh
         val shader = meshObject.shader
@@ -40,6 +42,8 @@ open class SimpleForwardRenderer : AbstractRenderer() {
     }
 
     override fun render() {
+//        frustumCulling.updateFrustum()
+
         // Bind uniforms
         MemoryStack.stackPush().use { stack ->
             val buffer = stack.mallocFloat(16)

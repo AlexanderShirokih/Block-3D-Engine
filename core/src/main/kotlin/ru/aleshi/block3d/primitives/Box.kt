@@ -3,6 +3,8 @@ package ru.aleshi.block3d.primitives
 import org.lwjgl.system.MemoryUtil
 import ru.aleshi.block3d.*
 import ru.aleshi.block3d.scenic.MeshObject
+import ru.aleshi.block3d.types.AABB
+import ru.aleshi.block3d.types.Vector3f
 import java.nio.Buffer
 
 /**
@@ -12,6 +14,8 @@ import java.nio.Buffer
 class Box(instanceMaterial: Material = Defaults.MATERIAL_LIT) : MeshObject(sharedBoxMesh, instanceMaterial) {
 
     companion object {
+        @JvmStatic
+        private val BOX_BOUNDS = AABB(Vector3f(-0.5f), Vector3f(0.5f))
         private val sharedBoxMesh: Shared<Mesh> by lazy { Shared(generateMesh()) }
 
         private fun generateMesh(): Mesh {
@@ -53,6 +57,7 @@ class Box(instanceMaterial: Material = Defaults.MATERIAL_LIT) : MeshObject(share
             val buffer = MemoryUtil.memAllocFloat(positions.size)
             (buffer.put(positions) as Buffer).flip()
 
+            meshBuilder.bounds(BOX_BOUNDS)
             meshBuilder.vertices(buffer, 32)
 
             (buffer as Buffer).position(6)

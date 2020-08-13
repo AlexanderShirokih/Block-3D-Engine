@@ -2,10 +2,13 @@ package ru.aleshi.block3d
 
 import org.lwjgl.opengl.GL30C.*
 import org.lwjgl.system.MemoryUtil
+import ru.aleshi.block3d.types.AABB
+import ru.aleshi.block3d.types.Vector3f
 import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import java.nio.ShortBuffer
+import kotlin.math.*
 
 /**
  * A class describing 3D mesh objects. Contains id's of written to the memory geometry.
@@ -16,7 +19,8 @@ class Mesh private constructor(
     private val normalsVboId: Int,
     private val texCoordsVboId: Int,
     private val indicesVboId: Int,
-    private val glIndexType: Int
+    private val glIndexType: Int,
+    val boundingBox: AABB
 ) : IDisposable {
 
     /**
@@ -24,7 +28,6 @@ class Mesh private constructor(
      */
     var vertexCount: Int = 0
         private set
-
 
     class Builder {
         private val arrayObjectId = glGenVertexArrays()
@@ -35,11 +38,23 @@ class Mesh private constructor(
         private var glIndexType: Int = 0
         private var vertexCount: Int = 0
         private var indicesCount: Int = 0
+        private var aabb: AABB = AABB.Empty
 
         init {
             glBindVertexArray(arrayObjectId)
         }
 
+        /**
+         * Sets the bounds of object.
+         * Should be set before [vertices] set. Otherwise bounds will be calculated automatically by vertices data.
+         */
+        fun bounds(aabb: AABB) {
+            this.aabb = aabb
+        }
+
+        /**
+         * Sets the vertices array
+         */
         fun vertices(vertexArray: FloatArray) {
             val vBuffer = MemoryUtil.memAllocFloat(vertexArray.size).put(vertexArray)
             (vBuffer as Buffer).flip()
@@ -47,6 +62,9 @@ class Mesh private constructor(
             MemoryUtil.memFree(vBuffer)
         }
 
+        /**
+         * Sets the vertices by buffer and stride
+         */
         fun vertices(vertexBuffer: FloatBuffer, stride: Int = 0) {
             if (positionVboId != BUFFER_NOT_SET) throw Block3DException("Vertices was already set")
 
@@ -56,8 +74,38 @@ class Mesh private constructor(
             glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, 0)
             glBindBuffer(GL_ARRAY_BUFFER, 0)
 
+            val s = if (stride == 0) 3 else stride / 4
             val buffCap = vertexBuffer.capacity()
-            vertexCount = buffCap / 3
+            vertexCount = buffCap / s
+            if (aabb == AABB.Empty)
+                updateBounds(vertexBuffer, vertexCount, s)
+        }
+
+        private fun updateBounds(buffer: FloatBuffer, vCount: Int, stride: Int) {
+            var mx = Float.MAX_VALUE
+            var my = Float.MAX_VALUE
+            var mz = Float.MAX_VALUE
+            var mX = 0f
+            var mY = 0f
+            var mZ = 0f
+
+            val b = buffer as Buffer
+            val startPosition = b.position()
+            repeat(vCount) {
+                b.position(startPosition + it * stride)
+                val x = buffer.get()
+                val y = buffer.get()
+                val z = buffer.get()
+
+                mx = min(mx, x)
+                mX = max(mX, x)
+                my = min(my, y)
+                mY = max(mY, y)
+                mz = min(mz, z)
+                mZ = max(mZ, z)
+            }
+
+            aabb = AABB(Vector3f(mx, my, mz), Vector3f(mX, mY, mZ))
         }
 
         fun normals(normalsBuffer: FloatBuffer, stride: Int = 0) {
@@ -117,7 +165,8 @@ class Mesh private constructor(
                 normalsVboId = normalsVboId,
                 texCoordsVboId = texCoordsVboId,
                 indicesVboId = indicesVboId,
-                glIndexType = glIndexType
+                glIndexType = glIndexType,
+                boundingBox = aabb
             ).also { mesh ->
                 if (indicesVboId == BUFFER_NOT_SET) {
                     mesh.dispose()

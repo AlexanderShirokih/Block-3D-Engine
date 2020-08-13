@@ -70,19 +70,31 @@ data class Vector3f(
     }
 
     /**
-     * Scales this vector by factor and returns new vector
+     * Multiplies this vector by factor and returns new vector
      */
-    operator fun times(factor: Float): Vector3f {
-        return Vector3f(x * factor, y * factor, z * factor)
-    }
+    operator fun times(factor: Float): Vector3f = Vector3f(x * factor, y * factor, z * factor)
 
     /**
-     * Scales this vector by factor and returns this vector
+     * Multiplies this vector by factor and returns this vector
      */
     operator fun timesAssign(factor: Float) {
         x *= factor
         y *= factor
         z *= factor
+    }
+
+    /**
+     * Divides this vector by factor and returns new vector
+     */
+    operator fun div(scalar: Float): Vector3f = Vector3f(x / scalar, y / scalar, z / scalar)
+
+    /**
+     * Divides this vector by factor and returns this vector
+     */
+    operator fun divAssign(scalar: Float) {
+        x /= scalar
+        y /= scalar
+        z /= scalar
     }
 
     /**
@@ -107,12 +119,10 @@ data class Vector3f(
      * Normalizes this vector and return it
      */
     fun normalize(): Vector3f {
-        val mag = magnitude
-        x /= mag
-        y /= mag
-        z /= mag
+        divAssign(magnitude)
         return this
     }
+
 
     /**
      * Returns normalized copy of this vector
