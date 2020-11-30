@@ -3,6 +3,8 @@ package ru.aleshi.block3d.primitives
 import org.lwjgl.system.MemoryUtil
 import ru.aleshi.block3d.*
 import ru.aleshi.block3d.scenic.MeshObject
+import ru.aleshi.block3d.types.AABB
+import ru.aleshi.block3d.types.Vector3f
 import java.nio.Buffer
 
 /**
@@ -12,6 +14,8 @@ import java.nio.Buffer
 class Plane(instanceMaterial: Material = Defaults.MATERIAL_LIT) : MeshObject(sharedPlaneMesh, instanceMaterial) {
 
     companion object {
+        @JvmStatic
+        private val PLANE_BOUNDS = AABB(Vector3f(-0.5f, 0.00001f, -0.5f), Vector3f(0.5f, 0.00001f, 0.5f))
 
         val sharedPlaneMesh: Shared<Mesh> by lazy { Shared(buildMesh()) }
 
@@ -34,6 +38,7 @@ class Plane(instanceMaterial: Material = Defaults.MATERIAL_LIT) : MeshObject(sha
             (iBuffer as Buffer).flip()
 
             val mesh = Mesh.builder().apply {
+                bounds(PLANE_BOUNDS)
                 vertices(vBuffer, 32)
                 (vBuffer as Buffer).position(3)
                 normals(vBuffer, 32)

@@ -5,6 +5,8 @@ import ru.aleshi.block3d.Material
 import ru.aleshi.block3d.Mesh
 import ru.aleshi.block3d.Shared
 import ru.aleshi.block3d.scenic.MeshObject
+import ru.aleshi.block3d.types.AABB
+import ru.aleshi.block3d.types.Vector3f
 
 /**
  * Skybox is an inside-out box. Usually used to draw scene background.
@@ -12,10 +14,14 @@ import ru.aleshi.block3d.scenic.MeshObject
 class SkyBox(instanceMaterial: Material = Defaults.MATERIAL_SKYBOX) : MeshObject(skyBoxMesh, instanceMaterial) {
 
     companion object {
+        @JvmStatic
+        private val SKYBOX_BOUNDS = AABB(Vector3f(-1f), Vector3f.one)
+
         private val skyBoxMesh: Shared<Mesh> by lazy { Shared(generateMesh()) }
 
         private fun generateMesh(): Mesh {
             val meshBuilder = Mesh.builder()
+            meshBuilder.bounds(SKYBOX_BOUNDS)
 
             meshBuilder.vertices(
                 floatArrayOf(

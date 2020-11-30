@@ -43,7 +43,7 @@ object Loader {
      */
     suspend fun loadResource(resourceName: String): Any {
         val resource = ClassLoader.getSystemResource(resourceName) ?: throw ResourceNotFoundException(resourceName)
-        val ext = resource.file.substringAfter('.', "")
+        val ext = resource.file.substringAfterLast('.', "")
         val stream = withContext(Dispatchers.IO) { resource.openStream() }
         return loadFromInputStream(ext, stream)
     }
