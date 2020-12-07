@@ -6,7 +6,7 @@ import ru.aleshi.block3d.internal.WindowConfig
  * A class describing program window
  *
  */
-abstract class Window {
+abstract class Window(val config: WindowConfig) {
 
     /**
      * `true` while window is not going to be destroyed
@@ -26,7 +26,7 @@ abstract class Window {
     /**
      * Used to create window instance
      */
-    abstract fun create(config: WindowConfig)
+    abstract fun create()
 
     /**
      * Used to close window and dispose it's resources

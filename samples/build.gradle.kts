@@ -10,6 +10,8 @@ application {
 dependencies {
     implementation(project(":core"))
     implementation(project(":debugging"))
+    implementation(project(":ui"))
+
     implementation(kotlin("stdlib-jdk8"))
 
     implementation("org.slf4j:slf4j-api:1.7.30")

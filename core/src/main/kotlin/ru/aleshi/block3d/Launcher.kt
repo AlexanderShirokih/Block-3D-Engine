@@ -18,13 +18,17 @@ object Launcher {
     /**
      * Creates the World instance and initializes GLFW window.
      */
-    fun start(startingScene: Scene, config: WindowConfig = WindowConfig()): World {
+    fun start(
+        startingScene: Scene,
+        config: WindowConfig = WindowConfig(),
+        modules: Array<Block3DModule> = arrayOf()
+    ): World {
         GLFWErrorCallback.createPrint(System.err).set()
         logger.info("Starting Block3D Engine")
         logger.info("LWJGL version: {}", Version.getVersion())
         logger.info("GLFW version: {}", glfwGetVersionString())
 
-        return initWindowAndCreateWorld(config).apply {
+        return initWindowAndCreateWorld(config, modules).apply {
             dispatcher.ownerThreadId = Thread.currentThread().id
 
             create(startingScene)
@@ -45,14 +49,18 @@ object Launcher {
         }
     }
 
-    private fun initWindowAndCreateWorld(config: WindowConfig): World {
-        val window = GLFWWindow().apply { create(config) }
+    private fun initWindowAndCreateWorld(config: WindowConfig, modules: Array<Block3DModule>): World {
+        val window = GLFWWindow(config).apply { create() }
 
         val caps = GL.createCapabilities()
         if (!caps.OpenGL30)
             throw Block3DException("OpenGL 3.0 at least required to run the engine")
 
-        return World(window).apply {
+        for (module in modules) {
+            module.onWindowCreated(window)
+        }
+
+        return World(window, modules).apply {
             makeCurrent()
             resizeScenes(config.width, config.height)
         }

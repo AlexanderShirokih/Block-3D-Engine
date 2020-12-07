@@ -16,6 +16,8 @@ abstract class Scene {
 
     private var sceneRenderer: AbstractRenderer = SimpleForwardRenderer()
 
+    private var started: Boolean = false
+
     /**
      * Sets the current scene renderer. Default scene renderer is [SimpleForwardRenderer]
      */
@@ -98,13 +100,12 @@ abstract class Scene {
      */
     open fun create() {
         // Apply default settings
-        glEnable(GL_DEPTH_TEST)
+        resetState()
         glClearDepth(1.0)
         glDepthRange(0.0, 1.0)
         glDepthMask(true)
         glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
         // Apply default values by calling setters
         background = background
@@ -114,6 +115,21 @@ abstract class Scene {
 
         // Add default camera to the scene
         add(Camera.active)
+
+        started = true
+
+        // Signal modules that scene has started
+        for (module in World.current.modules) {
+            module.onSceneStarted(this)
+        }
+    }
+
+    fun resetState() {
+        glEnable(GL_DEPTH_TEST)
+        glEnable(GL_STENCIL_TEST)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        glEnable(GL_CULL_FACE)
+        glCullFace(GL_BACK)
     }
 
     /**
@@ -128,7 +144,6 @@ abstract class Scene {
     /**
      * Called on each frame to update the scene
      */
-
     open fun update() {
         sceneObjects.forEach { it.update() }
 
@@ -141,8 +156,17 @@ abstract class Scene {
      * Called when scene should be stopped
      */
     open fun stop() {
-        resources.dispose()
-        sceneJob.cancel()
+        if (started) {
+            // Signal modules that scene has stopped
+            for (module in World.current.modules) {
+                module.onSceneFinished(this)
+            }
+
+            resources.dispose()
+            sceneJob.cancel()
+        }
+
+        started = false
     }
 
     /**

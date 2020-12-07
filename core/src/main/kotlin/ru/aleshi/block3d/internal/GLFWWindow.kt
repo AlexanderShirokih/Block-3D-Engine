@@ -6,18 +6,18 @@ import org.lwjgl.glfw.GLFWVidMode
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import ru.aleshi.block3d.Block3DException
+import ru.aleshi.block3d.Window
 import ru.aleshi.block3d.input.Keyboard
 import ru.aleshi.block3d.input.Mouse
-import ru.aleshi.block3d.Window
 
 /**
  * Describes GLFW Window implementation
  */
-class GLFWWindow : Window() {
+class GLFWWindow(config: WindowConfig) : Window(config) {
 
     private var windowHandle: Long = 0
 
-    override fun create(config: WindowConfig) {
+    override fun create() {
         if (!glfwInit()) {
             throw IllegalStateException("Cannot initialize GLFW window!")
         }
@@ -34,6 +34,11 @@ class GLFWWindow : Window() {
             GLFW_RESIZABLE,
             if (config.isResizable) GLFW_TRUE else GLFW_FALSE
         ) // the window will be resizable
+
+        // Enable Antialiasing
+        if (config.antialiasing) {
+            glfwWindowHint(GLFW_SAMPLES, 4)
+        }
 
         MemoryStack.stackPush().use { stack ->
             val pWidth = stack.mallocInt(1)

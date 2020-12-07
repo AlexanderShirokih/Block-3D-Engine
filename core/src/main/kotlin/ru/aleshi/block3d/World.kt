@@ -18,7 +18,12 @@ class World(
     /**
      * The window in which world will be drawn
      */
-    val window: Window
+    val window: Window,
+
+    /**
+     * Array of loaded modules
+     */
+    val modules: Array<Block3DModule>
 ) {
 
     internal val worldJob = Job()
@@ -31,7 +36,7 @@ class World(
     /**
      * Current rendering dispatcher instance
      */
-    internal val dispatcher: DispatchingRunnable = DispatchingRunnable(Runnable {
+    internal val dispatcher: DispatchingRunnable = DispatchingRunnable {
         // Clear the framebuffer
         GL11C.glClear(CLEAR_MASK)
 
@@ -40,7 +45,7 @@ class World(
 
         // Update window events
         window.update()
-    })
+    }
 
     /**
      * `true` until world isn't destroyed
@@ -49,7 +54,8 @@ class World(
         private set
 
     companion object {
-        private const val CLEAR_MASK = GL11C.GL_COLOR_BUFFER_BIT or GL11C.GL_DEPTH_BUFFER_BIT
+        private const val CLEAR_MASK =
+            GL11C.GL_COLOR_BUFFER_BIT or GL11C.GL_DEPTH_BUFFER_BIT or GL11C.GL_STENCIL_BUFFER_BIT
 
         lateinit var current: World
             private set
@@ -78,7 +84,7 @@ class World(
         worldScope.launch {
             ResourceList.loadDefaultResources()
 
-            // Launch start scene
+            // Launch starting scene
             launchScene(startScene)
         }
     }
@@ -95,7 +101,15 @@ class World(
      */
     internal fun update() {
         Mouse.updateDelta()
+
+        // Clear scene and draw 3D content
         currentScene.update()
+
+        // Draw modules
+        for (module in modules) {
+            module.onUpdate(this)
+            currentScene.resetState()
+        }
     }
 
     /**
@@ -114,7 +128,8 @@ class World(
      * It will destroy the current scene and loads new.
      */
     fun launchScene(scene: Scene) {
-        currentScene.stop()
+        if (currentScene !is StubScene)
+            currentScene.stop()
         currentScene = scene
         currentScene.apply {
             create()

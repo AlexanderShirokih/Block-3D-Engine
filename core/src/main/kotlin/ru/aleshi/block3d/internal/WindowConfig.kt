@@ -9,5 +9,6 @@ data class WindowConfig(
     val height: Int = 600,
     val title: String = "Block3D Engine",
     val isResizable: Boolean = true,
-    val vSync: Boolean = true
+    val vSync: Boolean = true,
+    val antialiasing: Boolean = true
 )
