@@ -29,13 +29,13 @@ object Loader {
     private fun getParser(extension: String): IParser {
         val parserClass = installedParsers[extension]
             ?: throw RuntimeException("There is no installed parsers for \'$extension\' extension")
-        return parserClass.newInstance()
+        return parserClass.getDeclaredConstructor().newInstance()
     }
 
     private fun getComposer(extension: String): IComposer {
         val composerClass = installedComposers[extension]
             ?: throw RuntimeException("There is no installed composers for '$extension' extension")
-        return composerClass.newInstance()
+        return composerClass.getDeclaredConstructor().newInstance()
     }
 
     /**

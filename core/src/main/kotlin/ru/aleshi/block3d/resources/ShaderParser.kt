@@ -14,11 +14,11 @@ import java.io.OutputStream
 class ShaderParser : IParser, IComposer {
 
     override suspend fun parse(inputStream: InputStream): Any = withContext(Dispatchers.IO) {
-        Yaml.default.parse(ShaderData.serializer(), inputStream.bufferedReader().readText())
+        Yaml.default.decodeFromString(ShaderData.serializer(), inputStream.bufferedReader().readText())
     }
 
     override fun compose(outputStream: OutputStream, obj: Any) {
-        val string = Yaml.default.stringify(ShaderData.serializer(), obj as ShaderData)
+        val string = Yaml.default.encodeToString(ShaderData.serializer(), obj as ShaderData)
         outputStream.bufferedWriter().apply {
             write(string)
             flush()

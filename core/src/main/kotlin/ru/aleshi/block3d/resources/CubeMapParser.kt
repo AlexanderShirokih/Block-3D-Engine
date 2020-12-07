@@ -15,7 +15,7 @@ class CubeMapParser : IParser {
     override suspend fun parse(inputStream: InputStream): Any {
         val data = inputStream.bufferedReader().readText()
         return Json.Default
-            .parse(ImageCubeSource.serializer(), data)
+            .decodeFromString(ImageCubeSource.serializer(), data)
             .faceImagePaths
             .mapValues { Loader.loadResource(it.value) as Image2DData }
             .run { ImageCubeData(this) }

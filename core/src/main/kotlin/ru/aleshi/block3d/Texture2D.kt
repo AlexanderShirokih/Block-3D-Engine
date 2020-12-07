@@ -53,10 +53,10 @@ class Texture2D(imageData: Image2DData) : Texture(GL_TEXTURE_2D) {
             Image2DData(
                 data = ByteBuffer
                     .allocateDirect(4)
-                    .put((color.red * 0xFF).toByte())
-                    .put((color.green * 0xFF).toByte())
-                    .put((color.blue * 0xFF).toByte())
-                    .put((color.alpha * 0xFF).toByte())
+                    .put((color.red * 0xFF).toInt().toByte())
+                    .put((color.green * 0xFF).toInt().toByte())
+                    .put((color.blue * 0xFF).toInt().toByte())
+                    .put((color.alpha * 0xFF).toInt().toByte())
                     .apply { (this as Buffer).flip() } as ByteBuffer,
                 width = 1,
                 height = 1,
