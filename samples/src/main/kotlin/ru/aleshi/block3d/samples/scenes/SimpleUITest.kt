@@ -4,6 +4,7 @@ import ru.aleshi.block3d.Launcher
 import ru.aleshi.block3d.scenic.Scene
 import ru.aleshi.block3d.scenic.SolidColorBackground
 import ru.aleshi.block3d.types.Color4f
+import ru.aleshi.block3d.ui.ImageFit
 import ru.aleshi.block3d.ui.Insets
 import ru.aleshi.block3d.ui.UIModule
 import ru.aleshi.block3d.ui.ui
@@ -32,6 +33,7 @@ class SimpleUITest : Scene() {
                         child = UIBox(
                             color = Color4f.blue,
                             child = UIImage(
+                                fit = ImageFit.Expand,
                                 imagePath = "textures/box.png"
                             )
                         )
