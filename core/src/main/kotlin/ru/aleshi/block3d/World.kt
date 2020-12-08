@@ -84,6 +84,11 @@ class World(
         worldScope.launch {
             ResourceList.loadDefaultResources()
 
+            // Init resources in all modules
+            for (module in modules) {
+                module.onInit()
+            }
+
             // Launch starting scene
             launchScene(startScene)
         }
