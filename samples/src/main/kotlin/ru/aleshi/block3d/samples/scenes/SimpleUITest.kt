@@ -9,6 +9,7 @@ import ru.aleshi.block3d.ui.UIModule
 import ru.aleshi.block3d.ui.ui
 import ru.aleshi.block3d.ui.widget.UIAlign
 import ru.aleshi.block3d.ui.widget.UIBox
+import ru.aleshi.block3d.ui.widget.UIButton
 import ru.aleshi.block3d.ui.widget.UIText
 
 fun main() {
@@ -27,14 +28,21 @@ class SimpleUITest : Scene() {
         }
 
         ui.setContent(
-            UIBox(
-                preferredSize = Vector2f(100f, 100f),
-                color = Color4f.random,
-                child = UIAlign(
-                    child = UIText(
-                        text = "Hello world!"
+            UIAlign(
+                child = UIButton(
+                    child = UIBox(
+                        color = Color4f.blue,
+                        preferredSize = Vector2f(140f, 100f),
+                        child = UIAlign(
+                            child = UIText(
+                                fontSize = 24f,
+                                text = "Hello world!"
+                            )
+                        )
                     )
-                )
+                ) {
+                    println("I'm pressed!")
+                }
             )
         )
     }

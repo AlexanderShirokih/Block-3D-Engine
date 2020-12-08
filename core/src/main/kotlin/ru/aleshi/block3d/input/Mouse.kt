@@ -2,11 +2,12 @@ package ru.aleshi.block3d.input
 
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWCursorPosCallback
+import ru.aleshi.block3d.types.Vector2f
 
 /**
  * Mouse controller.
  */
-object Mouse : GLFWCursorPosCallback() {
+object Mouse : GLFWCursorPosCallback(), InputTouchController {
 
     private var lastX = 0f
     private var lastY = 0f
@@ -75,4 +76,21 @@ object Mouse : GLFWCursorPosCallback() {
         lastY = y
     }
 
+    override fun getInputPosition(): Vector2f = Vector2f(x, y)
+
+    /**
+     * Returns `true` is [button] is pressed
+     */
+    override fun isButtonDown(button: MouseButton): Boolean {
+        val state = glfwGetMouseButton(currentWindowHandle, translateButtonCode(button))
+        return state == GLFW_PRESS
+    }
+
+    private fun translateButtonCode(button: MouseButton): Int {
+        return when (button) {
+            MouseButton.LEFT -> GLFW_MOUSE_BUTTON_LEFT
+            MouseButton.RIGHT -> GLFW_MOUSE_BUTTON_RIGHT
+            MouseButton.MIDDLE -> GLFW_MOUSE_BUTTON_MIDDLE
+        }
+    }
 }

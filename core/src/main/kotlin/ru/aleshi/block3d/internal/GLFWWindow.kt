@@ -7,6 +7,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import ru.aleshi.block3d.Block3DException
 import ru.aleshi.block3d.Window
+import ru.aleshi.block3d.input.Input
 import ru.aleshi.block3d.input.Keyboard
 import ru.aleshi.block3d.input.Mouse
 
@@ -65,6 +66,8 @@ class GLFWWindow(config: WindowConfig) : Window(config) {
             windowHandle,
             Mouse
         )
+
+        Input.inputController = Mouse
 
         glfwSwapInterval(if (config.vSync) 1 else 0) // V-sync
 
