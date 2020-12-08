@@ -2,6 +2,7 @@ package ru.aleshi.block3d.ui
 
 import ru.aleshi.block3d.internal.WindowConfig
 import ru.aleshi.block3d.types.Color4f
+import ru.aleshi.block3d.types.Vector2f
 
 interface UIRenderContext {
 
@@ -30,4 +31,19 @@ interface UIRenderContext {
      * and filling color `fillColor`
      */
     fun drawRect(x: Float, y: Float, width: Float, height: Float, fillColor: Color4f)
+
+    /**
+     * Draws text at position [x, y]
+     */
+    fun drawText(x: Float, y: Float, rowWidth: Float, fontSize: Float, color: Color4f, text: String)
+
+    /**
+     * Measures [text] and returns its bounds
+     */
+    fun measureText(rowWidth: Float, fontSize: Float, text: String): Vector2f
+
+    /**
+     * Asynchronously init required resources
+     */
+    suspend fun initResources() {}
 }

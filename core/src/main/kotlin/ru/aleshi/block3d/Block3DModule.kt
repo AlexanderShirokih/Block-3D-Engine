@@ -13,6 +13,11 @@ interface Block3DModule {
     fun onWindowCreated(window: Window)
 
     /**
+     * Used to asynchronously loads any requested module resources
+     */
+    suspend fun onInit()
+
+    /**
      * Called once when window instance is destroyed
      */
     fun onWindowDestroyed()

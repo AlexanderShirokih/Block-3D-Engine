@@ -3,6 +3,8 @@ package ru.aleshi.block3d.ui
 import ru.aleshi.block3d.Block3DModule
 import ru.aleshi.block3d.Window
 import ru.aleshi.block3d.World
+import ru.aleshi.block3d.resources.BinaryLoader
+import ru.aleshi.block3d.resources.Loader
 import ru.aleshi.block3d.scenic.Scene
 
 /**
@@ -13,10 +15,19 @@ object UIModule : Block3DModule {
     private lateinit var drawingContext: UIRenderContext
 
     override fun onWindowCreated(window: Window) {
+        Loader.installParser("ttf", BinaryLoader::class.java)
         drawingContext = NanoVGRenderContext()
         drawingContext.createDrawingContext(window.config)
         layoutManager = LayoutManager(drawingContext)
     }
+
+    /**
+     * Returns current render context
+     */
+    fun renderContext(): UIRenderContext = drawingContext
+
+    override suspend fun onInit() =
+        drawingContext.initResources()
 
     override fun onWindowDestroyed() {
         drawingContext.destroyDrawingContext()
