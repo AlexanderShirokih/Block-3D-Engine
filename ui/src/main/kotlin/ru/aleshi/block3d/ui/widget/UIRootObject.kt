@@ -9,7 +9,7 @@ import ru.aleshi.block3d.ui.UIRenderContext
  */
 class UIRootObject(private val uiRenderContext: UIRenderContext) : UIObject() {
 
-    private var child: UIObject? = null
+    internal var child: UIObject? = null
 
     override fun onMeasure(parentConstraint: Constraint): Vector2f {
         // Root object always fit whole screen size

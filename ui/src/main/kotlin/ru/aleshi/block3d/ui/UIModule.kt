@@ -16,13 +16,14 @@ object UIModule : Block3DModule {
     private lateinit var layoutManager: LayoutManager
     private lateinit var drawingContext: UIRenderContext
 
+    private var isStarted = false
+
     val imageCache = ImageCache()
 
     override fun onWindowCreated(window: Window) {
         Loader.installParser("ttf", BinaryLoader::class.java)
         drawingContext = NanoVGRenderContext()
         drawingContext.createDrawingContext(window.config)
-        layoutManager = LayoutManager(drawingContext)
     }
 
     /**
@@ -38,6 +39,8 @@ object UIModule : Block3DModule {
     }
 
     override fun onUpdate(world: World) {
+        if (!isStarted) return
+
         val currentWindow = world.window
         val width = currentWindow.width.toFloat()
         val height = currentWindow.height.toFloat()
@@ -49,10 +52,13 @@ object UIModule : Block3DModule {
     }
 
     override fun onSceneStarted(scene: Scene) {
+        layoutManager = LayoutManager(drawingContext)
         scene.add(layoutManager.root)
+        isStarted = true
     }
 
     override fun onSceneFinished(scene: Scene) {
+        isStarted = false
         scene.remove(layoutManager.root)
         imageCache.cleanup()
     }

@@ -1,6 +1,7 @@
 package ru.aleshi.block3d.samples.scenes
 
 import ru.aleshi.block3d.Launcher
+import ru.aleshi.block3d.World
 import ru.aleshi.block3d.scenic.Scene
 import ru.aleshi.block3d.scenic.SolidColorBackground
 import ru.aleshi.block3d.types.Color4f
@@ -39,7 +40,7 @@ class SimpleUITest : Scene() {
                         )
                     )
                 ) {
-                    println("I'm pressed!")
+                    World.current.launchSceneAsync(TransformRelations())
                 }
             )
         )

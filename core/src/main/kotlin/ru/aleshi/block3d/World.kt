@@ -143,4 +143,9 @@ class World(
             resize(window.width, window.height)
         }
     }
+
+    fun launchSceneAsync(scene: Scene) =
+        worldScope.launch {
+            launchScene(scene)
+        }
 }
