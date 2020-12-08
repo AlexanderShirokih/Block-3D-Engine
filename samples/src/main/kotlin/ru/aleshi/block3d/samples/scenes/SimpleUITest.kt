@@ -5,13 +5,12 @@ import ru.aleshi.block3d.scenic.Scene
 import ru.aleshi.block3d.scenic.SolidColorBackground
 import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Vector2f
-import ru.aleshi.block3d.ui.Insets
+import ru.aleshi.block3d.ui.CrossAxisAlignment
 import ru.aleshi.block3d.ui.Orientation
 import ru.aleshi.block3d.ui.UIModule
 import ru.aleshi.block3d.ui.ui
 import ru.aleshi.block3d.ui.widget.UIBox
 import ru.aleshi.block3d.ui.widget.UILinearGroup
-import ru.aleshi.block3d.ui.widget.UIPadding
 
 fun main() {
     Launcher.start(
@@ -30,23 +29,22 @@ class SimpleUITest : Scene() {
 
         ui.setContent(
             UILinearGroup(
+                crossAxisAlignment = CrossAxisAlignment.End,
                 orientation = Orientation.Horizontal,
-                children = List(3) {
-                    UIPadding(
-                        padding = Insets(horizontal = 10f),
-                        child = UILinearGroup(
-                            children = List(3) {
-                                UIPadding(
-                                    padding = Insets(vertical = 10f),
-                                    child = UIBox(
-                                        preferredSize = Vector2f(100f, 50f),
-                                        color = Color4f.random
-                                    )
-                                )
-                            }
-                        )
+                children = listOf(
+                    UIBox(
+                        preferredSize = Vector2f(50f, 100f),
+                        color = Color4f.random
+                    ),
+                    UIBox(
+                        preferredSize = Vector2f(50f, 200f),
+                        color = Color4f.random
+                    ),
+                    UIBox(
+                        preferredSize = Vector2f(50f, 50f),
+                        color = Color4f.random
                     )
-                }
+                )
             )
         )
     }

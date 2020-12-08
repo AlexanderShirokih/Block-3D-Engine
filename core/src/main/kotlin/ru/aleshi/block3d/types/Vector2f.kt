@@ -120,6 +120,13 @@ data class Vector2f(
         )
     }
 
+    fun scale(factor: Vector2f): Vector2f {
+        return Vector2f(
+            x = x * factor.x,
+            y = y * factor.y
+        )
+    }
+
     /**
      * Returns normalized copy of this vector
      */
