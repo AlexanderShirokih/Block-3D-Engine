@@ -1,0 +1,42 @@
+package ru.aleshi.block3d.ui.widget
+
+import kotlinx.coroutines.launch
+import ru.aleshi.block3d.World
+import ru.aleshi.block3d.internal.data.Image2DData
+import ru.aleshi.block3d.types.Vector2f
+import ru.aleshi.block3d.ui.Constraint
+import ru.aleshi.block3d.ui.UIModule
+import ru.aleshi.block3d.ui.UIRenderContext
+
+/**
+ * Shows image growing as much as possible
+ */
+class UIImage(
+    imagePath: String
+) : UIObject() {
+
+    private var imageData: Image2DData? = null
+
+    init {
+        World.current.worldScope.launch {
+            imageData = UIModule.imageCache.getOrLoad(imagePath)
+        }
+    }
+
+    override fun onMeasure(parentConstraint: Constraint): Vector2f {
+        return parentConstraint.maxSize
+//        return parentConstraint.bounding(
+//            imageData?.run {
+//            Vector2f(width.toFloat(), height.toFloat()
+//            )
+//        } ?: parentConstraint.maxSize
+//        )
+    }
+
+    override fun onDraw(position: Vector2f, context: UIRenderContext) {
+        imageData?.let { image ->
+            context.drawImage(position.x, position.y, size.x, size.y, image)
+        }
+    }
+
+}

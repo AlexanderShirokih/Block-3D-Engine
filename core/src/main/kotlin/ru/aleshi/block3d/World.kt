@@ -1,9 +1,6 @@
 package ru.aleshi.block3d
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.lwjgl.opengl.GL11C
 import ru.aleshi.block3d.input.Mouse
 import ru.aleshi.block3d.internal.DispatchingRunnable
@@ -31,7 +28,12 @@ class World(
     /**
      * Worlds coroutine scope
      */
-    val worldScope = CoroutineScope(Dispatchers.Main + worldJob)
+    val worldScope = CoroutineScope(Dispatchers.Main + worldJob +
+            CoroutineExceptionHandler { context, throwable ->
+                throwable.printStackTrace()
+                context.cancel()
+            }
+    )
 
     /**
      * Current rendering dispatcher instance

@@ -82,6 +82,7 @@ object Mouse : GLFWCursorPosCallback(), InputTouchController {
      * Returns `true` is [button] is pressed
      */
     override fun isButtonDown(button: MouseButton): Boolean {
+        if (currentWindowHandle == 0L) return false
         val state = glfwGetMouseButton(currentWindowHandle, translateButtonCode(button))
         return state == GLFW_PRESS
     }

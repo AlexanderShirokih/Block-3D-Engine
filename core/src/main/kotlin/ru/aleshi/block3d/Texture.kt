@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11.*
  */
 abstract class Texture internal constructor(val glType: Int) : IDisposable {
 
-    internal var texId: Int = glGenTextures()
+    var texId: Int = glGenTextures()
         private set
 
     override fun dispose() {

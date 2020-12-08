@@ -1,19 +1,32 @@
-package ru.aleshi.block3d.ui
+package ru.aleshi.block3d.ui.internal
 
 import org.lwjgl.nanovg.NVGColor
+import org.lwjgl.nanovg.NVGPaint
 import org.lwjgl.nanovg.NanoVG.*
 import org.lwjgl.nanovg.NanoVGGL3.*
 import org.lwjgl.system.MemoryUtil.NULL
+import ru.aleshi.block3d.Texture2D
 import ru.aleshi.block3d.internal.WindowConfig
+import ru.aleshi.block3d.internal.data.Image2DData
 import ru.aleshi.block3d.resources.Loader
 import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Vector2f
+import ru.aleshi.block3d.ui.UIRenderContext
 import java.nio.ByteBuffer
 
 /**
  * Creates UI rendering context using NanoVG library
  */
 class NanoVGRenderContext : UIRenderContext {
+
+    data class LoadedImage(
+        val handle: Int,
+        val pattern: NVGPaint,
+        val width: Int,
+        val height: Int
+    )
+
+    private val loadedImages = mutableMapOf<Image2DData, LoadedImage>()
     private val defaultFont = "OpenSans-Regular"
 
     /// Internal pointer to VG context
@@ -37,6 +50,11 @@ class NanoVGRenderContext : UIRenderContext {
 
     override fun destroyDrawingContext() {
         if (vg != NULL) {
+            for (imageHandle in loadedImages) {
+                nvgDeleteImage(vg, imageHandle.value.handle)
+            }
+            loadedImages.clear()
+
             nvgDelete(vg)
             vg = NULL
         }
@@ -78,6 +96,31 @@ class NanoVGRenderContext : UIRenderContext {
     override suspend fun initResources() {
         val font = Loader.loadResource("fonts/OpenSans-Regular.ttf") as ByteBuffer
         nvgCreateFontMem(vg, defaultFont, font, 0)
+    }
+
+    override fun drawImage(x: Float, y: Float, width: Float, height: Float, image: Image2DData) {
+        var imageHandle = loadedImages.getOrPut(image) {
+            val openGLTexture = Texture2D(image)
+            val handle = nvglCreateImageFromHandle(vg, openGLTexture.texId, image.width, image.height, 0)
+            NVGPaint.create().updateImage(width, height, handle)
+        }
+
+        if (width.toInt() != imageHandle.width || height.toInt() != imageHandle.height) {
+            imageHandle = imageHandle.pattern.updateImage(width, height, imageHandle.handle)
+            loadedImages[image] = imageHandle
+        }
+
+        nvgBeginPath(vg)
+        nvgTranslate(vg, x, y)
+        nvgRect(vg, 0f, 0f, width, height)
+        nvgFillPaint(vg, imageHandle.pattern)
+        nvgFill(vg)
+    }
+
+    private fun NVGPaint.updateImage(width: Float, height: Float, handle: Int): LoadedImage {
+        val updatedPaint =
+            nvgImagePattern(vg, 0f, 0f, width, height, 0f, handle, 1f, this)
+        return LoadedImage(handle, updatedPaint, width.toInt(), height.toInt())
     }
 
     /**

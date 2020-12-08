@@ -1,6 +1,7 @@
 package ru.aleshi.block3d.ui
 
 import ru.aleshi.block3d.internal.WindowConfig
+import ru.aleshi.block3d.internal.data.Image2DData
 import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Vector2f
 
@@ -46,4 +47,9 @@ interface UIRenderContext {
      * Asynchronously init required resources
      */
     suspend fun initResources() {}
+
+    /**
+     * Draws image at position [x, y] with size [width, height]
+     */
+    fun drawImage(x: Float, y: Float, width: Float, height: Float, image: Image2DData)
 }

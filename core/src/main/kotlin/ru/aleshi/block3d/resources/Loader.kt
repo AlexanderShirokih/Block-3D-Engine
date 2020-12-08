@@ -1,13 +1,11 @@
 package ru.aleshi.block3d.resources
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 import ru.aleshi.block3d.Texture2D
 import ru.aleshi.block3d.TextureCube
 import ru.aleshi.block3d.internal.data.Image2DData
 import ru.aleshi.block3d.internal.data.ImageCubeData
 import java.io.*
-import java.lang.RuntimeException
 
 /**
  * Common gate for parsing all supported resource types
@@ -19,7 +17,7 @@ object Loader {
         "shc" to ShaderParser::class.java,
         "png" to PNGImageParser::class.java,
         "obj" to WavefrontObjectParser::class.java,
-        "cubemap.json" to CubeMapParser::class.java
+        "cubemap" to CubeMapParser::class.java
     )
 
     private val installedComposers = mutableMapOf<String, Class<out IComposer>>(
@@ -44,7 +42,9 @@ object Loader {
     suspend fun loadResource(resourceName: String): Any {
         val resource = ClassLoader.getSystemResource(resourceName) ?: throw ResourceNotFoundException(resourceName)
         val ext = resource.file.substringAfterLast('.', "")
-        val stream = withContext(Dispatchers.IO) { resource.openStream() }
+        val stream = runBlocking { // withContext(Dispatchers.IO) {
+            resource.openStream()
+        }
         return loadFromInputStream(ext, stream)
     }
 

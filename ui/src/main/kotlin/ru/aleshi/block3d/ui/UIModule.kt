@@ -6,6 +6,8 @@ import ru.aleshi.block3d.World
 import ru.aleshi.block3d.resources.BinaryLoader
 import ru.aleshi.block3d.resources.Loader
 import ru.aleshi.block3d.scenic.Scene
+import ru.aleshi.block3d.ui.internal.ImageCache
+import ru.aleshi.block3d.ui.internal.NanoVGRenderContext
 
 /**
  * Main module class for registering module instance
@@ -13,6 +15,8 @@ import ru.aleshi.block3d.scenic.Scene
 object UIModule : Block3DModule {
     private lateinit var layoutManager: LayoutManager
     private lateinit var drawingContext: UIRenderContext
+
+    val imageCache = ImageCache()
 
     override fun onWindowCreated(window: Window) {
         Loader.installParser("ttf", BinaryLoader::class.java)
@@ -50,6 +54,7 @@ object UIModule : Block3DModule {
 
     override fun onSceneFinished(scene: Scene) {
         scene.remove(layoutManager.root)
+        imageCache.cleanup()
     }
 
 }

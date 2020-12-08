@@ -2,7 +2,6 @@ package ru.aleshi.block3d
 
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL30.glGenerateMipmap
-import org.lwjgl.system.MemoryUtil
 import ru.aleshi.block3d.internal.data.Image2DData
 import ru.aleshi.block3d.types.Color4f
 import java.nio.Buffer
@@ -41,7 +40,7 @@ class Texture2D(imageData: Image2DData) : Texture(GL_TEXTURE_2D) {
         if (imageData.generateMipmaps)
             glGenerateMipmap(GL_TEXTURE_2D)
 
-        MemoryUtil.memFree(imageData.data)
+        imageData.recycle()
     }
 
     companion object {

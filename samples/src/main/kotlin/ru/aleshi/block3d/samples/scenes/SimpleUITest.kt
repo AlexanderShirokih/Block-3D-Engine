@@ -4,13 +4,10 @@ import ru.aleshi.block3d.Launcher
 import ru.aleshi.block3d.scenic.Scene
 import ru.aleshi.block3d.scenic.SolidColorBackground
 import ru.aleshi.block3d.types.Color4f
-import ru.aleshi.block3d.types.Vector2f
+import ru.aleshi.block3d.ui.Insets
 import ru.aleshi.block3d.ui.UIModule
 import ru.aleshi.block3d.ui.ui
-import ru.aleshi.block3d.ui.widget.UIAlign
-import ru.aleshi.block3d.ui.widget.UIBox
-import ru.aleshi.block3d.ui.widget.UIButton
-import ru.aleshi.block3d.ui.widget.UIText
+import ru.aleshi.block3d.ui.widget.*
 
 fun main() {
     Launcher.start(
@@ -30,13 +27,12 @@ class SimpleUITest : Scene() {
         ui.setContent(
             UIAlign(
                 child = UIButton(
-                    child = UIBox(
-                        color = Color4f.blue,
-                        preferredSize = Vector2f(140f, 100f),
-                        child = UIAlign(
-                            child = UIText(
-                                fontSize = 24f,
-                                text = "Hello world!"
+                    child = UIPadding(
+                        padding = Insets(30f),
+                        child = UIBox(
+                            color = Color4f.blue,
+                            child = UIImage(
+                                imagePath = "textures/box.png"
                             )
                         )
                     )

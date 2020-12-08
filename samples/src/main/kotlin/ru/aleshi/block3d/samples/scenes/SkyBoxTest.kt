@@ -24,7 +24,7 @@ class SkyBoxTest : Scene() {
         add(Box())
 
         sceneScope.launch {
-            background = SkyBoxBackground(Loader.loadResource("textures/cubemap/sorsele.cubemap.json") as ImageCubeData)
+            background = SkyBoxBackground(Loader.loadResource("textures/cubemap/sorsele.cubemap") as ImageCubeData)
         }
     }
 

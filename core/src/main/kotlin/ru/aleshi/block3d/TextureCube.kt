@@ -3,7 +3,6 @@ package ru.aleshi.block3d
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13C.*
 import org.lwjgl.opengl.GL30
-import org.lwjgl.system.MemoryUtil
 import ru.aleshi.block3d.internal.data.ImageCubeData
 import ru.aleshi.block3d.types.Side
 
@@ -42,7 +41,7 @@ class TextureCube(imageData: ImageCubeData) : Texture(GL_TEXTURE_CUBE_MAP) {
                 data.data
             )
 
-            MemoryUtil.memFree(data.data)
+            data.recycle()
         }
 
 

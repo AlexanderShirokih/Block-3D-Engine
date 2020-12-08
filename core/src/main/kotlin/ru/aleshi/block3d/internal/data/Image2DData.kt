@@ -1,5 +1,6 @@
 package ru.aleshi.block3d.internal.data
 
+import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
 
 /**
@@ -11,4 +12,18 @@ class Image2DData(
     val height: Int,
     val hasAlpha: Boolean,
     val generateMipmaps: Boolean = true
-)
+) {
+
+    private var isRecycled: Boolean = false
+
+    /**
+     * Deallocates allocated memory
+     */
+    fun recycle() {
+        if (!isRecycled) {
+            MemoryUtil.memFree(data)
+            isRecycled = true
+        }
+    }
+
+}
