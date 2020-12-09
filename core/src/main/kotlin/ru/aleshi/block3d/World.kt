@@ -50,7 +50,7 @@ class World(
     }
 
     /**
-     * `true` until world isn't destroyed
+     * `true` until world wasn't destroyed
      */
     var alive: Boolean = true
         private set

@@ -5,7 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.lwjgl.opengl.GL11.*
 import ru.aleshi.block3d.World
-import ru.aleshi.block3d.renderer.AbstractRenderer
+import ru.aleshi.block3d.renderer.IRenderer
 import ru.aleshi.block3d.renderer.SimpleForwardRenderer
 import ru.aleshi.block3d.resources.ResourceList
 
@@ -14,21 +14,21 @@ import ru.aleshi.block3d.resources.ResourceList
  */
 abstract class Scene {
 
-    private var sceneRenderer: AbstractRenderer = SimpleForwardRenderer()
+    private var sceneRenderer: IRenderer = SimpleForwardRenderer()
 
     private var started: Boolean = false
 
     /**
      * Sets the current scene renderer. Default scene renderer is [SimpleForwardRenderer]
      */
-    fun setRenderer(renderer: AbstractRenderer) {
+    fun setRenderer(renderer: IRenderer) {
         sceneRenderer = renderer
     }
 
     /**
      * Gets the current scene renderer.
      */
-    val renderer: AbstractRenderer
+    val renderer: IRenderer
         get() = sceneRenderer
 
     /**

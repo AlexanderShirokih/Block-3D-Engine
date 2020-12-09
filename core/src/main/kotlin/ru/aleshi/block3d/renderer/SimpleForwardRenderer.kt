@@ -5,7 +5,7 @@ import ru.aleshi.block3d.Mesh
 import ru.aleshi.block3d.scenic.MeshObject
 import ru.aleshi.block3d.shader.Shader
 
-open class SimpleForwardRenderer : AbstractRenderer() {
+open class SimpleForwardRenderer : IRenderer {
 
     // Use two level grouping
     private val renderingList = hashMapOf<Mesh, MutableMap<Shader, MutableSet<MeshObject>>>()
