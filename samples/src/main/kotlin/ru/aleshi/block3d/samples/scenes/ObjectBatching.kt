@@ -23,7 +23,7 @@ class ObjectBatching : Scene() {
 
     override fun create() {
         super.create()
-        (background as SolidColorBackground).color = Color4f.blue
+        background = SolidColorBackground(Color4f.blue)
         Camera.active.transform.position = (Vector3f.forward * 40f)
 
         repeat(10000) {

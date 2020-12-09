@@ -1,7 +1,6 @@
 package ru.aleshi.block3d.input
 
 import ru.aleshi.block3d.types.Vector2f
-import java.util.*
 
 object Input {
 

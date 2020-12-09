@@ -6,16 +6,14 @@ import ru.aleshi.block3d.types.Color4f
 /**
  * Fills scene background as solid color
  */
-class SolidColorBackground : Background {
-
+class SolidColorBackground(
     /**
      * Fill color
      */
-    var color: Color4f = Color4f.black
-        set(value) {
-            field = value
-            onApply()
-        }
+    val color: Color4f
+) : Background {
+
+    constructor() : this(Color4f.black)
 
     override fun onApply() {
         GL11C.glDepthFunc(GL11C.GL_LESS)

@@ -28,7 +28,7 @@ class TransformRelations : Scene() {
 
     override fun create() {
         super.create()
-        (background as SolidColorBackground).color = Color4f.grayscale(0.13f)
+        background = SolidColorBackground(Color4f.grayscale(0.13f))
         Camera.active.transform.position = Vector3f.forward * 60f
         Camera.active.transform.rotation = Quaternion.fromAxisAngle(Vector3f.right, -35f)
 

@@ -26,11 +26,11 @@ class TransformRelationsTest : Scene() {
         }
 
     override fun create() {
-        setRenderer(DebugRenderer().apply {
-        })
+        setRenderer(DebugRenderer())
 
         super.create()
-        (background as SolidColorBackground).color = Color4f.blue
+        background = SolidColorBackground(Color4f.blue)
+
         Camera.active.transform.position = Vector3f(0f, 0f, 20f)
         Camera.active.transform.rotation = Quaternion.fromAxisAngle(Vector3f(0.5f, 0f, 0f), -45f)
 
