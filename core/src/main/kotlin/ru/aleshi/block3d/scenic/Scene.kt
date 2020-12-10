@@ -114,7 +114,10 @@ abstract class Scene {
         cullFace = true
 
         // Add default camera to the scene
-        add(Camera.active)
+        Camera().apply {
+            add(this)
+            Camera.active = this
+        }
 
         started = true
 

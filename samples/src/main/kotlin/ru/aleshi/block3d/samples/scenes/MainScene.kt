@@ -28,7 +28,7 @@ class MainScene : Scene() {
                     listOf(
                         SceneDescriptor(
                             title = "Трансформация объектов",
-                            description = "Демонстрация отностиельности операций\n преобразований объектов",
+                            description = "Демонстрация относительности операций\n преобразований объектов",
                             image = "preview/transform_relations.png",
                             sceneBuilder = { TransformRelations() }
                         ),
