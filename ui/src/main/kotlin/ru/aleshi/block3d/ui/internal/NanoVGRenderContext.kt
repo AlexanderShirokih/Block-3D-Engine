@@ -115,6 +115,7 @@ class NanoVGRenderContext : UIRenderContext {
         nvgRect(vg, 0f, 0f, width, height)
         nvgFillPaint(vg, imageHandle.pattern)
         nvgFill(vg)
+        nvgResetTransform(vg)
     }
 
     private fun NVGPaint.updateImage(width: Float, height: Float, handle: Int): LoadedImage {

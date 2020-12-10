@@ -14,7 +14,8 @@ class Image2DData(
     val generateMipmaps: Boolean = true
 ) {
 
-    private var isRecycled: Boolean = false
+    var isRecycled: Boolean = false
+        private set
 
     /**
      * Deallocates allocated memory

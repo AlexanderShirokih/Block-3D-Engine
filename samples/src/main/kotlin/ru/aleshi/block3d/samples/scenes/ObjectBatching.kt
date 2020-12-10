@@ -2,9 +2,8 @@ package ru.aleshi.block3d.samples.scenes
 
 import kotlinx.coroutines.*
 import ru.aleshi.block3d.Defaults
-import ru.aleshi.block3d.Launcher
+import ru.aleshi.block3d.World
 import ru.aleshi.block3d.debug.FPSCounter
-import ru.aleshi.block3d.internal.WindowConfig
 import ru.aleshi.block3d.primitives.Box
 import ru.aleshi.block3d.scenic.Camera
 import ru.aleshi.block3d.scenic.Scene
@@ -12,10 +11,7 @@ import ru.aleshi.block3d.scenic.SolidColorBackground
 import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Quaternion
 import ru.aleshi.block3d.types.Vector3f
-
-fun main() {
-    Launcher.start(ObjectBatching(), WindowConfig(vSync = false))
-}
+import ru.aleshi.block3d.ui.ui
 
 class ObjectBatching : Scene() {
 
@@ -43,6 +39,11 @@ class ObjectBatching : Scene() {
             }
         }
 
+        ui.setContent(
+            createBackButton {
+                World.current.launchSceneAsync(MainScene())
+            }
+        )
     }
 
     override fun update() {

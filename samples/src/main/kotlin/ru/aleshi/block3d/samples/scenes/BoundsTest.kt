@@ -2,10 +2,9 @@ package ru.aleshi.block3d.samples.scenes
 
 import kotlinx.coroutines.*
 import ru.aleshi.block3d.Defaults
-import ru.aleshi.block3d.Launcher
+import ru.aleshi.block3d.World
 import ru.aleshi.block3d.debug.DebugRenderer
 import ru.aleshi.block3d.debug.Line
-import ru.aleshi.block3d.internal.WindowConfig
 import ru.aleshi.block3d.primitives.Box
 import ru.aleshi.block3d.primitives.Sphere
 import ru.aleshi.block3d.renderer.Frustum
@@ -16,10 +15,7 @@ import ru.aleshi.block3d.scenic.SolidColorBackground
 import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Quaternion
 import ru.aleshi.block3d.types.Vector3f
-
-fun main() {
-    Launcher.start(BoundsTest(), WindowConfig(vSync = false))
-}
+import ru.aleshi.block3d.ui.ui
 
 class BoundsTest : Scene() {
 
@@ -75,6 +71,12 @@ class BoundsTest : Scene() {
                 println("Drawn $drawn/${objects.size} objects")
             }
         }
+
+        ui.setContent(
+            createBackButton {
+                World.current.launchSceneAsync(MainScene())
+            }
+        )
     }
 
 }

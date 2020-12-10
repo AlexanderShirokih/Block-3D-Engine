@@ -14,6 +14,7 @@ import java.nio.ByteBuffer
 class Texture2D(imageData: Image2DData) : Texture(GL_TEXTURE_2D) {
 
     init {
+        if(imageData.isRecycled) throw Block3DException("Image2DData was already recycled!")
         val glFormat = if (imageData.hasAlpha) GL_RGBA else GL_RGB
         glBindTexture(glType, texId)
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1)

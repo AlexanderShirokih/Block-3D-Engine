@@ -24,7 +24,6 @@ class UILinearGroup(
         var availableSpace = parentConstraint.maxSize
         for (child in children) {
             val desired = child.measure(Constraint(maxSize = availableSpace))
-
             val occupied = when (orientation) {
                 Orientation.Vertical -> {
                     maxX = max(maxX, desired.x)
@@ -58,12 +57,14 @@ class UILinearGroup(
                 CrossAxisAlignment.Center -> (size - childSize).scale(crossAxisMask) / 2f
             }
 
+
             child.onDraw(currentPosition + startOffset, context)
 
             val occupied = when (orientation) {
                 Orientation.Vertical -> Vector2f(0f, childSize.y)
                 Orientation.Horizontal -> Vector2f(childSize.x, 0f)
             }
+
             currentPosition = currentPosition + occupied
         }
     }

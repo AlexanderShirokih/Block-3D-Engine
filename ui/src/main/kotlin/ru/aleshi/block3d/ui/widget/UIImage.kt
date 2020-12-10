@@ -29,7 +29,7 @@ class UIImage(
         return when (fit) {
             ImageFit.Expand -> parentConstraint.maxSize
             ImageFit.Normal -> return if (imageData == null) {
-                parentConstraint.maxSize
+                Vector2f.zero
             } else {
                 Vector2f(
                     imageData!!.width.toFloat(),
@@ -37,7 +37,6 @@ class UIImage(
                 )
             }
         }
-
     }
 
     override fun onDraw(position: Vector2f, context: UIRenderContext) {

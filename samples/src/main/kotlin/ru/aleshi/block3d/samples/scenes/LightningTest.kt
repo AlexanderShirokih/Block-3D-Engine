@@ -2,6 +2,7 @@ package ru.aleshi.block3d.samples.scenes
 
 import kotlinx.coroutines.launch
 import ru.aleshi.block3d.Launcher
+import ru.aleshi.block3d.World
 import ru.aleshi.block3d.debug.DebugRenderer
 import ru.aleshi.block3d.primitives.Box
 import ru.aleshi.block3d.primitives.Plane
@@ -12,15 +13,12 @@ import ru.aleshi.block3d.scenic.*
 import ru.aleshi.block3d.types.Color4f
 import ru.aleshi.block3d.types.Quaternion
 import ru.aleshi.block3d.types.Vector3f
+import ru.aleshi.block3d.ui.ui
 
-fun main() {
-    Launcher.start(TransformRelationsTest())
-}
-
-class TransformRelationsTest : Scene() {
+class LightningTest : Scene() {
 
     private val root = TransformableObject()
-    private val pointLight = LightSource(LightSource.Type.Spot)
+    private val pointLight = LightSource(LightSource.Type.Point)
         .apply {
             cutoffAngle = 45f
         }
@@ -55,6 +53,12 @@ class TransformRelationsTest : Scene() {
                 add(cube)
             }
         }
+
+        ui.setContent(
+            createBackButton {
+                World.current.launchSceneAsync(MainScene())
+            }
+        )
     }
 
     override fun update() {
